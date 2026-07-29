@@ -49,7 +49,7 @@
   .sidebar-toggle:active{ transform:scale(0.9); }
 
   .brand{ display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:32px; }
-  .brand-badge{ width:36px; height:36px; border-radius:50%; border:2px solid #fff; box-sizing:border-box; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; overflow:hidden; flex-shrink:0 }
+  .brand-badge{ width:36px; height:36px; border-radius:12px; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; }
   .brand-title{ color:#fff; font-weight:700; font-size:15px; line-height:1.2; }
   .brand-sub{ color:var(--mustard); font-size:11px; }
   .role-tag{
@@ -197,10 +197,45 @@
   .empty-state{ text-align:center; padding:24px; color:var(--text-muted); font-size:13px; }
   .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; background:var(--mustard-soft); color:var(--navy); }
 
+  .sidebar-backdrop{ display:none; }
+
   @media (max-width: 900px){
-    .stat-grid{ grid-template-columns:repeat(2,1fr); }
-    .bottom-grid{ grid-template-columns:1fr; }
+    html, body{ overflow-x:hidden; }
     .shell{ flex-direction:column; }
+    .page-wrap{ padding:12px; }
+    main{ padding:18px; }
+
+    /* Sidebar jadi panel yang MENIMPA layar (bukan mendorong konten ke bawah) */
+    .sidebar{
+      position:fixed; top:0; left:0; height:100vh; width:250px;
+      z-index:200; padding:28px 16px; opacity:1;
+      transform:translateX(-100%);
+      transition:transform .28s cubic-bezier(.4,0,.2,1);
+    }
+    /* Catatan: di mobile, class "collapsed" dipakai terbalik — dibalik jadi "sedang terbuka",
+       supaya tombol toggle yang sama tetap berfungsi seperti di desktop tanpa kode JS terpisah */
+    .sidebar.collapsed{
+      width:250px; padding:28px 16px; opacity:1;
+      transform:translateX(0);
+      box-shadow:0 0 44px rgba(0,0,0,0.35);
+    }
+    .sidebar.collapsed *{ pointer-events:auto; }
+
+    .sidebar-backdrop{
+      display:block; position:fixed; inset:0; background:rgba(0,0,0,0.45);
+      z-index:150; opacity:0; pointer-events:none; transition:opacity .25s ease;
+    }
+    .sidebar-backdrop.show{ opacity:1; pointer-events:auto; }
+  }
+
+  @media (max-width: 560px){
+    .stat-grid{ grid-template-columns:1fr; }
+  }
+  @media (min-width: 561px) and (max-width: 900px){
+    .stat-grid{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width: 900px){
+    .bottom-grid{ grid-template-columns:1fr; }
   }
 </style>
 </head>
@@ -212,10 +247,10 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-badge" id="brandBadge">S</div>
+        <div class="brand-badge">S</div>
         <div>
-          <div class="brand-title">Portal</div>
-          <div class="brand-sub">SMAN 30 Halmahera Selatan</div>
+          <div class="brand-title">SMA Portal</div>
+          <div class="brand-sub">Halmahera Selatan</div>
         </div>
       </div>
 
@@ -256,9 +291,12 @@
         <div class="user-card">
           Masuk sebagai
           <strong id="userCardName">Waka Kurikulum</strong>
+          <a href="#" onclick="logout(); return false;" style="color:var(--mustard); font-size:11px; display:inline-block; margin-top:6px;">Keluar</a>
         </div>
       </div>
     </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <!-- MAIN -->
     <main>
@@ -604,30 +642,35 @@ function esc(str) {
   div.textContent = str;
   return div.innerHTML;
 }
-async function muatLogoSekolah() {
-  try {
-    const hasil = await jsonpCall('pengaturan_list');
-    if (hasil.success) {
-      const logo = hasil.data.find(p => p.Key === 'Logo');
-      if (logo && logo.Value) {
-        document.getElementById('brandBadge').innerHTML =
-          `<img src="${logo.Value}" alt="Logo Sekolah" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-      }
-    }
-  } catch (e) { /* biarkan tetap huruf "S" kalau gagal */ }
-}
 
 // =====================================================
 // TOGGLE SIDEBAR
 // =====================================================
 const sidebarEl = document.getElementById('sidebar');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+function syncSidebarBackdrop() {
+  if (window.innerWidth <= 900 && sidebarEl.classList.contains('collapsed')) {
+    sidebarBackdrop.classList.add('show');
+  } else {
+    sidebarBackdrop.classList.remove('show');
+  }
+}
+
 document.getElementById('sidebarToggle').addEventListener('click', () => {
   sidebarEl.classList.toggle('collapsed');
   localStorage.setItem('portalSmaSidebarCollapsed', sidebarEl.classList.contains('collapsed') ? '1' : '0');
+  syncSidebarBackdrop();
+});
+sidebarBackdrop.addEventListener('click', () => {
+  sidebarEl.classList.remove('collapsed');
+  localStorage.setItem('portalSmaSidebarCollapsed', '0');
+  syncSidebarBackdrop();
 });
 if (localStorage.getItem('portalSmaSidebarCollapsed') === '1') {
   sidebarEl.classList.add('collapsed');
 }
+syncSidebarBackdrop();
 
 // =====================================================
 // SPA — GANTI VIEW SAAT MENU SIDEBAR DIKLIK
@@ -650,6 +693,13 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + target).classList.add('active');
     document.getElementById('pageTitle').textContent = judulView[target];
+
+    // Di layar sempit, tutup panel menu otomatis setelah memilih
+    if (window.innerWidth <= 900) {
+      sidebarEl.classList.remove('collapsed');
+      localStorage.setItem('portalSmaSidebarCollapsed', '0');
+      syncSidebarBackdrop();
+    }
 
     if (!dataDimuat[target]) {
       dataDimuat[target] = true;
@@ -895,7 +945,6 @@ document.getElementById('formPengaturan').addEventListener('submit', async (e) =
 muatStatistik();
 muatPengumuman();
 muatKalender();
-muatLogoSekolah();
 muatNotifikasi();
 
 // =====================================================
