@@ -49,7 +49,7 @@
   .sidebar-toggle:active{ transform:scale(0.9); }
 
   .brand{ display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:32px; }
-  .brand-badge{ width:36px; height:36px; border-radius:12px; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; }
+  .brand-badge{ width:36px; height:36px; border-radius:50%; border:2px solid #fff; box-sizing:border-box; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; overflow:hidden; }
   .brand-title{ color:#fff; font-weight:700; font-size:15px; line-height:1.2; }
   .brand-sub{ color:var(--mustard); font-size:11px; }
   .role-tag{
@@ -611,7 +611,7 @@ async function muatLogoSekolah() {
       const logo = hasil.data.find(p => p.Key === 'Logo');
       if (logo && logo.Value) {
         document.getElementById('brandBadge').innerHTML =
-          `<img src="${logo.Value}" alt="Logo Sekolah" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
+          `<img src="${logo.Value}" alt="Logo Sekolah" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
       }
     }
   } catch (e) { /* biarkan tetap huruf "S" kalau gagal */ }
