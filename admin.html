@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal SMA — Dashboard</title>
+<title>Portal SMA — Admin</title>
 <style>
   :root{
     --navy:#1B2A4A;
@@ -47,6 +47,7 @@
   }
   .sidebar-toggle:hover{ background:var(--mustard); }
   .sidebar-toggle:active{ transform:scale(0.9); }
+
   .brand{ display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:32px; }
   .brand-badge{ width:36px; height:36px; border-radius:12px; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; }
   .brand-title{ color:#fff; font-weight:700; font-size:15px; line-height:1.2; }
@@ -64,7 +65,7 @@
     padding:10px 12px; border-radius:12px;
     color:rgba(255,255,255,0.8); text-decoration:none;
     transition:background .15s ease, transform .12s ease;
-    position:relative; overflow:hidden;
+    position:relative; overflow:hidden; cursor:pointer; border:none; background:none; width:100%; text-align:left; font-family:inherit; font-size:14px;
   }
   .nav-item:hover{ background:rgba(255,255,255,0.08); }
   .nav-item:active{ transform:scale(0.97); }
@@ -82,7 +83,7 @@
   .user-card strong{ display:block; color:#fff; font-size:13px; margin-top:2px; }
 
   /* MAIN */
-  main{ flex:1; padding:32px; overflow-y:auto; transition:padding .2s ease; }
+  main{ flex:1; padding:32px; overflow-y:auto; }
   .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
   .topbar-left{ display:flex; align-items:center; gap:14px; }
   .topbar h1{ font-size:22px; color:var(--navy); }
@@ -94,17 +95,6 @@
   .avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; }
 
   .section-label{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-bottom:12px; }
-
-  .quick-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:12px; margin-bottom:32px; }
-  .quick-item{
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
-    padding:16px 8px; border-radius:16px; border:1px solid var(--border);
-    background:#fff; cursor:pointer; transition:all .18s ease; text-align:center;
-    position:relative; overflow:hidden;
-  }
-  .quick-item:hover{ transform:translateY(-4px); box-shadow:0 10px 20px rgba(27,42,74,0.12); border-color:var(--mustard); }
-  .quick-item:active{ transform:translateY(-1px) scale(0.96); }
-  .quick-item span{ font-size:11.5px; font-weight:600; color:#475569; line-height:1.25; }
 
   .stat-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:32px; }
   .stat-card{ border-radius:16px; padding:20px; display:flex; align-items:center; gap:12px; border:1px solid var(--border); background:#fff; }
@@ -129,8 +119,8 @@
   .cal-grid .day.dim{ color:#cbd5e1; }
   .cal-grid .day.today{ background:var(--navy); color:#fff; border-radius:50%; font-weight:700; }
   .cal-grid .day.event{ background:var(--mustard-soft); color:var(--navy); border-radius:50%; font-weight:700; }
-  .legend{ display:flex; align-items:center; gap:8px; margin-top:16px; font-size:12px; color:#64748b; }
-  .dot{ width:10px; height:10px; border-radius:50%; background:var(--mustard); display:inline-block; }
+  .legend{ display:flex; align-items:center; gap:8px; margin-top:8px; font-size:12px; color:#64748b; }
+  .dot{ width:10px; height:10px; border-radius:50%; background:var(--mustard); display:inline-block; flex-shrink:0; }
 
   .notice-item{ display:flex; align-items:center; gap:12px; border-radius:12px; padding:12px; background:var(--cream); }
   .notice-item + .notice-item{ margin-top:12px; }
@@ -138,13 +128,47 @@
   .notice-title{ font-size:13.5px; font-weight:600; color:var(--navy); }
   .notice-date{ font-size:11.5px; color:var(--text-muted); }
 
+  /* VIEWS (SPA) */
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  /* FORM & TABLE (dipakai di semua menu fitur) */
+  .feature-panel{ border-radius:16px; border:1px solid var(--border); padding:24px; margin-bottom:24px; }
+  .feature-panel h3{ font-size:15px; font-weight:700; color:var(--navy); margin-bottom:18px; }
+  .form-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; margin-bottom:16px; }
+  .form-group label{ display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:6px; }
+  .form-group input, .form-group select, .form-group textarea{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+    font-size:13.5px; font-family:inherit; outline:none; transition:border-color .15s ease;
+    background:var(--cream);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus{ border-color:var(--mustard); background:#fff; }
+  .form-group textarea{ resize:vertical; min-height:70px; }
+
+  .btn-primary{
+    padding:11px 22px; border:none; border-radius:10px; background:var(--navy); color:#fff;
+    font-size:13.5px; font-weight:600; cursor:pointer; transition:opacity .15s ease, transform .12s ease;
+  }
+  .btn-primary:hover{ opacity:0.9; }
+  .btn-primary:active{ transform:scale(0.96); }
+  .btn-primary:disabled{ opacity:0.6; cursor:not-allowed; }
+
+  .form-msg{ font-size:12.5px; margin-top:10px; min-height:16px; }
+  .form-msg.success{ color:#15803d; }
+  .form-msg.error{ color:#c0392b; }
+
+  .data-table{ width:100%; border-collapse:collapse; font-size:13px; }
+  .data-table th{ text-align:left; padding:10px 12px; color:var(--text-muted); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; border-bottom:2px solid var(--border); }
+  .data-table td{ padding:10px 12px; border-bottom:1px solid var(--border); color:#334155; }
+  .data-table tr:hover td{ background:var(--cream); }
+  .table-wrap{ overflow-x:auto; }
+  .empty-state{ text-align:center; padding:24px; color:var(--text-muted); font-size:13px; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; background:var(--mustard-soft); color:var(--navy); }
+
   @media (max-width: 900px){
-    .shell{ flex-direction:column; }
-    .sidebar{ width:100%; flex-direction:row; overflow-x:auto; }
-    nav{ flex-direction:row; }
-    .quick-grid{ grid-template-columns:repeat(3,1fr); }
     .stat-grid{ grid-template-columns:repeat(2,1fr); }
     .bottom-grid{ grid-template-columns:1fr; }
+    .shell{ flex-direction:column; }
   }
 </style>
 </head>
@@ -166,34 +190,34 @@
       <div class="role-tag">ADMIN</div>
 
       <nav>
-        <a class="nav-item active" href="#">
+        <button class="nav-item active" data-view="beranda">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
           Beranda
-        </a>
-        <a class="nav-item" href="#">
+        </button>
+        <button class="nav-item" data-view="akun">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           Kelola Akun
-        </a>
-        <a class="nav-item" href="#">
+        </button>
+        <button class="nav-item" data-view="kesiswaan">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
           Kesiswaan
-        </a>
-        <a class="nav-item" href="#">
+        </button>
+        <button class="nav-item" data-view="jadwal">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
           Jadwal Pelajaran
-        </a>
-        <a class="nav-item" href="#">
+        </button>
+        <button class="nav-item" data-view="pengumuman">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
           Pengumuman
-        </a>
-        <a class="nav-item" href="#">
+        </button>
+        <button class="nav-item" data-view="statistik">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-4"/></svg>
           Statistik
-        </a>
-        <a class="nav-item" href="#">
+        </button>
+        <button class="nav-item" data-view="pengaturan">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
           Pengaturan
-        </a>
+        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -213,7 +237,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
           </button>
           <div>
-            <h1>Dashboard</h1>
+            <h1 id="pageTitle">Beranda</h1>
             <p>Senin, 27 Juli 2026</p>
           </div>
         </div>
@@ -225,76 +249,243 @@
         </div>
       </div>
 
-      <div class="stat-grid">
-        <div class="stat-card navy">
-          <div class="stat-icon" style="background:var(--mustard)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+      <!-- ============ VIEW: BERANDA ============ -->
+      <div class="view active" id="view-beranda">
+        <div class="stat-grid">
+          <div class="stat-card navy">
+            <div class="stat-icon" style="background:var(--mustard)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statKelas">–</div>
+              <div class="stat-sub">Total Kelas</div>
+            </div>
           </div>
-          <div>
-            <div class="stat-num" id="statKelas">–</div>
-            <div class="stat-sub">Total Kelas</div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statSiswa">–</div>
+              <div class="stat-sub">Total Siswa</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statGuru">–</div>
+              <div class="stat-sub">Total Guru &amp; Staf</div>
+            </div>
+          </div>
+          <div class="stat-card mustard">
+            <div class="stat-icon" style="background:var(--navy)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statPengumuman">–</div>
+              <div class="stat-sub">Pengumuman Aktif</div>
+            </div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--mustard-soft)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+
+        <div class="bottom-grid">
+          <div class="panel">
+            <div class="cal-head">
+              <h3 style="margin:0">Kalender</h3>
+              <div class="cal-nav">&lt; <strong>Juli 2026</strong> &gt;</div>
+            </div>
+            <div class="cal-grid">
+              <span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>
+              <span class="day dim">29</span><span class="day dim">30</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span>
+              <span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day">11</span><span class="day">12</span>
+              <span class="day">13</span><span class="day">14</span><span class="day">15</span><span class="day">16</span><span class="day">17</span><span class="day">18</span><span class="day">19</span>
+              <span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span>
+              <span class="day today">27</span><span class="day event">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span>
+            </div>
+            <div id="calendarEvents">
+              <div class="legend" style="color:var(--text-muted);">Memuat agenda...</div>
+            </div>
           </div>
-          <div>
-            <div class="stat-num" id="statSiswa">–</div>
-            <div class="stat-sub">Total Siswa</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--mustard-soft)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
-          <div>
-            <div class="stat-num" id="statGuru">–</div>
-            <div class="stat-sub">Total Guru &amp; Staf</div>
-          </div>
-        </div>
-        <div class="stat-card mustard">
-          <div class="stat-icon" style="background:var(--navy)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-          </div>
-          <div>
-            <div class="stat-num" id="statPengumuman">–</div>
-            <div class="stat-sub">Pengumuman Aktif</div>
+
+          <div class="panel">
+            <h3>Papan Pengumuman</h3>
+            <div id="noticeBoard">
+              <div class="notice-item">
+                <div class="notice-icon" style="background:var(--mustard-soft)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                </div>
+                <div><div class="notice-title">Memuat pengumuman...</div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="bottom-grid">
-        <div class="panel">
-          <div class="cal-head">
-            <h3 style="margin:0">Kalender</h3>
-            <div class="cal-nav">&lt; <strong>Juli 2026</strong> &gt;</div>
-          </div>
-          <div class="cal-grid">
-            <span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>
-            <span class="day dim">29</span><span class="day dim">30</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span>
-            <span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day">11</span><span class="day">12</span>
-            <span class="day">13</span><span class="day">14</span><span class="day">15</span><span class="day">16</span><span class="day">17</span><span class="day">18</span><span class="day">19</span>
-            <span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span>
-            <span class="day today">27</span><span class="day event">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span>
-          </div>
-          <div id="calendarEvents">
-            <div class="legend" style="color:var(--text-muted);">Memuat agenda...</div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h3>Papan Pengumuman</h3>
-          <div id="noticeBoard">
-            <div class="notice-item">
-              <div class="notice-icon" style="background:var(--mustard-soft)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      <!-- ============ VIEW: KELOLA AKUN ============ -->
+      <div class="view" id="view-akun">
+        <div class="feature-panel">
+          <h3>Tambah / Perbarui Akun</h3>
+          <form id="formAkun">
+            <div class="form-grid">
+              <div class="form-group"><label>Username</label><input type="text" name="username" required></div>
+              <div class="form-group"><label>Password</label><input type="password" name="password" required></div>
+              <div class="form-group"><label>Role</label>
+                <select name="role" required>
+                  <option value="">Pilih role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Guru">Guru</option>
+                  <option value="BK">BK</option>
+                  <option value="Tendik">Tendik</option>
+                  <option value="Siswa">Siswa</option>
+                  <option value="OrangTua">Orang Tua</option>
+                </select>
               </div>
-              <div>
-                <div class="notice-title">Memuat pengumuman...</div>
+              <div class="form-group"><label>Nama Lengkap</label><input type="text" name="namaLengkap" required></div>
+              <div class="form-group"><label>RefID (NIP/NISN, opsional)</label><input type="text" name="refID"></div>
+            </div>
+            <button type="submit" class="btn-primary">Simpan Akun</button>
+            <div class="form-msg" id="msgAkun"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Daftar Akun</h3>
+          <div class="table-wrap"><table class="data-table" id="tableAkun"><thead><tr><th>Username</th><th>Nama</th><th>Role</th><th>RefID</th><th>Status</th></tr></thead><tbody><tr><td colspan="5" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: KESISWAAN ============ -->
+      <div class="view" id="view-kesiswaan">
+        <div class="feature-panel">
+          <h3>Tambah / Perbarui Data Siswa</h3>
+          <form id="formSiswa">
+            <div class="form-grid">
+              <div class="form-group"><label>NISN</label><input type="text" name="nisn" required></div>
+              <div class="form-group"><label>Nama</label><input type="text" name="nama" required></div>
+              <div class="form-group"><label>Kelas</label><input type="text" name="kelas" placeholder="cth. X-1" required></div>
+              <div class="form-group"><label>Jenis Kelamin</label>
+                <select name="jenisKelamin"><option value="">Pilih</option><option value="L">Laki-laki</option><option value="P">Perempuan</option></select>
+              </div>
+              <div class="form-group"><label>Tahun Masuk</label><input type="text" name="tahunMasuk" placeholder="cth. 2026"></div>
+            </div>
+            <button type="submit" class="btn-primary">Simpan Data Siswa</button>
+            <div class="form-msg" id="msgSiswa"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Daftar Siswa</h3>
+          <div class="table-wrap"><table class="data-table" id="tableSiswa"><thead><tr><th>NISN</th><th>Nama</th><th>Kelas</th><th>JK</th><th>Tahun Masuk</th></tr></thead><tbody><tr><td colspan="5" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: JADWAL PELAJARAN ============ -->
+      <div class="view" id="view-jadwal">
+        <div class="feature-panel">
+          <h3>Tambah Jadwal Pelajaran</h3>
+          <form id="formJadwal">
+            <div class="form-grid">
+              <div class="form-group"><label>Kelas</label><input type="text" name="kelas" placeholder="cth. X-1" required></div>
+              <div class="form-group"><label>Hari</label>
+                <select name="hari" required>
+                  <option value="">Pilih hari</option>
+                  <option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Jam Ke</label><input type="text" name="jamKe" placeholder="cth. 1-2" required></div>
+              <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
+              <div class="form-group"><label>NIP Guru</label><input type="text" name="nipGuru" required></div>
+            </div>
+            <button type="submit" class="btn-primary">Simpan Jadwal</button>
+            <div class="form-msg" id="msgJadwal"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Daftar Jadwal</h3>
+          <div class="table-wrap"><table class="data-table" id="tableJadwal"><thead><tr><th>Kelas</th><th>Hari</th><th>Jam Ke</th><th>Mapel</th><th>NIP Guru</th></tr></thead><tbody><tr><td colspan="5" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: PENGUMUMAN ============ -->
+      <div class="view" id="view-pengumuman">
+        <div class="feature-panel">
+          <h3>Buat Pengumuman</h3>
+          <form id="formPengumuman">
+            <div class="form-grid">
+              <div class="form-group"><label>Judul</label><input type="text" name="judul" required></div>
+              <div class="form-group"><label>Target</label>
+                <select name="targetRole">
+                  <option value="Semua">Semua</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Guru">Guru</option>
+                  <option value="BK">BK</option>
+                  <option value="Tendik">Tendik</option>
+                  <option value="Siswa">Siswa</option>
+                  <option value="OrangTua">Orang Tua</option>
+                </select>
               </div>
             </div>
+            <div class="form-group" style="margin-bottom:16px;"><label>Isi Pengumuman</label><textarea name="isi" required></textarea></div>
+            <button type="submit" class="btn-primary">Terbitkan Pengumuman</button>
+            <div class="form-msg" id="msgPengumuman"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Daftar Pengumuman</h3>
+          <div class="table-wrap"><table class="data-table" id="tablePengumuman"><thead><tr><th>Judul</th><th>Tanggal</th><th>Target</th><th>Dibuat Oleh</th></tr></thead><tbody><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: STATISTIK ============ -->
+      <div class="view" id="view-statistik">
+        <div class="stat-grid">
+          <div class="stat-card navy">
+            <div class="stat-icon" style="background:var(--mustard)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg></div>
+            <div><div class="stat-num" id="statKelas2">–</div><div class="stat-sub">Total Kelas</div></div>
           </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></div>
+            <div><div class="stat-num" id="statSiswa2">–</div><div class="stat-sub">Total Siswa</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+            <div><div class="stat-num" id="statGuru2">–</div><div class="stat-sub">Total Guru &amp; Staf</div></div>
+          </div>
+          <div class="stat-card mustard">
+            <div class="stat-icon" style="background:var(--navy)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+            <div><div class="stat-num" id="statPengumuman2">–</div><div class="stat-sub">Pengumuman Aktif</div></div>
+          </div>
+        </div>
+        <div class="feature-panel">
+          <h3>Sebaran Siswa per Kelas</h3>
+          <div class="table-wrap"><table class="data-table" id="tableStatistikKelas"><thead><tr><th>Kelas</th><th>Jumlah Siswa</th></tr></thead><tbody><tr><td colspan="2" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: PENGATURAN ============ -->
+      <div class="view" id="view-pengaturan">
+        <div class="feature-panel">
+          <h3>Ubah Pengaturan</h3>
+          <form id="formPengaturan">
+            <div class="form-grid">
+              <div class="form-group"><label>Key</label>
+                <select name="key" required>
+                  <option value="">Pilih pengaturan</option>
+                  <option value="InfoSekolah">InfoSekolah</option>
+                  <option value="Logo">Logo (URL)</option>
+                  <option value="TahunAjaranAktif">TahunAjaranAktif</option>
+                  <option value="Backup">Backup</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Value</label><input type="text" name="value" required></div>
+            </div>
+            <button type="submit" class="btn-primary">Simpan Pengaturan</button>
+            <div class="form-msg" id="msgPengaturan"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Pengaturan Saat Ini</h3>
+          <div class="table-wrap"><table class="data-table" id="tablePengaturan"><thead><tr><th>Key</th><th>Value</th></tr></thead><tbody><tr><td colspan="2" class="empty-state">Memuat...</td></tr></tbody></table></div>
         </div>
       </div>
 
@@ -303,14 +494,20 @@
 </div>
 
 <script>
+const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLW8XdWVgQb3CMR1xz1V8CEDMm3e4ZhaGDZCNGZsiqvnGrhLfxSfeKtND-mKhyd-pS/exec';
+
+// =====================================================
+// SESI LOGIN
+// =====================================================
+let SESI = null;
 (function cekSesi() {
-  const sesi = JSON.parse(localStorage.getItem('portalSmaSesi') || 'null');
-  if (!sesi || sesi.role !== 'Admin') {
+  SESI = JSON.parse(localStorage.getItem('portalSmaSesi') || 'null');
+  if (!SESI || SESI.role !== 'Admin') {
     window.location.href = 'login.html';
     return;
   }
-  document.getElementById('userCardName').textContent = sesi.namaLengkap;
-  const inisial = sesi.namaLengkap.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  document.getElementById('userCardName').textContent = SESI.namaLengkap;
+  const inisial = SESI.namaLengkap.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
   document.getElementById('userAvatar').textContent = inisial;
 })();
 
@@ -320,10 +517,8 @@ function logout() {
 }
 
 // =====================================================
-// AMBIL DATA ASLI DARI BACKEND (menggantikan angka dummy)
+// JSONP HELPER
 // =====================================================
-const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLW8XdWVgQb3CMR1xz1V8CEDMm3e4ZhaGDZCNGZsiqvnGrhLfxSfeKtND-mKhyd-pS/exec';
-
 function jsonpCall(action, params) {
   return new Promise((resolve, reject) => {
     const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
@@ -347,6 +542,62 @@ function formatTanggalIndo(tgl) {
   return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
 }
 
+function esc(str) {
+  if (str === undefined || str === null) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// =====================================================
+// TOGGLE SIDEBAR
+// =====================================================
+const sidebarEl = document.getElementById('sidebar');
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+  sidebarEl.classList.toggle('collapsed');
+  localStorage.setItem('portalSmaSidebarCollapsed', sidebarEl.classList.contains('collapsed') ? '1' : '0');
+});
+if (localStorage.getItem('portalSmaSidebarCollapsed') === '1') {
+  sidebarEl.classList.add('collapsed');
+}
+
+// =====================================================
+// SPA — GANTI VIEW SAAT MENU SIDEBAR DIKLIK
+// =====================================================
+const judulView = {
+  beranda: 'Beranda', akun: 'Kelola Akun', kesiswaan: 'Kesiswaan',
+  jadwal: 'Jadwal Pelajaran', pengumuman: 'Pengumuman', statistik: 'Statistik', pengaturan: 'Pengaturan'
+};
+const dataDimuat = {}; // supaya tidak fetch ulang tiap klik menu yang sama
+
+document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    this.classList.remove('pulse'); void this.offsetWidth; this.classList.add('pulse');
+    setTimeout(() => this.classList.remove('pulse'), 500);
+
+    document.querySelectorAll('.nav-item[data-view]').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+
+    const target = this.dataset.view;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + target).classList.add('active');
+    document.getElementById('pageTitle').textContent = judulView[target];
+
+    if (!dataDimuat[target]) {
+      dataDimuat[target] = true;
+      if (target === 'akun') muatAkun();
+      if (target === 'kesiswaan') muatSiswa();
+      if (target === 'jadwal') muatJadwal();
+      if (target === 'pengumuman') muatPengumumanView();
+      if (target === 'statistik') muatStatistikView();
+      if (target === 'pengaturan') muatPengaturan();
+    }
+  });
+});
+
+// =====================================================
+// BERANDA
+// =====================================================
 async function muatStatistik() {
   try {
     const hasil = await jsonpCall('statistik_dashboard');
@@ -374,10 +625,7 @@ async function muatPengumuman() {
         <div class="notice-icon" style="background:var(--mustard-soft)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </div>
-        <div>
-          <div class="notice-title">${p.Judul}</div>
-          <div class="notice-date">${formatTanggalIndo(p.Tanggal)}</div>
-        </div>
+        <div><div class="notice-title">${esc(p.Judul)}</div><div class="notice-date">${formatTanggalIndo(p.Tanggal)}</div></div>
       </div>
     `).join('');
   } catch (e) {
@@ -393,43 +641,192 @@ async function muatKalender() {
       wrap.innerHTML = '<div class="legend" style="color:var(--text-muted);">Belum ada agenda</div>';
       return;
     }
-    wrap.innerHTML = hasil.data.slice(0, 3).map(k => `
-      <div class="legend"><span class="dot"></span> ${formatTanggalIndo(k.Tanggal)} — ${k.Keterangan}</div>
-    `).join('');
+    wrap.innerHTML = hasil.data.slice(0, 3).map(k => `<div class="legend"><span class="dot"></span> ${formatTanggalIndo(k.Tanggal)} — ${esc(k.Keterangan)}</div>`).join('');
   } catch (e) {
     wrap.innerHTML = '<div class="legend" style="color:var(--text-muted);">Gagal memuat agenda</div>';
   }
 }
 
-muatStatistik();
-muatPengumuman();
-muatKalender();
+// =====================================================
+// KELOLA AKUN
+// =====================================================
+async function muatAkun() {
+  const tbody = document.querySelector('#tableAkun tbody');
+  tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('kelolaAkun_list');
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada akun</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(a => `
+      <tr><td>${esc(a.Username)}</td><td>${esc(a.NamaLengkap)}</td><td><span class="badge">${esc(a.Role)}</span></td><td>${esc(a.RefID)}</td><td>${a.StatusAktif ? 'Aktif' : 'Nonaktif'}</td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formAkun').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgAkun');
+  const data = Object.fromEntries(new FormData(form).entries());
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('kelolaAkun_save', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.akun = false; muatAkun(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
 
 // =====================================================
-// TOGGLE SIDEBAR (tampilkan/sembunyikan)
+// KESISWAAN
 // =====================================================
-const sidebarEl = document.getElementById('sidebar');
-const sidebarToggleBtn = document.getElementById('sidebarToggle');
-sidebarToggleBtn.addEventListener('click', () => {
-  sidebarEl.classList.toggle('collapsed');
-  localStorage.setItem('portalSmaSidebarCollapsed', sidebarEl.classList.contains('collapsed') ? '1' : '0');
+async function muatSiswa() {
+  const tbody = document.querySelector('#tableSiswa tbody');
+  tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('siswa_list');
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada data siswa</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(s => `
+      <tr><td>${esc(s.NISN)}</td><td>${esc(s.Nama)}</td><td>${esc(s.Kelas)}</td><td>${esc(s.JenisKelamin)}</td><td>${esc(s.TahunMasuk)}</td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formSiswa').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgSiswa');
+  const data = Object.fromEntries(new FormData(form).entries());
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('siswa_save', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.kesiswaan = false; muatSiswa(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
 });
-// Ingat pilihan terakhir user (tersimpan per browser)
-if (localStorage.getItem('portalSmaSidebarCollapsed') === '1') {
-  sidebarEl.classList.add('collapsed');
+
+// =====================================================
+// JADWAL PELAJARAN
+// =====================================================
+async function muatJadwal() {
+  const tbody = document.querySelector('#tableJadwal tbody');
+  tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('jadwal_list');
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada jadwal</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(j => `
+      <tr><td>${esc(j.Kelas)}</td><td>${esc(j.Hari)}</td><td>${esc(j.JamKe)}</td><td>${esc(j.Mapel)}</td><td>${esc(j.NIPGuru)}</td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formJadwal').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgJadwal');
+  const data = Object.fromEntries(new FormData(form).entries());
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('jadwal_save', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.jadwal = false; muatJadwal(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
+
+// =====================================================
+// PENGUMUMAN (view fitur, terpisah dari yang di Beranda)
+// =====================================================
+async function muatPengumumanView() {
+  const tbody = document.querySelector('#tablePengumuman tbody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('pengumuman_list', { role: 'Admin' });
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada pengumuman</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(p => `
+      <tr><td>${esc(p.Judul)}</td><td>${formatTanggalIndo(p.Tanggal)}</td><td><span class="badge">${esc(p.TargetRole)}</span></td><td>${esc(p.DibuatOleh)}</td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formPengumuman').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgPengumuman');
+  const data = Object.fromEntries(new FormData(form).entries());
+  data.dibuatOleh = SESI.namaLengkap;
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('pengumuman_save', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.pengumuman = false; muatPengumumanView(); muatPengumuman(); muatStatistik(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
+
+// =====================================================
+// STATISTIK
+// =====================================================
+async function muatStatistikView() {
+  try {
+    const hasil = await jsonpCall('statistik_dashboard');
+    if (hasil.success) {
+      document.getElementById('statKelas2').textContent = hasil.data.totalKelas ?? '0';
+      document.getElementById('statSiswa2').textContent = hasil.data.totalSiswa ?? '0';
+      document.getElementById('statGuru2').textContent = hasil.data.totalGuruStaf ?? '0';
+      document.getElementById('statPengumuman2').textContent = hasil.data.pengumumanAktif ?? '0';
+    }
+  } catch (e) {}
+
+  const tbody = document.querySelector('#tableStatistikKelas tbody');
+  tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('siswa_list');
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Belum ada data siswa</td></tr>'; return; }
+    const perKelas = {};
+    hasil.data.forEach(s => { perKelas[s.Kelas] = (perKelas[s.Kelas] || 0) + 1; });
+    const rows = Object.keys(perKelas).sort();
+    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Belum ada data siswa</td></tr>'; return; }
+    tbody.innerHTML = rows.map(k => `<tr><td>${esc(k)}</td><td>${perKelas[k]}</td></tr>`).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Gagal memuat data</td></tr>'; }
 }
 
 // =====================================================
-// FEEDBACK KLIK (animasi pulse) — dipasang ke semua tombol/menu interaktif
+// PENGATURAN
 // =====================================================
-document.querySelectorAll('.nav-item, .quick-item, .icon-btn').forEach(el => {
-  el.addEventListener('click', function (e) {
-    this.classList.remove('pulse');
-    void this.offsetWidth; // reset animasi supaya bisa diulang
-    this.classList.add('pulse');
-    setTimeout(() => this.classList.remove('pulse'), 500);
-  });
+async function muatPengaturan() {
+  const tbody = document.querySelector('#tablePengaturan tbody');
+  tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('pengaturan_list');
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Belum ada pengaturan</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(p => `<tr><td>${esc(p.Key)}</td><td>${esc(p.Value)}</td></tr>`).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formPengaturan').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgPengaturan');
+  const data = Object.fromEntries(new FormData(form).entries());
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('pengaturan_save', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.pengaturan = false; muatPengaturan(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
 });
+
+// Muat Beranda saat pertama kali dibuka
+muatStatistik();
+muatPengumuman();
+muatKalender();
 </script>
 </body>
 </html>
