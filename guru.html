@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal SMA — Dashboard</title>
+<title>Portal SMA — Guru</title>
 <style>
   :root{
     --navy:#1B2A4A;
@@ -29,8 +29,25 @@
     min-height:860px;
   }
 
-  /* SIDEBAR */
-  .sidebar{ width:230px; flex-shrink:0; background:var(--navy); padding:28px 16px; display:flex; flex-direction:column; }
+  /* SIDEBAR (collapsible) */
+  .sidebar{
+    width:230px; flex-shrink:0; background:var(--navy); padding:28px 16px;
+    display:flex; flex-direction:column;
+    transition:width .28s cubic-bezier(.4,0,.2,1), padding .28s cubic-bezier(.4,0,.2,1), opacity .2s ease;
+    overflow:hidden; white-space:nowrap;
+  }
+  .sidebar.collapsed{ width:0; padding-left:0; padding-right:0; opacity:0; }
+  .sidebar.collapsed *{ pointer-events:none; }
+
+  .sidebar-toggle{
+    width:38px; height:38px; border-radius:12px; border:none;
+    background:var(--mustard-soft); color:var(--navy); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .sidebar-toggle:hover{ background:var(--mustard); }
+  .sidebar-toggle:active{ transform:scale(0.9); }
+
   .brand{ display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:32px; }
   .brand-badge{ width:36px; height:36px; border-radius:12px; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; }
   .brand-title{ color:#fff; font-weight:700; font-size:15px; line-height:1.2; }
@@ -47,11 +64,19 @@
     display:flex; align-items:center; gap:12px;
     padding:10px 12px; border-radius:12px;
     color:rgba(255,255,255,0.8); text-decoration:none;
-    transition:background .15s ease;
+    transition:background .15s ease, transform .12s ease;
+    position:relative; overflow:hidden; cursor:pointer; border:none; background:none; width:100%; text-align:left; font-family:inherit; font-size:14px;
   }
   .nav-item:hover{ background:rgba(255,255,255,0.08); }
+  .nav-item:active{ transform:scale(0.97); }
   .nav-item.active{ background:var(--mustard); color:var(--navy); font-weight:600; }
   .nav-item svg{ flex-shrink:0; }
+
+  @keyframes clickPulse{
+    0%{ box-shadow:0 0 0 0 rgba(240,169,58,0.45); }
+    100%{ box-shadow:0 0 0 14px rgba(240,169,58,0); }
+  }
+  .pulse{ animation:clickPulse .5s ease-out; }
 
   .sidebar-footer{ margin-top:auto; padding:0 8px; }
   .user-card{ background:rgba(255,255,255,0.06); border-radius:12px; padding:12px; color:rgba(255,255,255,0.7); font-size:12px; }
@@ -60,22 +85,48 @@
   /* MAIN */
   main{ flex:1; padding:32px; overflow-y:auto; }
   .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+  .topbar-left{ display:flex; align-items:center; gap:14px; }
   .topbar h1{ font-size:22px; color:var(--navy); }
   .topbar p{ font-size:13px; color:var(--text-muted); margin-top:2px; }
-  .topbar-actions{ display:flex; align-items:center; gap:12px; }
-  .icon-btn{ width:40px; height:40px; border-radius:50%; background:var(--mustard-soft); display:flex; align-items:center; justify-content:center; }
+  .topbar-actions{ display:flex; align-items:center; gap:12px; position:relative; }
+  .icon-btn{ width:40px; height:40px; border-radius:50%; background:var(--mustard-soft); display:flex; align-items:center; justify-content:center; transition:transform .12s ease, background .15s ease; cursor:pointer; position:relative; }
+  .icon-btn:hover{ background:var(--mustard); }
+  .icon-btn:active{ transform:scale(0.9); }
+
+  .notif-dot{
+    position:absolute; top:-2px; right:-2px; width:16px; height:16px; border-radius:50%;
+    background:#e0524a; color:#fff; font-size:9.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; border:2px solid #fff;
+  }
+
+  .dropdown-wrap{ position:relative; }
+  .dropdown-panel{
+    position:absolute; top:52px; right:0; width:300px; background:#fff; border-radius:16px;
+    box-shadow:0 20px 40px -8px rgba(27,42,74,0.28); border:1px solid var(--border);
+    padding:14px; display:none; z-index:50; animation:dropIn .18s ease;
+  }
+  .dropdown-panel.open{ display:block; }
+  @keyframes dropIn{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:translateY(0); } }
+  .dropdown-title{ font-size:12px; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px; }
+  .dropdown-item{ display:flex; align-items:center; gap:10px; padding:9px 6px; border-radius:10px; transition:background .12s ease; cursor:pointer; }
+  .dropdown-item:hover{ background:var(--cream); }
+  .dropdown-item .d-title{ font-size:12.5px; font-weight:600; color:var(--navy); }
+  .dropdown-item .d-sub{ font-size:11px; color:var(--text-muted); }
+  .dropdown-empty{ text-align:center; padding:16px; font-size:12px; color:var(--text-muted); }
+
+  .profile-header{ display:flex; align-items:center; gap:10px; padding-bottom:12px; margin-bottom:8px; border-bottom:1px solid var(--border); }
+  .profile-avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .profile-name{ font-size:13.5px; font-weight:700; color:var(--navy); }
+  .profile-role{ font-size:11px; color:var(--text-muted); }
+  .dropdown-logout{
+    display:flex; align-items:center; gap:8px; width:100%; padding:9px 6px; border-radius:10px;
+    background:none; border:none; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:600;
+    color:#c0392b; transition:background .12s ease; text-align:left;
+  }
+  .dropdown-logout:hover{ background:#fdecea; }
   .avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; }
 
   .section-label{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-bottom:12px; }
-
-  .quick-grid{ display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; margin-bottom:32px; }
-  .quick-item{
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
-    padding:16px 8px; border-radius:16px; border:1px solid var(--border);
-    background:#fff; cursor:pointer; transition:all .18s ease; text-align:center;
-  }
-  .quick-item:hover{ transform:translateY(-4px); box-shadow:0 10px 20px rgba(27,42,74,0.12); border-color:var(--mustard); }
-  .quick-item span{ font-size:11.5px; font-weight:600; color:#475569; line-height:1.25; }
 
   .stat-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:32px; }
   .stat-card{ border-radius:16px; padding:20px; display:flex; align-items:center; gap:12px; border:1px solid var(--border); background:#fff; }
@@ -100,8 +151,8 @@
   .cal-grid .day.dim{ color:#cbd5e1; }
   .cal-grid .day.today{ background:var(--navy); color:#fff; border-radius:50%; font-weight:700; }
   .cal-grid .day.event{ background:var(--mustard-soft); color:var(--navy); border-radius:50%; font-weight:700; }
-  .legend{ display:flex; align-items:center; gap:8px; margin-top:16px; font-size:12px; color:#64748b; }
-  .dot{ width:10px; height:10px; border-radius:50%; background:var(--mustard); display:inline-block; }
+  .legend{ display:flex; align-items:center; gap:8px; margin-top:8px; font-size:12px; color:#64748b; }
+  .dot{ width:10px; height:10px; border-radius:50%; background:var(--mustard); display:inline-block; flex-shrink:0; }
 
   .notice-item{ display:flex; align-items:center; gap:12px; border-radius:12px; padding:12px; background:var(--cream); }
   .notice-item + .notice-item{ margin-top:12px; }
@@ -109,12 +160,81 @@
   .notice-title{ font-size:13.5px; font-weight:600; color:var(--navy); }
   .notice-date{ font-size:11.5px; color:var(--text-muted); }
 
+  /* VIEWS (SPA) */
+  .view{ display:none; }
+  .view.active{ display:block; }
+
+  /* FORM & TABLE (dipakai di semua menu fitur) */
+  .feature-panel{ border-radius:16px; border:1px solid var(--border); padding:24px; margin-bottom:24px; }
+  .feature-panel h3{ font-size:15px; font-weight:700; color:var(--navy); margin-bottom:18px; }
+  .form-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; margin-bottom:16px; }
+  .form-group label{ display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:6px; }
+  .form-group input, .form-group select, .form-group textarea{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+    font-size:13.5px; font-family:inherit; outline:none; transition:border-color .15s ease;
+    background:var(--cream);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus{ border-color:var(--mustard); background:#fff; }
+  .form-group textarea{ resize:vertical; min-height:70px; }
+
+  .btn-primary{
+    padding:11px 22px; border:none; border-radius:10px; background:var(--navy); color:#fff;
+    font-size:13.5px; font-weight:600; cursor:pointer; transition:opacity .15s ease, transform .12s ease;
+  }
+  .btn-primary:hover{ opacity:0.9; }
+  .btn-primary:active{ transform:scale(0.96); }
+  .btn-primary:disabled{ opacity:0.6; cursor:not-allowed; }
+
+  .form-msg{ font-size:12.5px; margin-top:10px; min-height:16px; }
+  .form-msg.success{ color:#15803d; }
+  .form-msg.error{ color:#c0392b; }
+
+  .data-table{ width:100%; border-collapse:collapse; font-size:13px; }
+  .data-table th{ text-align:left; padding:10px 12px; color:var(--text-muted); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; border-bottom:2px solid var(--border); }
+  .data-table td{ padding:10px 12px; border-bottom:1px solid var(--border); color:#334155; }
+  .data-table tr:hover td{ background:var(--cream); }
+  .table-wrap{ overflow-x:auto; }
+  .empty-state{ text-align:center; padding:24px; color:var(--text-muted); font-size:13px; }
+  .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; background:var(--mustard-soft); color:var(--navy); }
+
+  .sidebar-backdrop{ display:none; }
+
   @media (max-width: 900px){
+    html, body{ overflow-x:hidden; }
     .shell{ flex-direction:column; }
-    .sidebar{ width:100%; flex-direction:row; overflow-x:auto; }
-    nav{ flex-direction:row; }
-    .quick-grid{ grid-template-columns:repeat(3,1fr); }
+    .page-wrap{ padding:12px; }
+    main{ padding:18px; }
+
+    /* Sidebar jadi panel yang MENIMPA layar (bukan mendorong konten ke bawah) */
+    .sidebar{
+      position:fixed; top:0; left:0; height:100vh; width:250px;
+      z-index:200; padding:28px 16px; opacity:1;
+      transform:translateX(-100%);
+      transition:transform .28s cubic-bezier(.4,0,.2,1);
+    }
+    /* Catatan: di mobile, class "collapsed" dipakai terbalik — dibalik jadi "sedang terbuka",
+       supaya tombol toggle yang sama tetap berfungsi seperti di desktop tanpa kode JS terpisah */
+    .sidebar.collapsed{
+      width:250px; padding:28px 16px; opacity:1;
+      transform:translateX(0);
+      box-shadow:0 0 44px rgba(0,0,0,0.35);
+    }
+    .sidebar.collapsed *{ pointer-events:auto; }
+
+    .sidebar-backdrop{
+      display:block; position:fixed; inset:0; background:rgba(0,0,0,0.45);
+      z-index:150; opacity:0; pointer-events:none; transition:opacity .25s ease;
+    }
+    .sidebar-backdrop.show{ opacity:1; pointer-events:auto; }
+  }
+
+  @media (max-width: 560px){
+    .stat-grid{ grid-template-columns:1fr; }
+  }
+  @media (min-width: 561px) and (max-width: 900px){
     .stat-grid{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width: 900px){
     .bottom-grid{ grid-template-columns:1fr; }
   }
 </style>
@@ -125,196 +245,301 @@
   <div class="shell">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-badge">S</div>
         <div>
-          <div class="brand-title">SMA Portal</div>
-          <div class="brand-sub">Halmahera Selatan</div>
+          <div class="brand-title">Portal</div>
+          <div class="brand-sub">SMAN 30 Halmahera Selatan</div>
         </div>
       </div>
 
       <div class="role-tag">GURU</div>
 
       <nav>
-        <a class="nav-item active" href="#">
+        <button class="nav-item active" data-view="beranda">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
           Beranda
-        </a>
-        <a class="nav-item" href="#">
+        </button>
+        <button class="nav-item" data-view="absensi">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          Input Absensi
-        </a>
-        <a class="nav-item" href="#">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-4"/></svg>
-          Rekap Absensi
-        </a>
-        <a class="nav-item" href="#">
+          Absensi Siswa
+        </button>
+        <button class="nav-item" data-view="nilai">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-          Input Nilai
-        </a>
-        <a class="nav-item" href="#">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M9 7h6M9 11h6M9 15h3"/></svg>
-          Rekap Nilai
-        </a>
-        <a class="nav-item" href="#">
+          Nilai Siswa
+        </button>
+        <button class="nav-item" data-view="jadwal">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
           Jadwal Mengajar
-        </a>
-        <a class="nav-item" href="#">
+        </button>
+        <button class="nav-item" data-view="rpp">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
-          Buat RPP (AI)
-        </a>
-        <a class="nav-item" href="#">
+          Buat RPP
+        </button>
+        <button class="nav-item" data-view="presensiDiri">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           Presensi Diri
-        </a>
-        <a class="nav-item" href="#">
+        </button>
+        <button class="nav-item" data-view="cuti">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M9 16l2 2 4-4"/></svg>
           Ajukan Cuti
-        </a>
+        </button>
       </nav>
 
       <div class="sidebar-footer">
         <div class="user-card">
           Masuk sebagai
           <strong id="userCardName">Guru Mapel</strong>
-          <a href="#" onclick="logout(); return false;" style="color:var(--mustard); font-size:11px; display:inline-block; margin-top:6px;">Keluar</a>
         </div>
       </div>
     </aside>
 
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
     <!-- MAIN -->
     <main>
       <div class="topbar">
-        <div>
-          <h1>Dashboard</h1>
-          <p>Senin, 27 Juli 2026</p>
+        <div class="topbar-left">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Tampilkan/sembunyikan menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <h1 id="pageTitle">Beranda</h1>
+            <p>Senin, 27 Juli 2026</p>
+          </div>
         </div>
         <div class="topbar-actions">
-          <div class="icon-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="dropdown-wrap">
+            <div class="icon-btn" id="notifBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="notif-dot" id="notifDot" style="display:none;">0</span>
+            </div>
+            <div class="dropdown-panel" id="notifPanel">
+              <div class="dropdown-title">Notifikasi Pengumuman</div>
+              <div id="notifList"><div class="dropdown-empty">Memuat...</div></div>
+            </div>
           </div>
-          <div class="avatar" id="userAvatar">GR</div>
-        </div>
-      </div>
 
-      <div class="section-label">Aksi Cepat</div>
-      <div class="quick-grid">
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          <span>Input Absensi</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-4"/></svg>
-          <span>Rekap Absensi</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-          <span>Input Nilai</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M9 7h6M9 11h6M9 15h3"/></svg>
-          <span>Rekap Nilai</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          <span>Jadwal Mengajar</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
-          <span>Buat RPP (AI)</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          <span>Presensi Diri</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M9 16l2 2 4-4"/></svg>
-          <span>Ajukan Cuti</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span>Pengumuman</span>
-        </div>
-      </div>
-
-      <div class="stat-grid">
-        <div class="stat-card navy">
-          <div class="stat-icon" style="background:var(--mustard)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
-          </div>
-          <div>
-            <div class="stat-num">4</div>
-            <div class="stat-sub">Kelas Diampu</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--mustard-soft)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-          </div>
-          <div>
-            <div class="stat-num">18</div>
-            <div class="stat-sub">JP / Minggu</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--mustard-soft)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
-          </div>
-          <div>
-            <div class="stat-num">112</div>
-            <div class="stat-sub">Total Siswa Diajar</div>
-          </div>
-        </div>
-        <div class="stat-card mustard">
-          <div class="stat-icon" style="background:var(--navy)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-          </div>
-          <div>
-            <div class="stat-num">2</div>
-            <div class="stat-sub">RPP Belum Dibuat</div>
+          <div class="dropdown-wrap">
+            <div class="avatar" id="userAvatar" style="cursor:pointer;">PD</div>
+            <div class="dropdown-panel" id="profilePanel" style="width:230px;">
+              <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatarInner">PD</div>
+                <div>
+                  <div class="profile-name" id="profileName">–</div>
+                  <div class="profile-role">Guru</div>
+                </div>
+              </div>
+              <button class="dropdown-logout" onclick="logout()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Keluar
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="bottom-grid">
-        <div class="panel">
-          <div class="cal-head">
-            <h3 style="margin:0">Kalender</h3>
-            <div class="cal-nav">&lt; <strong>Juli 2026</strong> &gt;</div>
-          </div>
-          <div class="cal-grid">
-            <span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>
-            <span class="day dim">29</span><span class="day dim">30</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span>
-            <span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day">11</span><span class="day">12</span>
-            <span class="day">13</span><span class="day">14</span><span class="day">15</span><span class="day">16</span><span class="day">17</span><span class="day">18</span><span class="day">19</span>
-            <span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span>
-            <span class="day today">27</span><span class="day event">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span>
-          </div>
-          <div class="legend"><span class="dot"></span> Ujian Semester</div>
-        </div>
-
-        <div class="panel">
-          <h3>Papan Pengumuman</h3>
-          <div class="notice-item">
-            <div class="notice-icon" style="background:var(--mustard)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8a2 2 0 1 1-3.2 2.4"/></svg>
+      <!-- ============ VIEW: BERANDA ============ -->
+      <div class="view active" id="view-beranda">
+        <div class="stat-grid">
+          <div class="stat-card navy">
+            <div class="stat-icon" style="background:var(--mustard)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16"/></svg>
             </div>
             <div>
-              <div class="notice-title">Libur Semester Ganjil</div>
-              <div class="notice-date">15 Desember 2026</div>
+              <div class="stat-num" id="statKelasDiampu">–</div>
+              <div class="stat-sub">Kelas Diampu</div>
             </div>
           </div>
-          <div class="notice-item">
-            <div class="notice-icon" style="background:var(--navy)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
             </div>
             <div>
-              <div class="notice-title">Pengumpulan Nilai Rapor</div>
-              <div class="notice-date">10 Desember 2026</div>
+              <div class="stat-num" id="statJP">–</div>
+              <div class="stat-sub">Jadwal / Minggu</div>
             </div>
           </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statRPP">–</div>
+              <div class="stat-sub">RPP Tersimpan</div>
+            </div>
+          </div>
+          <div class="stat-card mustard">
+            <div class="stat-icon" style="background:var(--navy)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statPengumuman">–</div>
+              <div class="stat-sub">Pengumuman Aktif</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-grid">
+          <div class="panel">
+            <div class="cal-head">
+              <h3 style="margin:0">Kalender</h3>
+              <div class="cal-nav">&lt; <strong>Juli 2026</strong> &gt;</div>
+            </div>
+            <div class="cal-grid">
+              <span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>
+              <span class="day dim">29</span><span class="day dim">30</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span>
+              <span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day">11</span><span class="day">12</span>
+              <span class="day">13</span><span class="day">14</span><span class="day">15</span><span class="day">16</span><span class="day">17</span><span class="day">18</span><span class="day">19</span>
+              <span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span>
+              <span class="day today">27</span><span class="day event">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span>
+            </div>
+            <div id="calendarEvents">
+              <div class="legend" style="color:var(--text-muted);">Memuat agenda...</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>Papan Pengumuman</h3>
+            <div id="noticeBoard">
+              <div class="notice-item">
+                <div class="notice-icon" style="background:var(--mustard-soft)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                </div>
+                <div><div class="notice-title">Memuat pengumuman...</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: ABSENSI SISWA ============ -->
+      <div class="view" id="view-absensi">
+        <div class="feature-panel">
+          <h3>Input Absensi Siswa</h3>
+          <form id="formAbsensi">
+            <div class="form-grid">
+              <div class="form-group"><label>NISN Siswa</label><input type="text" name="nisn" required></div>
+              <div class="form-group"><label>Tanggal</label><input type="date" name="tanggal" required></div>
+              <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
+              <div class="form-group"><label>Status</label>
+                <select name="status" required>
+                  <option value="">Pilih status</option>
+                  <option>Hadir</option><option>Sakit</option><option>Izin</option><option>Alpa</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary">Simpan Absensi</button>
+            <div class="form-msg" id="msgAbsensi"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Rekap Absensi yang Saya Input</h3>
+          <div class="table-wrap"><table class="data-table" id="tableAbsensi"><thead><tr><th>NISN</th><th>Tanggal</th><th>Mapel</th><th>Status</th></tr></thead><tbody><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: NILAI SISWA ============ -->
+      <div class="view" id="view-nilai">
+        <div class="feature-panel">
+          <h3>Input Nilai Siswa</h3>
+          <form id="formNilai">
+            <div class="form-grid">
+              <div class="form-group"><label>NISN Siswa</label><input type="text" name="nisn" required></div>
+              <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
+              <div class="form-group"><label>Semester</label>
+                <select name="semester"><option value="Ganjil">Ganjil</option><option value="Genap">Genap</option></select>
+              </div>
+              <div class="form-group"><label>Jenis</label>
+                <select name="jenis" required>
+                  <option value="">Pilih jenis</option>
+                  <option>Tugas</option><option>UH</option><option>PTS</option><option>PAS</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Nilai</label><input type="number" name="nilai" min="0" max="100" required></div>
+            </div>
+            <button type="submit" class="btn-primary">Simpan Nilai</button>
+            <div class="form-msg" id="msgNilai"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Rekap Nilai yang Saya Input</h3>
+          <div class="table-wrap"><table class="data-table" id="tableNilai"><thead><tr><th>NISN</th><th>Mapel</th><th>Jenis</th><th>Nilai</th></tr></thead><tbody><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: JADWAL MENGAJAR ============ -->
+      <div class="view" id="view-jadwal">
+        <div class="feature-panel">
+          <h3>Jadwal Mengajar Saya</h3>
+          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">Jadwal diatur oleh Admin. Kalau ada yang perlu diubah, hubungi Admin sekolah.</p>
+          <div class="table-wrap"><table class="data-table" id="tableJadwal"><thead><tr><th>Kelas</th><th>Hari</th><th>Jam Ke</th><th>Mapel</th></tr></thead><tbody><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: BUAT RPP ============ -->
+      <div class="view" id="view-rpp">
+        <div class="feature-panel">
+          <h3>Buat RPP</h3>
+          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">Generate otomatis via AI menyusul — untuk sekarang, tulis konten RPP manual dulu.</p>
+          <form id="formRPP">
+            <div class="form-grid">
+              <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
+              <div class="form-group"><label>Kelas</label><input type="text" name="kelas" placeholder="cth. X-1" required></div>
+            </div>
+            <div class="form-group" style="margin-bottom:16px;"><label>Konten RPP</label><textarea name="kontenHTML" style="min-height:140px;" required></textarea></div>
+            <button type="submit" class="btn-primary">Simpan RPP</button>
+            <div class="form-msg" id="msgRPP"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>RPP Tersimpan</h3>
+          <div class="table-wrap"><table class="data-table" id="tableRPP"><thead><tr><th>Mapel</th><th>Kelas</th><th>Tanggal Buat</th></tr></thead><tbody><tr><td colspan="3" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: PRESENSI DIRI ============ -->
+      <div class="view" id="view-presensiDiri">
+        <div class="feature-panel">
+          <h3>Presensi Hari Ini</h3>
+          <form id="formPresensiDiri">
+            <div class="form-grid">
+              <div class="form-group"><label>Tanggal</label><input type="date" name="tanggal" required></div>
+              <div class="form-group"><label>Status</label>
+                <select name="status" required>
+                  <option value="">Pilih status</option>
+                  <option>Hadir</option><option>Sakit</option><option>Izin</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn-primary">Simpan Presensi</button>
+            <div class="form-msg" id="msgPresensiDiri"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Riwayat Presensi Saya</h3>
+          <div class="table-wrap"><table class="data-table" id="tablePresensiDiri"><thead><tr><th>Tanggal</th><th>Status</th></tr></thead><tbody><tr><td colspan="2" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ============ VIEW: AJUKAN CUTI ============ -->
+      <div class="view" id="view-cuti">
+        <div class="feature-panel">
+          <h3>Ajukan Cuti</h3>
+          <form id="formCuti">
+            <div class="form-grid">
+              <div class="form-group"><label>Tanggal Mulai</label><input type="date" name="tanggalMulai" required></div>
+              <div class="form-group"><label>Tanggal Selesai</label><input type="date" name="tanggalSelesai" required></div>
+            </div>
+            <div class="form-group" style="margin-bottom:16px;"><label>Alasan</label><textarea name="alasan" required></textarea></div>
+            <button type="submit" class="btn-primary">Ajukan Cuti</button>
+            <div class="form-msg" id="msgCuti"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Riwayat Pengajuan Cuti</h3>
+          <div class="table-wrap"><table class="data-table" id="tableCuti"><thead><tr><th>Mulai</th><th>Selesai</th><th>Alasan</th><th>Status</th></tr></thead><tbody><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody></table></div>
         </div>
       </div>
 
@@ -323,20 +548,423 @@
 </div>
 
 <script>
+const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLW8XdWVgQb3CMR1xz1V8CEDMm3e4ZhaGDZCNGZsiqvnGrhLfxSfeKtND-mKhyd-pS/exec';
+
+// =====================================================
+// SESI LOGIN
+// =====================================================
+let SESI = null;
 (function cekSesi() {
-  const sesi = JSON.parse(localStorage.getItem('portalSmaSesi') || 'null');
-  if (!sesi || sesi.role !== 'Guru') {
+  SESI = JSON.parse(localStorage.getItem('portalSmaSesi') || 'null');
+  if (!SESI || SESI.role !== 'Guru') {
     window.location.href = 'login.html';
     return;
   }
-  document.getElementById('userCardName').textContent = sesi.namaLengkap;
-  const inisial = sesi.namaLengkap.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  document.getElementById('userCardName').textContent = SESI.namaLengkap;
+  const inisial = SESI.namaLengkap.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
   document.getElementById('userAvatar').textContent = inisial;
+  document.getElementById('profileAvatarInner').textContent = inisial;
+  document.getElementById('profileName').textContent = SESI.namaLengkap;
 })();
 
 function logout() {
   localStorage.removeItem('portalSmaSesi');
   window.location.href = 'login.html';
+}
+
+// =====================================================
+// JSONP HELPER
+// =====================================================
+function jsonpCall(action, params) {
+  return new Promise((resolve, reject) => {
+    const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+    const script = document.createElement('script');
+    window[callbackName] = (result) => {
+      resolve(result);
+      delete window[callbackName];
+      script.remove();
+    };
+    const query = new URLSearchParams({ action, callback: callbackName, ...(params || {}) }).toString();
+    script.src = EXEC_URL + '?' + query;
+    script.onerror = () => reject(new Error('Gagal terhubung ke server'));
+    document.body.appendChild(script);
+  });
+}
+
+function formatTanggalIndo(tgl) {
+  const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const d = new Date(tgl);
+  if (isNaN(d)) return tgl;
+  return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function esc(str) {
+  if (str === undefined || str === null) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// =====================================================
+// TOGGLE SIDEBAR
+// =====================================================
+const sidebarEl = document.getElementById('sidebar');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+function syncSidebarBackdrop() {
+  if (window.innerWidth <= 900 && sidebarEl.classList.contains('collapsed')) {
+    sidebarBackdrop.classList.add('show');
+  } else {
+    sidebarBackdrop.classList.remove('show');
+  }
+}
+
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+  sidebarEl.classList.toggle('collapsed');
+  localStorage.setItem('portalSmaSidebarCollapsed', sidebarEl.classList.contains('collapsed') ? '1' : '0');
+  syncSidebarBackdrop();
+});
+sidebarBackdrop.addEventListener('click', () => {
+  sidebarEl.classList.remove('collapsed');
+  localStorage.setItem('portalSmaSidebarCollapsed', '0');
+  syncSidebarBackdrop();
+});
+if (localStorage.getItem('portalSmaSidebarCollapsed') === '1') {
+  sidebarEl.classList.add('collapsed');
+}
+syncSidebarBackdrop();
+
+// =====================================================
+// SPA — GANTI VIEW SAAT MENU SIDEBAR DIKLIK
+// =====================================================
+const judulView = {
+  beranda: 'Beranda', absensi: 'Absensi Siswa', nilai: 'Nilai Siswa',
+  jadwal: 'Jadwal Mengajar', rpp: 'Buat RPP', presensiDiri: 'Presensi Diri', cuti: 'Ajukan Cuti'
+};
+const dataDimuat = {}; // supaya tidak fetch ulang tiap klik menu yang sama
+
+document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    this.classList.remove('pulse'); void this.offsetWidth; this.classList.add('pulse');
+    setTimeout(() => this.classList.remove('pulse'), 500);
+
+    document.querySelectorAll('.nav-item[data-view]').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+
+    const target = this.dataset.view;
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + target).classList.add('active');
+    document.getElementById('pageTitle').textContent = judulView[target];
+
+    // Di layar sempit, tutup panel menu otomatis setelah memilih
+    if (window.innerWidth <= 900) {
+      sidebarEl.classList.remove('collapsed');
+      localStorage.setItem('portalSmaSidebarCollapsed', '0');
+      syncSidebarBackdrop();
+    }
+
+    if (!dataDimuat[target]) {
+      dataDimuat[target] = true;
+      if (target === 'absensi') muatAbsensi();
+      if (target === 'nilai') muatNilai();
+      if (target === 'jadwal') muatJadwal();
+      if (target === 'rpp') muatRPP();
+      if (target === 'presensiDiri') muatPresensiDiri();
+      if (target === 'cuti') muatCuti();
+    }
+  });
+});
+
+// =====================================================
+// BERANDA
+// =====================================================
+async function muatStatistik() {
+  try {
+    const [hasilJadwal, hasilRPP] = await Promise.all([
+      jsonpCall('jadwal_mengajar', { nip: SESI.refID }),
+      jsonpCall('rpp_list', { nip: SESI.refID })
+    ]);
+    if (hasilJadwal.success) {
+      const kelasUnik = [...new Set(hasilJadwal.data.map(j => j.Kelas))];
+      document.getElementById('statKelasDiampu').textContent = kelasUnik.length;
+      document.getElementById('statJP').textContent = hasilJadwal.data.length;
+    }
+    if (hasilRPP.success) {
+      document.getElementById('statRPP').textContent = hasilRPP.data.length;
+    }
+  } catch (e) {
+    ['statKelasDiampu','statJP','statRPP'].forEach(id => document.getElementById(id).textContent = '–');
+  }
+  try {
+    const hasilPengumuman = await jsonpCall('pengumuman_list', { role: 'Guru' });
+    document.getElementById('statPengumuman').textContent = hasilPengumuman.success ? hasilPengumuman.data.length : '0';
+  } catch (e) { document.getElementById('statPengumuman').textContent = '–'; }
+}
+
+async function muatPengumuman() {
+  const wrap = document.getElementById('noticeBoard');
+  try {
+    const hasil = await jsonpCall('pengumuman_list', { role: 'Guru' });
+    if (!hasil.success || !hasil.data.length) {
+      wrap.innerHTML = '<div class="legend" style="color:var(--text-muted);">Belum ada pengumuman</div>';
+      return;
+    }
+    wrap.innerHTML = hasil.data.map(p => `
+      <div class="notice-item">
+        <div class="notice-icon" style="background:var(--mustard-soft)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div><div class="notice-title">${esc(p.Judul)}</div><div class="notice-date">${formatTanggalIndo(p.Tanggal)}</div></div>
+      </div>
+    `).join('');
+  } catch (e) {
+    wrap.innerHTML = '<div class="legend" style="color:var(--text-muted);">Gagal memuat pengumuman</div>';
+  }
+}
+
+async function muatKalender() {
+  const wrap = document.getElementById('calendarEvents');
+  try {
+    const hasil = await jsonpCall('kalender_list');
+    if (!hasil.success || !hasil.data.length) {
+      wrap.innerHTML = '<div class="legend" style="color:var(--text-muted);">Belum ada agenda</div>';
+      return;
+    }
+    wrap.innerHTML = hasil.data.slice(0, 3).map(k => `<div class="legend"><span class="dot"></span> ${formatTanggalIndo(k.Tanggal)} — ${esc(k.Keterangan)}</div>`).join('');
+  } catch (e) {
+    wrap.innerHTML = '<div class="legend" style="color:var(--text-muted);">Gagal memuat agenda</div>';
+  }
+}
+
+// =====================================================
+// ABSENSI SISWA
+// =====================================================
+async function muatAbsensi() {
+  const tbody = document.querySelector('#tableAbsensi tbody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('absensi_rekap', { nip: SESI.refID });
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada absensi</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(a => `
+      <tr><td>${esc(a.NISN)}</td><td>${a.Tanggal}</td><td>${esc(a.Mapel)}</td><td><span class="badge">${esc(a.Status)}</span></td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formAbsensi').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgAbsensi');
+  const data = Object.fromEntries(new FormData(form).entries());
+  data.nip = SESI.refID;
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('absensi_input', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.absensi = false; muatAbsensi(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
+
+// =====================================================
+// NILAI SISWA
+// =====================================================
+async function muatNilai() {
+  const tbody = document.querySelector('#tableNilai tbody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('nilai_rekap', { nip: SESI.refID });
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada nilai</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(n => `
+      <tr><td>${esc(n.NISN)}</td><td>${esc(n.Mapel)}</td><td><span class="badge">${esc(n.Jenis)}</span></td><td>${esc(n.Nilai)}</td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formNilai').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgNilai');
+  const data = Object.fromEntries(new FormData(form).entries());
+  data.nip = SESI.refID;
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('nilai_input', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.nilai = false; muatNilai(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
+
+// =====================================================
+// JADWAL MENGAJAR (read-only bagi Guru — diatur oleh Admin)
+// =====================================================
+async function muatJadwal() {
+  const tbody = document.querySelector('#tableJadwal tbody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('jadwal_mengajar', { nip: SESI.refID });
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada jadwal</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(j => `
+      <tr><td>${esc(j.Kelas)}</td><td>${esc(j.Hari)}</td><td>${esc(j.JamKe)}</td><td>${esc(j.Mapel)}</td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+
+// =====================================================
+// BUAT RPP
+// =====================================================
+async function muatRPP() {
+  const tbody = document.querySelector('#tableRPP tbody');
+  tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('rpp_list', { nip: SESI.refID });
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Belum ada RPP</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(r => `
+      <tr><td>${esc(r.Mapel)}</td><td>${esc(r.Kelas)}</td><td>${formatTanggalIndo(r.TanggalBuat)}</td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formRPP').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgRPP');
+  const data = Object.fromEntries(new FormData(form).entries());
+  data.nip = SESI.refID;
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('rpp_generate', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.rpp = false; muatRPP(); dataDimuat.beranda = false; muatStatistik(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
+
+// =====================================================
+// PRESENSI DIRI
+// =====================================================
+async function muatPresensiDiri() {
+  const tbody = document.querySelector('#tablePresensiDiri tbody');
+  tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('presensiDiri_rekap', { nip: SESI.refID });
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Belum ada presensi</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(p => `<tr><td>${p.Tanggal}</td><td><span class="badge">${esc(p.Status)}</span></td></tr>`).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formPresensiDiri').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgPresensiDiri');
+  const data = Object.fromEntries(new FormData(form).entries());
+  data.nip = SESI.refID;
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('presensiDiri_input', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.presensiDiri = false; muatPresensiDiri(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
+
+// =====================================================
+// AJUKAN CUTI
+// =====================================================
+async function muatCuti() {
+  const tbody = document.querySelector('#tableCuti tbody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('cuti_list', { nip: SESI.refID });
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada pengajuan cuti</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(c => `
+      <tr><td>${c.TanggalMulai}</td><td>${c.TanggalSelesai}</td><td>${esc(c.Alasan)}</td><td><span class="badge">${esc(c.Status)}</span></td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formCuti').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgCuti');
+  const data = Object.fromEntries(new FormData(form).entries());
+  data.nip = SESI.refID;
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('cuti_ajukan', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); dataDimuat.cuti = false; muatCuti(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
+
+// Muat Beranda saat pertama kali dibuka
+muatStatistik();
+muatPengumuman();
+muatKalender();
+muatNotifikasi();
+
+// =====================================================
+// DROPDOWN NOTIFIKASI & PROFIL
+// =====================================================
+const notifBtn = document.getElementById('notifBtn');
+const notifPanel = document.getElementById('notifPanel');
+const userAvatarBtn = document.getElementById('userAvatar');
+const profilePanel = document.getElementById('profilePanel');
+
+function tutupSemuaDropdown() {
+  notifPanel.classList.remove('open');
+  profilePanel.classList.remove('open');
+}
+
+notifBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const sedangTerbuka = notifPanel.classList.contains('open');
+  tutupSemuaDropdown();
+  if (!sedangTerbuka) { notifPanel.classList.add('open'); muatNotifikasi(); }
+});
+
+userAvatarBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const sedangTerbuka = profilePanel.classList.contains('open');
+  tutupSemuaDropdown();
+  if (!sedangTerbuka) profilePanel.classList.add('open');
+});
+
+document.addEventListener('click', tutupSemuaDropdown);
+notifPanel.addEventListener('click', (e) => e.stopPropagation());
+profilePanel.addEventListener('click', (e) => e.stopPropagation());
+
+async function muatNotifikasi() {
+  const list = document.getElementById('notifList');
+  const dot = document.getElementById('notifDot');
+  list.innerHTML = '<div class="dropdown-empty">Memuat...</div>';
+  try {
+    const hasil = await jsonpCall('pengumuman_list', { role: 'Guru' });
+    if (!hasil.success || !hasil.data.length) {
+      list.innerHTML = '<div class="dropdown-empty">Belum ada notifikasi</div>';
+      dot.style.display = 'none';
+      return;
+    }
+    dot.textContent = hasil.data.length > 9 ? '9+' : hasil.data.length;
+    dot.style.display = 'flex';
+    list.innerHTML = hasil.data.map(p => `
+      <div class="dropdown-item">
+        <div>
+          <div class="d-title">${esc(p.Judul)}</div>
+          <div class="d-sub">${formatTanggalIndo(p.Tanggal)}</div>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    list.innerHTML = '<div class="dropdown-empty">Gagal memuat notifikasi</div>';
+  }
 }
 </script>
 </body>
