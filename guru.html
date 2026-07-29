@@ -417,22 +417,26 @@
       <!-- ============ VIEW: ABSENSI SISWA ============ -->
       <div class="view" id="view-absensi">
         <div class="feature-panel">
-          <h3>Input Absensi Siswa</h3>
-          <form id="formAbsensi">
-            <div class="form-grid">
-              <div class="form-group"><label>NISN Siswa</label><input type="text" name="nisn" required></div>
-              <div class="form-group"><label>Tanggal</label><input type="date" name="tanggal" required></div>
-              <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
-              <div class="form-group"><label>Status</label>
-                <select name="status" required>
-                  <option value="">Pilih status</option>
-                  <option>Hadir</option><option>Sakit</option><option>Izin</option><option>Alpa</option>
-                </select>
-              </div>
+          <h3>Absensi Kelas</h3>
+          <div class="form-grid">
+            <div class="form-group"><label>Kelas</label>
+              <select id="absensiKelas"><option value="">Pilih kelas</option></select>
             </div>
-            <button type="submit" class="btn-primary">Simpan Absensi</button>
+            <div class="form-group"><label>Mata Pelajaran</label><input type="text" id="absensiMapel" placeholder="cth. Matematika"></div>
+            <div class="form-group"><label>Tanggal</label><input type="date" id="absensiTanggal"></div>
+          </div>
+          <button type="button" class="btn-primary" id="btnTampilkanAbsensi">Tampilkan Siswa</button>
+
+          <div id="absensiDaftarWrap" style="margin-top:20px; display:none;">
+            <div class="table-wrap">
+              <table class="data-table" id="tableAbsensiInput">
+                <thead><tr><th>NISN</th><th>Nama</th><th>Status</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <button type="button" class="btn-primary" id="btnSimpanAbsensiKelas" style="margin-top:14px;">Simpan Absensi Kelas</button>
             <div class="form-msg" id="msgAbsensi"></div>
-          </form>
+          </div>
         </div>
         <div class="feature-panel">
           <h3>Rekap Absensi yang Saya Input</h3>
@@ -737,9 +741,21 @@ async function muatKalender() {
 }
 
 // =====================================================
-// ABSENSI SISWA
+// ABSENSI SISWA (kolektif per kelas)
 // =====================================================
 async function muatAbsensi() {
+  // Isi dropdown Kelas dari jadwal mengajar guru ini
+  const selectKelas = document.getElementById('absensiKelas');
+  try {
+    const hasilJadwal = await jsonpCall('jadwal_mengajar', { nip: SESI.refID });
+    if (hasilJadwal.success) {
+      const kelasUnik = [...new Set(hasilJadwal.data.map(j => j.Kelas))];
+      selectKelas.innerHTML = '<option value="">Pilih kelas</option>' +
+        kelasUnik.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
+    }
+  } catch (e) { /* biarkan dropdown kosong kalau gagal */ }
+
+  // Rekap absensi yang sudah pernah diinput guru ini
   const tbody = document.querySelector('#tableAbsensi tbody');
   tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
   try {
@@ -750,19 +766,71 @@ async function muatAbsensi() {
     `).join('');
   } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
 }
-document.getElementById('formAbsensi').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector('button');
+
+document.getElementById('btnTampilkanAbsensi').addEventListener('click', async () => {
+  const kelas = document.getElementById('absensiKelas').value;
+  const wrap = document.getElementById('absensiDaftarWrap');
+  const tbody = document.querySelector('#tableAbsensiInput tbody');
   const msg = document.getElementById('msgAbsensi');
-  const data = Object.fromEntries(new FormData(form).entries());
-  data.nip = SESI.refID;
+  msg.textContent = '';
+
+  if (!kelas) { msg.textContent = 'Pilih kelas dulu'; msg.className = 'form-msg error'; return; }
+
+  wrap.style.display = 'block';
+  tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('siswa_list', { kelas });
+    if (!hasil.success || !hasil.data.length) {
+      tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Belum ada siswa di kelas ini</td></tr>';
+      return;
+    }
+    tbody.innerHTML = hasil.data.map(s => `
+      <tr data-nisn="${esc(s.NISN)}">
+        <td>${esc(s.NISN)}</td>
+        <td>${esc(s.Nama)}</td>
+        <td>
+          <select class="absensi-status">
+            <option>Hadir</option><option>Sakit</option><option>Izin</option><option>Alpa</option>
+          </select>
+        </td>
+      </tr>
+    `).join('');
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Gagal memuat siswa</td></tr>';
+  }
+});
+
+document.getElementById('btnSimpanAbsensiKelas').addEventListener('click', async () => {
+  const mapel = document.getElementById('absensiMapel').value.trim();
+  const tanggal = document.getElementById('absensiTanggal').value;
+  const msg = document.getElementById('msgAbsensi');
+  const btn = document.getElementById('btnSimpanAbsensiKelas');
+
+  if (!mapel || !tanggal) {
+    msg.textContent = 'Isi Mata Pelajaran dan Tanggal dulu';
+    msg.className = 'form-msg error';
+    return;
+  }
+
+  const baris = document.querySelectorAll('#tableAbsensiInput tbody tr[data-nisn]');
+  if (!baris.length) { msg.textContent = 'Tidak ada siswa untuk disimpan'; msg.className = 'form-msg error'; return; }
+
+  const daftar = Array.from(baris).map(tr => ({
+    nisn: tr.dataset.nisn,
+    status: tr.querySelector('.absensi-status').value
+  }));
+
   btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
   try {
-    const hasil = await jsonpCall('absensi_input', data);
+    const hasil = await jsonpCall('absensi_input_bulk', {
+      tanggal, mapel, nip: SESI.refID, data: JSON.stringify(daftar)
+    });
     msg.textContent = hasil.success ? hasil.message : hasil.error;
     msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
-    if (hasil.success) { form.reset(); dataDimuat.absensi = false; muatAbsensi(); }
+    if (hasil.success) {
+      dataDimuat.absensi = false;
+      muatAbsensi();
+    }
   } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
   btn.disabled = false;
 });
