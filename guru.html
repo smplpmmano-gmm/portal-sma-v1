@@ -101,6 +101,34 @@
   .view{ display:none; }
   .view.active{ display:block; }
   .feature-panel{ border-radius:16px; border:1px solid var(--border); padding:24px; margin-bottom:24px; }
+
+  /* RPP — layout 2 kolom: form kiri, preview kanan (adopsi pola Surat Otomatis SMP) */
+  .rpp-layout{ display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
+  .rpp-panel-kiri{ position:sticky; top:0; }
+  .rpp-panel-kanan{ background:#fff; border-radius:16px; border:1px solid var(--border); overflow:hidden; }
+  .rpp-preview-head{ padding:14px 20px; background:var(--navy); color:#fff; font-size:13px; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .rpp-preview-scroll{ padding:20px; max-height:80vh; overflow-y:auto; background:var(--cream); }
+  .rpp-preview-empty{ display:flex; flex-direction:column; align-items:center; justify-content:center; height:400px; color:var(--text-muted); gap:10px; font-size:13px; text-align:center; }
+
+  .rpp-kertas{ background:#fff; padding:36px 40px; font-family:'Arial Narrow', Arial, sans-serif; font-size:11pt; line-height:1.55; color:#000; max-width:700px; margin:0 auto; box-shadow:0 2px 16px rgba(0,0,0,.1); border:1px solid #e5e5e5; min-height:700px; }
+  .rpp-kertas h2{ font-size:14pt; font-weight:bold; text-align:center; margin-bottom:4px; }
+  .rpp-kertas .rk-sub{ font-size:10pt; text-align:center; margin-bottom:16px; color:#444; }
+  .rpp-kertas table{ width:100%; border-collapse:collapse; margin-bottom:14px; font-size:10.5pt; }
+  .rpp-kertas table td{ padding:5px 8px; border:1px solid #ccc; vertical-align:top; }
+  .rpp-kertas table td:first-child{ font-weight:bold; width:170px; background:#faf6ec; }
+  .rk-section{ margin-bottom:14px; }
+  .rk-section h4{ font-size:10.5pt; font-weight:bold; text-decoration:underline; margin-bottom:4px; }
+  .rk-section p{ font-size:10.5pt; text-align:justify; white-space:pre-line; }
+  .rk-dpl{ display:flex; flex-wrap:wrap; gap:5px; margin-bottom:14px; }
+  .rk-dpl span{ background:var(--mustard-soft); color:var(--navy); font-size:9pt; font-weight:600; padding:2px 8px; border-radius:10px; }
+  .rk-ttd{ display:grid; grid-template-columns:1fr 220px; margin-top:24px; font-size:10.5pt; }
+  .rk-ttd-kanan{ text-align:center; }
+  .rk-ttd-nama{ font-weight:bold; margin-top:56px; text-decoration:underline; }
+
+  @media (max-width: 900px){
+    .rpp-layout{ grid-template-columns:1fr; }
+    .rpp-panel-kiri{ position:static; }
+  }
   .feature-panel h3{ font-size:15px; font-weight:700; color:var(--navy); margin-bottom:18px; }
   .form-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; margin-bottom:16px; }
   .form-group label{ display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:6px; }
@@ -399,62 +427,80 @@
       </div>
 
       <div class="view" id="view-rpp">
-        <div class="feature-panel">
-          <h3>Identitas RPP</h3>
-          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">Generate otomatis via AI menyusul — untuk sekarang, 16 bagian di bawah diisi manual dulu (boleh bertahap, tidak wajib sekaligus).</p>
-          <form id="formRPP">
-            <div class="form-grid">
-              <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
-              <div class="form-group"><label>Kelas</label><input type="text" name="kelas" placeholder="cth. X-1" required></div>
-              <div class="form-group"><label>Semester</label>
-                <select name="semester" required><option value="Ganjil">Ganjil</option><option value="Genap">Genap</option></select>
+        <div class="rpp-layout">
+          <div class="rpp-panel-kiri">
+            <div class="feature-panel">
+              <h3>Identitas RPP</h3>
+              <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">Generate otomatis via AI menyusul — untuk sekarang, 16 bagian di bawah diisi manual dulu (boleh bertahap, tidak wajib sekaligus). Preview di kanan otomatis update.</p>
+              <form id="formRPP">
+                <div class="form-grid">
+                  <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required oninput="previewRPPLive()"></div>
+                  <div class="form-group"><label>Kelas</label><input type="text" name="kelas" placeholder="cth. X-1" required oninput="previewRPPLive()"></div>
+                  <div class="form-group"><label>Semester</label>
+                    <select name="semester" required onchange="previewRPPLive()"><option value="Ganjil">Ganjil</option><option value="Genap">Genap</option></select>
+                  </div>
+                  <div class="form-group"><label>Alokasi Waktu</label><input type="text" name="alokasiWaktu" placeholder="cth. 2 x 45 menit" oninput="previewRPPLive()"></div>
+                  <div class="form-group"><label>Model Pembelajaran</label><input type="text" name="modelPembelajaran" placeholder="cth. Discovery Learning" oninput="previewRPPLive()"></div>
+                  <div class="form-group"><label>Topik</label><input type="text" name="topik" required oninput="previewRPPLive()"></div>
+                </div>
+
+                <h3 style="margin-top:6px;">Tujuan &amp; Konteks Pembelajaran</h3>
+                <div class="form-group" style="margin-bottom:14px;"><label>Capaian Pembelajaran</label><textarea name="capaianPembelajaran" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Tujuan Pembelajaran</label><textarea name="tujuan" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Identifikasi Peserta Didik</label><textarea name="identifikasiPD" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Materi Pembelajaran</label><textarea name="materi" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Lintas Disiplin Ilmu</label><textarea name="lintasDisiplin" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Pemanfaatan Lingkungan sebagai Sumber Belajar</label><textarea name="lingkungan" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Kemitraan Pembelajaran</label><textarea name="kemitraan" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Praktik Pedagogis</label><textarea name="praktikPedagogis" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:20px;"><label>Pemanfaatan Digital</label><textarea name="pemanfaatanDigital" oninput="previewRPPLive()"></textarea></div>
+
+                <h3>Langkah Pembelajaran</h3>
+                <div class="form-group" style="margin-bottom:14px;"><label>Kegiatan Awal</label><textarea name="langkahAwal" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Memahami</label><textarea name="langkahMemahami" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Mengaplikasi</label><textarea name="langkahMengaplikasi" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Merefleksi</label><textarea name="langkahMerefleksi" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:20px;"><label>Kegiatan Penutup</label><textarea name="langkahPenutup" oninput="previewRPPLive()"></textarea></div>
+
+                <h3>Asesmen</h3>
+                <div class="form-group" style="margin-bottom:14px;"><label>Asesmen Awal</label><textarea name="asesmenAwal" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:14px;"><label>Asesmen Proses</label><textarea name="asesmenProses" oninput="previewRPPLive()"></textarea></div>
+                <div class="form-group" style="margin-bottom:20px;"><label>Asesmen Akhir</label><textarea name="asesmenAkhir" oninput="previewRPPLive()"></textarea></div>
+
+                <h3>Dimensi Profil Lulusan</h3>
+                <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">Centang dimensi yang relevan dengan RPP ini (boleh lebih dari satu).</p>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:10px; margin-bottom:20px;">
+                  <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL1" onchange="previewRPPLive()"> DPL 1 — Keimanan &amp; Ketakwaan</label>
+                  <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL2" onchange="previewRPPLive()"> DPL 2 — Kewargaan</label>
+                  <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL3" onchange="previewRPPLive()"> DPL 3 — Penalaran Kritis</label>
+                  <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL4" onchange="previewRPPLive()"> DPL 4 — Kreativitas</label>
+                  <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL5" onchange="previewRPPLive()"> DPL 5 — Kolaborasi</label>
+                  <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL6" onchange="previewRPPLive()"> DPL 6 — Kemandirian</label>
+                  <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL7" onchange="previewRPPLive()"> DPL 7 — Kesehatan</label>
+                  <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL8" onchange="previewRPPLive()"> DPL 8 — Komunikasi</label>
+                </div>
+
+                <button type="submit" class="btn-primary">Simpan RPP</button>
+                <div class="form-msg" id="msgRPP"></div>
+              </form>
+            </div>
+          </div>
+
+          <div class="rpp-panel-kanan">
+            <div class="rpp-preview-head">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg>
+              Preview RPP
+            </div>
+            <div class="rpp-preview-scroll" id="rppPreviewScroll">
+              <div class="rpp-preview-empty">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+                <p>Isi form untuk melihat preview RPP</p>
               </div>
-              <div class="form-group"><label>Alokasi Waktu</label><input type="text" name="alokasiWaktu" placeholder="cth. 2 x 45 menit"></div>
-              <div class="form-group"><label>Model Pembelajaran</label><input type="text" name="modelPembelajaran" placeholder="cth. Discovery Learning"></div>
-              <div class="form-group"><label>Topik</label><input type="text" name="topik" required></div>
             </div>
-
-            <h3 style="margin-top:6px;">Tujuan &amp; Konteks Pembelajaran</h3>
-            <div class="form-group" style="margin-bottom:14px;"><label>Capaian Pembelajaran</label><textarea name="capaianPembelajaran"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Tujuan Pembelajaran</label><textarea name="tujuan"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Identifikasi Peserta Didik</label><textarea name="identifikasiPD"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Materi Pembelajaran</label><textarea name="materi"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Lintas Disiplin Ilmu</label><textarea name="lintasDisiplin"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Pemanfaatan Lingkungan sebagai Sumber Belajar</label><textarea name="lingkungan"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Kemitraan Pembelajaran</label><textarea name="kemitraan"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Praktik Pedagogis</label><textarea name="praktikPedagogis"></textarea></div>
-            <div class="form-group" style="margin-bottom:20px;"><label>Pemanfaatan Digital</label><textarea name="pemanfaatanDigital"></textarea></div>
-
-            <h3>Langkah Pembelajaran</h3>
-            <div class="form-group" style="margin-bottom:14px;"><label>Kegiatan Awal</label><textarea name="langkahAwal"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Memahami</label><textarea name="langkahMemahami"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Mengaplikasi</label><textarea name="langkahMengaplikasi"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Merefleksi</label><textarea name="langkahMerefleksi"></textarea></div>
-            <div class="form-group" style="margin-bottom:20px;"><label>Kegiatan Penutup</label><textarea name="langkahPenutup"></textarea></div>
-
-            <h3>Asesmen</h3>
-            <div class="form-group" style="margin-bottom:14px;"><label>Asesmen Awal</label><textarea name="asesmenAwal"></textarea></div>
-            <div class="form-group" style="margin-bottom:14px;"><label>Asesmen Proses</label><textarea name="asesmenProses"></textarea></div>
-            <div class="form-group" style="margin-bottom:20px;"><label>Asesmen Akhir</label><textarea name="asesmenAkhir"></textarea></div>
-
-            <h3>Dimensi Profil Lulusan</h3>
-            <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">Centang dimensi yang relevan dengan RPP ini (boleh lebih dari satu).</p>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:10px; margin-bottom:20px;">
-              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL1"> DPL 1 — Keimanan &amp; Ketakwaan</label>
-              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL2"> DPL 2 — Kewargaan</label>
-              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL3"> DPL 3 — Penalaran Kritis</label>
-              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL4"> DPL 4 — Kreativitas</label>
-              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL5"> DPL 5 — Kolaborasi</label>
-              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL6"> DPL 6 — Kemandirian</label>
-              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL7"> DPL 7 — Kesehatan</label>
-              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL8"> DPL 8 — Komunikasi</label>
-            </div>
-
-            <button type="submit" class="btn-primary">Simpan RPP</button>
-            <div class="form-msg" id="msgRPP"></div>
-          </form>
+          </div>
         </div>
-        <div class="feature-panel">
+
+        <div class="feature-panel" style="margin-top:20px;">
           <h3>RPP Tersimpan</h3>
           <div class="table-wrap"><table class="data-table" id="tableRPP"><thead><tr><th>Mapel</th><th>Kelas</th><th>Topik</th><th>Semester</th><th>DPL</th><th>Tanggal Buat</th></tr></thead><tbody><tr><td colspan="6" class="empty-state">Memuat...</td></tr></tbody></table></div>
         </div>
@@ -875,6 +921,83 @@ async function muatJadwal() {
   } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
 }
 
+// =====================================================
+// PREVIEW RPP LIVE (kertas A4, update otomatis)
+// =====================================================
+const DPL_LABEL = {
+  DPL1: 'DPL 1 — Keimanan & Ketakwaan', DPL2: 'DPL 2 — Kewargaan', DPL3: 'DPL 3 — Penalaran Kritis',
+  DPL4: 'DPL 4 — Kreativitas', DPL5: 'DPL 5 — Kolaborasi', DPL6: 'DPL 6 — Kemandirian',
+  DPL7: 'DPL 7 — Kesehatan', DPL8: 'DPL 8 — Komunikasi'
+};
+
+function previewRPPLive() {
+  const form = document.getElementById('formRPP');
+  const v = (name) => form.querySelector(`[name="${name}"]`).value.trim();
+  const mapel = v('mapel'), kelas = v('kelas'), topik = v('topik'), tujuan = v('tujuan');
+  const target = document.getElementById('rppPreviewScroll');
+
+  if (!mapel && !kelas && !topik && !tujuan) {
+    target.innerHTML = `
+      <div class="rpp-preview-empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+        <p>Isi form untuk melihat preview RPP</p>
+      </div>`;
+    return;
+  }
+
+  const isi = (val) => val ? esc(val) : '-';
+  const dplTerpilih = Array.from(document.querySelectorAll('.dpl-check:checked')).map(cb => DPL_LABEL[cb.value]);
+  const namaGuru = SESI ? SESI.namaLengkap : '-';
+  const tanggalHariIni = formatTanggalIndo(new Date().toISOString().slice(0, 10));
+
+  const bagian = (judul, isiField) => isiField ? `
+    <div class="rk-section"><h4>${esc(judul)}</h4><p>${esc(isiField)}</p></div>` : '';
+
+  target.innerHTML = `
+    <div class="rpp-kertas">
+      <h2>RENCANA PELAKSANAAN PEMBELAJARAN</h2>
+      <div class="rk-sub">SMA Negeri 30 Halmahera Selatan</div>
+
+      <table>
+        <tr><td>Mata Pelajaran</td><td>${isi(mapel)}</td></tr>
+        <tr><td>Kelas / Semester</td><td>${isi(kelas)} / ${isi(v('semester'))}</td></tr>
+        <tr><td>Alokasi Waktu</td><td>${isi(v('alokasiWaktu'))}</td></tr>
+        <tr><td>Model Pembelajaran</td><td>${isi(v('modelPembelajaran'))}</td></tr>
+        <tr><td>Topik</td><td>${isi(topik)}</td></tr>
+      </table>
+
+      ${bagian('Capaian Pembelajaran', v('capaianPembelajaran'))}
+      ${bagian('Tujuan Pembelajaran', tujuan)}
+      ${bagian('Identifikasi Peserta Didik', v('identifikasiPD'))}
+      ${bagian('Materi Pembelajaran', v('materi'))}
+      ${bagian('Lintas Disiplin Ilmu', v('lintasDisiplin'))}
+      ${bagian('Pemanfaatan Lingkungan sebagai Sumber Belajar', v('lingkungan'))}
+      ${bagian('Kemitraan Pembelajaran', v('kemitraan'))}
+      ${bagian('Praktik Pedagogis', v('praktikPedagogis'))}
+      ${bagian('Pemanfaatan Digital', v('pemanfaatanDigital'))}
+
+      ${dplTerpilih.length ? `<div class="rk-section"><h4>Dimensi Profil Lulusan</h4><div class="rk-dpl">${dplTerpilih.map(d => `<span>${esc(d)}</span>`).join('')}</div></div>` : ''}
+
+      ${bagian('A. Kegiatan Awal', v('langkahAwal'))}
+      ${bagian('B. Memahami', v('langkahMemahami'))}
+      ${bagian('C. Mengaplikasi', v('langkahMengaplikasi'))}
+      ${bagian('D. Merefleksi', v('langkahMerefleksi'))}
+      ${bagian('E. Kegiatan Penutup', v('langkahPenutup'))}
+
+      ${bagian('Asesmen Awal', v('asesmenAwal'))}
+      ${bagian('Asesmen Proses', v('asesmenProses'))}
+      ${bagian('Asesmen Akhir', v('asesmenAkhir'))}
+
+      <div class="rk-ttd">
+        <div></div>
+        <div class="rk-ttd-kanan">
+          Mano, ${tanggalHariIni}<br>Guru Mata Pelajaran
+          <div class="rk-ttd-nama">${esc(namaGuru)}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
 async function muatRPP() {
   const tbody = document.querySelector('#tableRPP tbody');
   tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Memuat...</td></tr>';
@@ -902,6 +1025,7 @@ document.getElementById('formRPP').addEventListener('submit', async (e) => {
     if (hasil.success) {
       form.reset();
       document.querySelectorAll('.dpl-check').forEach(cb => cb.checked = false);
+      previewRPPLive();
       dataDimuat.rpp = false; muatRPP(); dataDimuat.beranda = false; muatStatistik();
     }
   } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
