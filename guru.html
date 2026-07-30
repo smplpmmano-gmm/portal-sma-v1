@@ -14,75 +14,33 @@
     --border:#f1f5f9;
   }
   *{ box-sizing:border-box; margin:0; padding:0; }
-  body{
-    font-family:'Segoe UI', system-ui, sans-serif;
-    background:var(--cream);
-    min-height:100vh;
-  }
+  body{ font-family:'Segoe UI', system-ui, sans-serif; background:var(--cream); min-height:100vh; }
   .page-wrap{ max-width:1400px; margin:0 auto; padding:24px; }
-  .shell{
-    display:flex;
-    border-radius:28px;
-    overflow:hidden;
-    box-shadow:0 25px 50px -12px rgba(27,42,74,0.25);
-    background:#fff;
-    min-height:860px;
-  }
+  .shell{ display:flex; border-radius:28px; overflow:hidden; box-shadow:0 25px 50px -12px rgba(27,42,74,0.25); background:#fff; min-height:860px; }
 
-  /* SIDEBAR (collapsible) */
-  .sidebar{
-    width:230px; flex-shrink:0; background:var(--navy); padding:28px 16px;
-    display:flex; flex-direction:column;
-    transition:width .28s cubic-bezier(.4,0,.2,1), padding .28s cubic-bezier(.4,0,.2,1), opacity .2s ease;
-    overflow:hidden; white-space:nowrap;
-  }
+  .sidebar{ width:230px; flex-shrink:0; background:var(--navy); padding:28px 16px; display:flex; flex-direction:column; transition:width .28s cubic-bezier(.4,0,.2,1), padding .28s cubic-bezier(.4,0,.2,1), opacity .2s ease; overflow:hidden; white-space:nowrap; }
   .sidebar.collapsed{ width:0; padding-left:0; padding-right:0; opacity:0; }
   .sidebar.collapsed *{ pointer-events:none; }
-
-  .sidebar-toggle{
-    width:38px; height:38px; border-radius:12px; border:none;
-    background:var(--mustard-soft); color:var(--navy); cursor:pointer;
-    display:flex; align-items:center; justify-content:center; flex-shrink:0;
-    transition:background .15s ease, transform .15s ease;
-  }
+  .sidebar-toggle{ width:38px; height:38px; border-radius:12px; border:none; background:var(--mustard-soft); color:var(--navy); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .15s ease, transform .15s ease; }
   .sidebar-toggle:hover{ background:var(--mustard); }
   .sidebar-toggle:active{ transform:scale(0.9); }
-
   .brand{ display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:32px; }
   .brand-badge{ width:36px; height:36px; border-radius:12px; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; }
   .brand-title{ color:#fff; font-weight:700; font-size:15px; line-height:1.2; }
   .brand-sub{ color:var(--mustard); font-size:11px; }
-  .role-tag{
-    display:inline-block; align-self:flex-start;
-    background:rgba(240,169,58,0.15); color:var(--mustard);
-    font-size:10.5px; font-weight:700; letter-spacing:.06em;
-    padding:4px 10px; border-radius:20px; margin:0 8px 18px;
-  }
-
+  .role-tag{ display:inline-block; align-self:flex-start; background:rgba(240,169,58,0.15); color:var(--mustard); font-size:10.5px; font-weight:700; letter-spacing:.06em; padding:4px 10px; border-radius:20px; margin:0 8px 18px; }
   nav{ display:flex; flex-direction:column; gap:4px; font-size:14px; }
-  .nav-item{
-    display:flex; align-items:center; gap:12px;
-    padding:10px 12px; border-radius:12px;
-    color:rgba(255,255,255,0.8); text-decoration:none;
-    transition:background .15s ease, transform .12s ease;
-    position:relative; overflow:hidden; cursor:pointer; border:none; background:none; width:100%; text-align:left; font-family:inherit; font-size:14px;
-  }
+  .nav-item{ display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; color:rgba(255,255,255,0.8); text-decoration:none; transition:background .15s ease, transform .12s ease; position:relative; overflow:hidden; cursor:pointer; border:none; background:none; width:100%; text-align:left; font-family:inherit; font-size:14px; }
   .nav-item:hover{ background:rgba(255,255,255,0.08); }
   .nav-item:active{ transform:scale(0.97); }
   .nav-item.active{ background:var(--mustard); color:var(--navy); font-weight:600; }
   .nav-item svg{ flex-shrink:0; }
-
-  @keyframes clickPulse{
-    0%{ box-shadow:0 0 0 0 rgba(240,169,58,0.45); }
-    100%{ box-shadow:0 0 0 14px rgba(240,169,58,0); }
-  }
+  @keyframes clickPulse{ 0%{ box-shadow:0 0 0 0 rgba(240,169,58,0.45); } 100%{ box-shadow:0 0 0 14px rgba(240,169,58,0); } }
   .pulse{ animation:clickPulse .5s ease-out; }
-
   .sidebar-footer{ margin-top:auto; padding:0 8px; }
   .user-card{ background:rgba(255,255,255,0.06); border-radius:12px; padding:12px; color:rgba(255,255,255,0.7); font-size:12px; }
   .user-card strong{ display:block; color:#fff; font-size:13px; margin-top:2px; }
 
-  /* MAIN */
   main{ flex:1; padding:32px; overflow-y:auto; }
   .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
   .topbar-left{ display:flex; align-items:center; gap:14px; }
@@ -92,19 +50,9 @@
   .icon-btn{ width:40px; height:40px; border-radius:50%; background:var(--mustard-soft); display:flex; align-items:center; justify-content:center; transition:transform .12s ease, background .15s ease; cursor:pointer; position:relative; }
   .icon-btn:hover{ background:var(--mustard); }
   .icon-btn:active{ transform:scale(0.9); }
-
-  .notif-dot{
-    position:absolute; top:-2px; right:-2px; width:16px; height:16px; border-radius:50%;
-    background:#e0524a; color:#fff; font-size:9.5px; font-weight:700;
-    display:flex; align-items:center; justify-content:center; border:2px solid #fff;
-  }
-
+  .notif-dot{ position:absolute; top:-2px; right:-2px; width:16px; height:16px; border-radius:50%; background:#e0524a; color:#fff; font-size:9.5px; font-weight:700; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
   .dropdown-wrap{ position:relative; }
-  .dropdown-panel{
-    position:absolute; top:52px; right:0; width:300px; background:#fff; border-radius:16px;
-    box-shadow:0 20px 40px -8px rgba(27,42,74,0.28); border:1px solid var(--border);
-    padding:14px; display:none; z-index:50; animation:dropIn .18s ease;
-  }
+  .dropdown-panel{ position:absolute; top:52px; right:0; width:300px; background:#fff; border-radius:16px; box-shadow:0 20px 40px -8px rgba(27,42,74,0.28); border:1px solid var(--border); padding:14px; display:none; z-index:50; animation:dropIn .18s ease; }
   .dropdown-panel.open{ display:block; }
   @keyframes dropIn{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:translateY(0); } }
   .dropdown-title{ font-size:12px; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px; }
@@ -113,21 +61,14 @@
   .dropdown-item .d-title{ font-size:12.5px; font-weight:600; color:var(--navy); }
   .dropdown-item .d-sub{ font-size:11px; color:var(--text-muted); }
   .dropdown-empty{ text-align:center; padding:16px; font-size:12px; color:var(--text-muted); }
-
   .profile-header{ display:flex; align-items:center; gap:10px; padding-bottom:12px; margin-bottom:8px; border-bottom:1px solid var(--border); }
   .profile-avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .profile-name{ font-size:13.5px; font-weight:700; color:var(--navy); }
   .profile-role{ font-size:11px; color:var(--text-muted); }
-  .dropdown-logout{
-    display:flex; align-items:center; gap:8px; width:100%; padding:9px 6px; border-radius:10px;
-    background:none; border:none; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:600;
-    color:#c0392b; transition:background .12s ease; text-align:left;
-  }
+  .dropdown-logout{ display:flex; align-items:center; gap:8px; width:100%; padding:9px 6px; border-radius:10px; background:none; border:none; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:600; color:#c0392b; transition:background .12s ease; text-align:left; }
   .dropdown-logout:hover{ background:#fdecea; }
   .avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; }
-
   .section-label{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-bottom:12px; }
-
   .stat-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:32px; }
   .stat-card{ border-radius:16px; padding:20px; display:flex; align-items:center; gap:12px; border:1px solid var(--border); background:#fff; }
   .stat-card.navy{ background:var(--navy); border:none; }
@@ -138,7 +79,6 @@
   .stat-sub{ font-size:12px; margin-top:4px; color:var(--text-muted); }
   .stat-card.navy .stat-sub{ color:var(--mustard-soft); }
   .stat-card.mustard .stat-sub{ color:var(--navy); font-weight:500; }
-
   .bottom-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
   .panel{ border-radius:16px; border:1px solid var(--border); padding:20px; }
   .panel h3{ font-size:15px; font-weight:700; color:var(--navy); margin-bottom:16px; }
@@ -153,42 +93,27 @@
   .cal-grid .day.event{ background:var(--mustard-soft); color:var(--navy); border-radius:50%; font-weight:700; }
   .legend{ display:flex; align-items:center; gap:8px; margin-top:8px; font-size:12px; color:#64748b; }
   .dot{ width:10px; height:10px; border-radius:50%; background:var(--mustard); display:inline-block; flex-shrink:0; }
-
   .notice-item{ display:flex; align-items:center; gap:12px; border-radius:12px; padding:12px; background:var(--cream); }
   .notice-item + .notice-item{ margin-top:12px; }
   .notice-icon{ width:48px; height:48px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .notice-title{ font-size:13.5px; font-weight:600; color:var(--navy); }
   .notice-date{ font-size:11.5px; color:var(--text-muted); }
-
-  /* VIEWS (SPA) */
   .view{ display:none; }
   .view.active{ display:block; }
-
-  /* FORM & TABLE (dipakai di semua menu fitur) */
   .feature-panel{ border-radius:16px; border:1px solid var(--border); padding:24px; margin-bottom:24px; }
   .feature-panel h3{ font-size:15px; font-weight:700; color:var(--navy); margin-bottom:18px; }
   .form-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; margin-bottom:16px; }
   .form-group label{ display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:6px; }
-  .form-group input, .form-group select, .form-group textarea{
-    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
-    font-size:13.5px; font-family:inherit; outline:none; transition:border-color .15s ease;
-    background:var(--cream);
-  }
+  .form-group input, .form-group select, .form-group textarea{ width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); font-size:13.5px; font-family:inherit; outline:none; transition:border-color .15s ease; background:var(--cream); }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus{ border-color:var(--mustard); background:#fff; }
   .form-group textarea{ resize:vertical; min-height:70px; }
-
-  .btn-primary{
-    padding:11px 22px; border:none; border-radius:10px; background:var(--navy); color:#fff;
-    font-size:13.5px; font-weight:600; cursor:pointer; transition:opacity .15s ease, transform .12s ease;
-  }
+  .btn-primary{ padding:11px 22px; border:none; border-radius:10px; background:var(--navy); color:#fff; font-size:13.5px; font-weight:600; cursor:pointer; transition:opacity .15s ease, transform .12s ease; }
   .btn-primary:hover{ opacity:0.9; }
   .btn-primary:active{ transform:scale(0.96); }
   .btn-primary:disabled{ opacity:0.6; cursor:not-allowed; }
-
   .form-msg{ font-size:12.5px; margin-top:10px; min-height:16px; }
   .form-msg.success{ color:#15803d; }
   .form-msg.error{ color:#c0392b; }
-
   .data-table{ width:100%; border-collapse:collapse; font-size:13px; }
   .data-table th{ text-align:left; padding:10px 12px; color:var(--text-muted); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; border-bottom:2px solid var(--border); }
   .data-table td{ padding:10px 12px; border-bottom:1px solid var(--border); color:#334155; }
@@ -196,7 +121,6 @@
   .table-wrap{ overflow-x:auto; }
   .empty-state{ text-align:center; padding:24px; color:var(--text-muted); font-size:13px; }
   .badge{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; background:var(--mustard-soft); color:var(--navy); }
-
   .sidebar-backdrop{ display:none; }
 
   @media (max-width: 900px){
@@ -204,39 +128,15 @@
     .shell{ flex-direction:column; }
     .page-wrap{ padding:12px; }
     main{ padding:18px; }
-
-    /* Sidebar jadi panel yang MENIMPA layar (bukan mendorong konten ke bawah) */
-    .sidebar{
-      position:fixed; top:0; left:0; height:100vh; width:250px;
-      z-index:200; padding:28px 16px; opacity:1;
-      transform:translateX(-100%);
-      transition:transform .28s cubic-bezier(.4,0,.2,1);
-    }
-    /* Catatan: di mobile, class "collapsed" dipakai terbalik — dibalik jadi "sedang terbuka",
-       supaya tombol toggle yang sama tetap berfungsi seperti di desktop tanpa kode JS terpisah */
-    .sidebar.collapsed{
-      width:250px; padding:28px 16px; opacity:1;
-      transform:translateX(0);
-      box-shadow:0 0 44px rgba(0,0,0,0.35);
-    }
+    .sidebar{ position:fixed; top:0; left:0; height:100vh; width:250px; z-index:200; padding:28px 16px; opacity:1; transform:translateX(-100%); transition:transform .28s cubic-bezier(.4,0,.2,1); }
+    .sidebar.collapsed{ width:250px; padding:28px 16px; opacity:1; transform:translateX(0); box-shadow:0 0 44px rgba(0,0,0,0.35); }
     .sidebar.collapsed *{ pointer-events:auto; }
-
-    .sidebar-backdrop{
-      display:block; position:fixed; inset:0; background:rgba(0,0,0,0.45);
-      z-index:150; opacity:0; pointer-events:none; transition:opacity .25s ease;
-    }
+    .sidebar-backdrop{ display:block; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:150; opacity:0; pointer-events:none; transition:opacity .25s ease; }
     .sidebar-backdrop.show{ opacity:1; pointer-events:auto; }
   }
-
-  @media (max-width: 560px){
-    .stat-grid{ grid-template-columns:1fr; }
-  }
-  @media (min-width: 561px) and (max-width: 900px){
-    .stat-grid{ grid-template-columns:repeat(2,1fr); }
-  }
-  @media (max-width: 900px){
-    .bottom-grid{ grid-template-columns:1fr; }
-  }
+  @media (max-width: 560px){ .stat-grid{ grid-template-columns:1fr; } }
+  @media (min-width: 561px) and (max-width: 900px){ .stat-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width: 900px){ .bottom-grid{ grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
@@ -244,7 +144,6 @@
 <div class="page-wrap">
   <div class="shell">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-badge">S</div>
@@ -297,7 +196,6 @@
 
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <!-- MAIN -->
     <main>
       <div class="topbar">
         <div class="topbar-left">
@@ -340,7 +238,6 @@
         </div>
       </div>
 
-      <!-- ============ VIEW: BERANDA ============ -->
       <div class="view active" id="view-beranda">
         <div class="stat-grid">
           <div class="stat-card navy">
@@ -414,7 +311,6 @@
         </div>
       </div>
 
-      <!-- ============ VIEW: ABSENSI SISWA ============ -->
       <div class="view" id="view-absensi">
         <div class="feature-panel">
           <h3>Absensi Kelas</h3>
@@ -444,36 +340,56 @@
         </div>
       </div>
 
-      <!-- ============ VIEW: NILAI SISWA ============ -->
       <div class="view" id="view-nilai">
         <div class="feature-panel">
-          <h3>Input Nilai Siswa</h3>
-          <form id="formNilai">
-            <div class="form-grid">
-              <div class="form-group"><label>NISN Siswa</label><input type="text" name="nisn" required></div>
-              <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
-              <div class="form-group"><label>Semester</label>
-                <select name="semester"><option value="Ganjil">Ganjil</option><option value="Genap">Genap</option></select>
-              </div>
-              <div class="form-group"><label>Jenis</label>
-                <select name="jenis" required>
-                  <option value="">Pilih jenis</option>
-                  <option>Tugas</option><option>UH</option><option>PTS</option><option>PAS</option>
-                </select>
-              </div>
-              <div class="form-group"><label>Nilai</label><input type="number" name="nilai" min="0" max="100" required></div>
+          <h3>Input Nilai Kelas</h3>
+          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">Struktur Kurikulum Merdeka: Formatif (TP1–TP5), Sumatif Lingkup Materi (SLM1–SLM5), STS, SAS. Nilai Akhir dihitung otomatis dari rata-rata tiap kelompok.</p>
+          <div class="form-grid">
+            <div class="form-group"><label>Kelas</label>
+              <select id="nilaiKelas"><option value="">Pilih kelas</option></select>
             </div>
-            <button type="submit" class="btn-primary">Simpan Nilai</button>
+            <div class="form-group"><label>Mata Pelajaran</label><input type="text" id="nilaiMapel" placeholder="cth. Matematika"></div>
+            <div class="form-group"><label>Semester</label>
+              <select id="nilaiSemester"><option value="Ganjil">Ganjil</option><option value="Genap">Genap</option></select>
+            </div>
+            <div class="form-group"><label>Komponen</label>
+              <select id="nilaiKomponen">
+                <optgroup label="Formatif">
+                  <option>TP1</option><option>TP2</option><option>TP3</option><option>TP4</option><option>TP5</option>
+                </optgroup>
+                <optgroup label="Sumatif Lingkup Materi">
+                  <option>SLM1</option><option>SLM2</option><option>SLM3</option><option>SLM4</option><option>SLM5</option>
+                </optgroup>
+                <optgroup label="Sumatif">
+                  <option>STS</option><option>SAS</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <button type="button" class="btn-primary" id="btnTampilkanNilai">Tampilkan Siswa</button>
+
+          <div id="nilaiDaftarWrap" style="margin-top:20px; display:none;">
+            <div class="table-wrap">
+              <table class="data-table" id="tableNilaiInput">
+                <thead><tr><th>NISN</th><th>Nama</th><th id="thKomponenNilai">Nilai</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <button type="button" class="btn-primary" id="btnSimpanNilaiKelas" style="margin-top:14px;">Simpan Nilai Kelas</button>
             <div class="form-msg" id="msgNilai"></div>
-          </form>
+          </div>
         </div>
         <div class="feature-panel">
           <h3>Rekap Nilai yang Saya Input</h3>
-          <div class="table-wrap"><table class="data-table" id="tableNilai"><thead><tr><th>NISN</th><th>Mapel</th><th>Jenis</th><th>Nilai</th></tr></thead><tbody><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody></table></div>
+          <div class="table-wrap">
+            <table class="data-table" id="tableNilai">
+              <thead><tr><th>NISN</th><th>Mapel</th><th>TP1-5</th><th>SLM1-5</th><th>STS</th><th>SAS</th><th>Nilai Akhir</th></tr></thead>
+              <tbody><tr><td colspan="7" class="empty-state">Memuat...</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      <!-- ============ VIEW: JADWAL MENGAJAR ============ -->
       <div class="view" id="view-jadwal">
         <div class="feature-panel">
           <h3>Jadwal Mengajar Saya</h3>
@@ -482,7 +398,6 @@
         </div>
       </div>
 
-      <!-- ============ VIEW: BUAT RPP ============ -->
       <div class="view" id="view-rpp">
         <div class="feature-panel">
           <h3>Buat RPP</h3>
@@ -503,7 +418,6 @@
         </div>
       </div>
 
-      <!-- ============ VIEW: PRESENSI DIRI ============ -->
       <div class="view" id="view-presensiDiri">
         <div class="feature-panel">
           <h3>Presensi Hari Ini</h3>
@@ -527,7 +441,6 @@
         </div>
       </div>
 
-      <!-- ============ VIEW: AJUKAN CUTI ============ -->
       <div class="view" id="view-cuti">
         <div class="feature-panel">
           <h3>Ajukan Cuti</h3>
@@ -554,9 +467,6 @@
 <script>
 const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLW8XdWVgQb3CMR1xz1V8CEDMm3e4ZhaGDZCNGZsiqvnGrhLfxSfeKtND-mKhyd-pS/exec';
 
-// =====================================================
-// SESI LOGIN
-// =====================================================
 let SESI = null;
 (function cekSesi() {
   SESI = JSON.parse(localStorage.getItem('portalSmaSesi') || 'null');
@@ -576,9 +486,6 @@ function logout() {
   window.location.href = 'login.html';
 }
 
-// =====================================================
-// JSONP HELPER
-// =====================================================
 function jsonpCall(action, params) {
   return new Promise((resolve, reject) => {
     const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
@@ -609,9 +516,6 @@ function esc(str) {
   return div.innerHTML;
 }
 
-// =====================================================
-// TOGGLE SIDEBAR
-// =====================================================
 const sidebarEl = document.getElementById('sidebar');
 const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
@@ -638,14 +542,11 @@ if (localStorage.getItem('portalSmaSidebarCollapsed') === '1') {
 }
 syncSidebarBackdrop();
 
-// =====================================================
-// SPA — GANTI VIEW SAAT MENU SIDEBAR DIKLIK
-// =====================================================
 const judulView = {
   beranda: 'Beranda', absensi: 'Absensi Siswa', nilai: 'Nilai Siswa',
   jadwal: 'Jadwal Mengajar', rpp: 'Buat RPP', presensiDiri: 'Presensi Diri', cuti: 'Ajukan Cuti'
 };
-const dataDimuat = {}; // supaya tidak fetch ulang tiap klik menu yang sama
+const dataDimuat = {};
 
 document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
   btn.addEventListener('click', function () {
@@ -660,7 +561,6 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
     document.getElementById('view-' + target).classList.add('active');
     document.getElementById('pageTitle').textContent = judulView[target];
 
-    // Di layar sempit, tutup panel menu otomatis setelah memilih
     if (window.innerWidth <= 900) {
       sidebarEl.classList.remove('collapsed');
       localStorage.setItem('portalSmaSidebarCollapsed', '0');
@@ -679,9 +579,6 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
   });
 });
 
-// =====================================================
-// BERANDA
-// =====================================================
 async function muatStatistik() {
   try {
     const [hasilJadwal, hasilRPP] = await Promise.all([
@@ -740,11 +637,7 @@ async function muatKalender() {
   }
 }
 
-// =====================================================
-// ABSENSI SISWA (kolektif per kelas)
-// =====================================================
 async function muatAbsensi() {
-  // Isi dropdown Kelas dari jadwal mengajar guru ini
   const selectKelas = document.getElementById('absensiKelas');
   try {
     const hasilJadwal = await jsonpCall('jadwal_mengajar', { nip: SESI.refID });
@@ -753,9 +646,8 @@ async function muatAbsensi() {
       selectKelas.innerHTML = '<option value="">Pilih kelas</option>' +
         kelasUnik.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
     }
-  } catch (e) { /* biarkan dropdown kosong kalau gagal */ }
+  } catch (e) {}
 
-  // Rekap absensi yang sudah pernah diinput guru ini
   const tbody = document.querySelector('#tableAbsensi tbody');
   tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
   try {
@@ -835,40 +727,100 @@ document.getElementById('btnSimpanAbsensiKelas').addEventListener('click', async
   btn.disabled = false;
 });
 
-// =====================================================
-// NILAI SISWA
-// =====================================================
 async function muatNilai() {
+  const selectKelas = document.getElementById('nilaiKelas');
+  try {
+    const hasilJadwal = await jsonpCall('jadwal_mengajar', { nip: SESI.refID });
+    if (hasilJadwal.success) {
+      const kelasUnik = [...new Set(hasilJadwal.data.map(j => j.Kelas))];
+      selectKelas.innerHTML = '<option value="">Pilih kelas</option>' +
+        kelasUnik.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
+    }
+  } catch (e) {}
+
   const tbody = document.querySelector('#tableNilai tbody');
-  tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Memuat...</td></tr>';
   try {
     const hasil = await jsonpCall('nilai_rekap', { nip: SESI.refID });
-    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada nilai</td></tr>'; return; }
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Belum ada nilai</td></tr>'; return; }
     tbody.innerHTML = hasil.data.map(n => `
-      <tr><td>${esc(n.NISN)}</td><td>${esc(n.Mapel)}</td><td><span class="badge">${esc(n.Jenis)}</span></td><td>${esc(n.Nilai)}</td></tr>
+      <tr>
+        <td>${esc(n.NISN)}</td><td>${esc(n.Mapel)}</td>
+        <td>${[n.TP1,n.TP2,n.TP3,n.TP4,n.TP5].map(v=>v===''?'-':v).join(', ')}</td>
+        <td>${[n.SLM1,n.SLM2,n.SLM3,n.SLM4,n.SLM5].map(v=>v===''?'-':v).join(', ')}</td>
+        <td>${n.STS === '' ? '-' : n.STS}</td>
+        <td>${n.SAS === '' ? '-' : n.SAS}</td>
+        <td><span class="badge">${n.NilaiAkhir === '' ? '-' : n.NilaiAkhir}</span></td>
+      </tr>
     `).join('');
-  } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Gagal memuat data</td></tr>'; }
 }
-document.getElementById('formNilai').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector('button');
+
+document.getElementById('btnTampilkanNilai').addEventListener('click', async () => {
+  const kelas = document.getElementById('nilaiKelas').value;
+  const mapel = document.getElementById('nilaiMapel').value.trim();
+  const komponen = document.getElementById('nilaiKomponen').value;
+  const wrap = document.getElementById('nilaiDaftarWrap');
+  const tbody = document.querySelector('#tableNilaiInput tbody');
   const msg = document.getElementById('msgNilai');
-  const data = Object.fromEntries(new FormData(form).entries());
-  data.nip = SESI.refID;
+  msg.textContent = '';
+
+  if (!kelas || !mapel) { msg.textContent = 'Pilih kelas dan isi mata pelajaran dulu'; msg.className = 'form-msg error'; return; }
+
+  document.getElementById('thKomponenNilai').textContent = 'Nilai ' + komponen;
+  wrap.style.display = 'block';
+  tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('siswa_list', { kelas });
+    if (!hasil.success || !hasil.data.length) {
+      tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Belum ada siswa di kelas ini</td></tr>';
+      return;
+    }
+    tbody.innerHTML = hasil.data.map(s => `
+      <tr data-nisn="${esc(s.NISN)}">
+        <td>${esc(s.NISN)}</td>
+        <td>${esc(s.Nama)}</td>
+        <td><input type="number" class="nilai-input" min="0" max="100" style="width:80px; padding:6px 8px; border-radius:8px; border:1px solid var(--border);"></td>
+      </tr>
+    `).join('');
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Gagal memuat siswa</td></tr>';
+  }
+});
+
+document.getElementById('btnSimpanNilaiKelas').addEventListener('click', async () => {
+  const mapel = document.getElementById('nilaiMapel').value.trim();
+  const semester = document.getElementById('nilaiSemester').value;
+  const komponen = document.getElementById('nilaiKomponen').value;
+  const msg = document.getElementById('msgNilai');
+  const btn = document.getElementById('btnSimpanNilaiKelas');
+
+  if (!mapel) { msg.textContent = 'Isi Mata Pelajaran dulu'; msg.className = 'form-msg error'; return; }
+
+  const baris = document.querySelectorAll('#tableNilaiInput tbody tr[data-nisn]');
+  if (!baris.length) { msg.textContent = 'Tidak ada siswa untuk disimpan'; msg.className = 'form-msg error'; return; }
+
+  const daftar = Array.from(baris)
+    .map(tr => ({ nisn: tr.dataset.nisn, nilai: tr.querySelector('.nilai-input').value }))
+    .filter(d => d.nilai !== '');
+
+  if (!daftar.length) { msg.textContent = 'Belum ada nilai yang diisi'; msg.className = 'form-msg error'; return; }
+
   btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
   try {
-    const hasil = await jsonpCall('nilai_input', data);
+    const hasil = await jsonpCall('nilai_input_bulk', {
+      mapel, semester, komponen, nip: SESI.refID, data: JSON.stringify(daftar)
+    });
     msg.textContent = hasil.success ? hasil.message : hasil.error;
     msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
-    if (hasil.success) { form.reset(); dataDimuat.nilai = false; muatNilai(); }
+    if (hasil.success) {
+      dataDimuat.nilai = false;
+      muatNilai();
+    }
   } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
   btn.disabled = false;
 });
 
-// =====================================================
-// JADWAL MENGAJAR (read-only bagi Guru — diatur oleh Admin)
-// =====================================================
 async function muatJadwal() {
   const tbody = document.querySelector('#tableJadwal tbody');
   tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
@@ -881,9 +833,6 @@ async function muatJadwal() {
   } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
 }
 
-// =====================================================
-// BUAT RPP
-// =====================================================
 async function muatRPP() {
   const tbody = document.querySelector('#tableRPP tbody');
   tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Memuat...</td></tr>';
@@ -912,9 +861,6 @@ document.getElementById('formRPP').addEventListener('submit', async (e) => {
   btn.disabled = false;
 });
 
-// =====================================================
-// PRESENSI DIRI
-// =====================================================
 async function muatPresensiDiri() {
   const tbody = document.querySelector('#tablePresensiDiri tbody');
   tbody.innerHTML = '<tr><td colspan="2" class="empty-state">Memuat...</td></tr>';
@@ -941,9 +887,6 @@ document.getElementById('formPresensiDiri').addEventListener('submit', async (e)
   btn.disabled = false;
 });
 
-// =====================================================
-// AJUKAN CUTI
-// =====================================================
 async function muatCuti() {
   const tbody = document.querySelector('#tableCuti tbody');
   tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
@@ -972,15 +915,11 @@ document.getElementById('formCuti').addEventListener('submit', async (e) => {
   btn.disabled = false;
 });
 
-// Muat Beranda saat pertama kali dibuka
 muatStatistik();
 muatPengumuman();
 muatKalender();
 muatNotifikasi();
 
-// =====================================================
-// DROPDOWN NOTIFIKASI & PROFIL
-// =====================================================
 const notifBtn = document.getElementById('notifBtn');
 const notifPanel = document.getElementById('notifPanel');
 const userAvatarBtn = document.getElementById('userAvatar');
