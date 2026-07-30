@@ -415,6 +415,7 @@
             </div>
 
             <h3 style="margin-top:6px;">Tujuan &amp; Konteks Pembelajaran</h3>
+            <div class="form-group" style="margin-bottom:14px;"><label>Capaian Pembelajaran</label><textarea name="capaianPembelajaran"></textarea></div>
             <div class="form-group" style="margin-bottom:14px;"><label>Tujuan Pembelajaran</label><textarea name="tujuan"></textarea></div>
             <div class="form-group" style="margin-bottom:14px;"><label>Identifikasi Peserta Didik</label><textarea name="identifikasiPD"></textarea></div>
             <div class="form-group" style="margin-bottom:14px;"><label>Materi Pembelajaran</label><textarea name="materi"></textarea></div>
@@ -434,7 +435,20 @@
             <h3>Asesmen</h3>
             <div class="form-group" style="margin-bottom:14px;"><label>Asesmen Awal</label><textarea name="asesmenAwal"></textarea></div>
             <div class="form-group" style="margin-bottom:14px;"><label>Asesmen Proses</label><textarea name="asesmenProses"></textarea></div>
-            <div class="form-group" style="margin-bottom:16px;"><label>Asesmen Akhir</label><textarea name="asesmenAkhir"></textarea></div>
+            <div class="form-group" style="margin-bottom:20px;"><label>Asesmen Akhir</label><textarea name="asesmenAkhir"></textarea></div>
+
+            <h3>Dimensi Profil Lulusan</h3>
+            <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">Centang dimensi yang relevan dengan RPP ini (boleh lebih dari satu).</p>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:10px; margin-bottom:20px;">
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL1"> DPL 1 — Keimanan &amp; Ketakwaan</label>
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL2"> DPL 2 — Kewargaan</label>
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL3"> DPL 3 — Penalaran Kritis</label>
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL4"> DPL 4 — Kreativitas</label>
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL5"> DPL 5 — Kolaborasi</label>
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL6"> DPL 6 — Kemandirian</label>
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL7"> DPL 7 — Kesehatan</label>
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#334155; cursor:pointer;"><input type="checkbox" class="dpl-check" value="DPL8"> DPL 8 — Komunikasi</label>
+            </div>
 
             <button type="submit" class="btn-primary">Simpan RPP</button>
             <div class="form-msg" id="msgRPP"></div>
@@ -442,7 +456,7 @@
         </div>
         <div class="feature-panel">
           <h3>RPP Tersimpan</h3>
-          <div class="table-wrap"><table class="data-table" id="tableRPP"><thead><tr><th>Mapel</th><th>Kelas</th><th>Topik</th><th>Semester</th><th>Tanggal Buat</th></tr></thead><tbody><tr><td colspan="5" class="empty-state">Memuat...</td></tr></tbody></table></div>
+          <div class="table-wrap"><table class="data-table" id="tableRPP"><thead><tr><th>Mapel</th><th>Kelas</th><th>Topik</th><th>Semester</th><th>DPL</th><th>Tanggal Buat</th></tr></thead><tbody><tr><td colspan="6" class="empty-state">Memuat...</td></tr></tbody></table></div>
         </div>
       </div>
 
@@ -863,14 +877,14 @@ async function muatJadwal() {
 
 async function muatRPP() {
   const tbody = document.querySelector('#tableRPP tbody');
-  tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Memuat...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Memuat...</td></tr>';
   try {
     const hasil = await jsonpCall('rpp_list', { nip: SESI.refID });
-    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada RPP</td></tr>'; return; }
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Belum ada RPP</td></tr>'; return; }
     tbody.innerHTML = hasil.data.map(r => `
-      <tr><td>${esc(r.Mapel)}</td><td>${esc(r.Kelas)}</td><td>${esc(r.Topik)}</td><td>${esc(r.Semester)}</td><td>${formatTanggalIndo(r.TanggalBuat)}</td></tr>
+      <tr><td>${esc(r.Mapel)}</td><td>${esc(r.Kelas)}</td><td>${esc(r.Topik)}</td><td>${esc(r.Semester)}</td><td>${esc(r.DimensiProfilLulusan) || '-'}</td><td>${formatTanggalIndo(r.TanggalBuat)}</td></tr>
     `).join('');
-  } catch (e) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Gagal memuat data</td></tr>'; }
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Gagal memuat data</td></tr>'; }
 }
 document.getElementById('formRPP').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -879,12 +893,17 @@ document.getElementById('formRPP').addEventListener('submit', async (e) => {
   const msg = document.getElementById('msgRPP');
   const data = Object.fromEntries(new FormData(form).entries());
   data.nip = SESI.refID;
+  data.dimensiProfilLulusan = Array.from(document.querySelectorAll('.dpl-check:checked')).map(cb => cb.value).join(',');
   btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
   try {
     const hasil = await jsonpCall('rpp_generate', data);
     msg.textContent = hasil.success ? hasil.message : hasil.error;
     msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
-    if (hasil.success) { form.reset(); dataDimuat.rpp = false; muatRPP(); dataDimuat.beranda = false; muatStatistik(); }
+    if (hasil.success) {
+      form.reset();
+      document.querySelectorAll('.dpl-check').forEach(cb => cb.checked = false);
+      dataDimuat.rpp = false; muatRPP(); dataDimuat.beranda = false; muatStatistik();
+    }
   } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
   btn.disabled = false;
 });
