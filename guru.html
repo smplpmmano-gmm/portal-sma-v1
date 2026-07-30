@@ -400,21 +400,49 @@
 
       <div class="view" id="view-rpp">
         <div class="feature-panel">
-          <h3>Buat RPP</h3>
-          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">Generate otomatis via AI menyusul — untuk sekarang, tulis konten RPP manual dulu.</p>
+          <h3>Identitas RPP</h3>
+          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">Generate otomatis via AI menyusul — untuk sekarang, 16 bagian di bawah diisi manual dulu (boleh bertahap, tidak wajib sekaligus).</p>
           <form id="formRPP">
             <div class="form-grid">
               <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
               <div class="form-group"><label>Kelas</label><input type="text" name="kelas" placeholder="cth. X-1" required></div>
+              <div class="form-group"><label>Semester</label>
+                <select name="semester" required><option value="Ganjil">Ganjil</option><option value="Genap">Genap</option></select>
+              </div>
+              <div class="form-group"><label>Alokasi Waktu</label><input type="text" name="alokasiWaktu" placeholder="cth. 2 x 45 menit"></div>
+              <div class="form-group"><label>Model Pembelajaran</label><input type="text" name="modelPembelajaran" placeholder="cth. Discovery Learning"></div>
+              <div class="form-group"><label>Topik</label><input type="text" name="topik" required></div>
             </div>
-            <div class="form-group" style="margin-bottom:16px;"><label>Konten RPP</label><textarea name="kontenHTML" style="min-height:140px;" required></textarea></div>
+
+            <h3 style="margin-top:6px;">Tujuan &amp; Konteks Pembelajaran</h3>
+            <div class="form-group" style="margin-bottom:14px;"><label>Tujuan Pembelajaran</label><textarea name="tujuan"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Identifikasi Peserta Didik</label><textarea name="identifikasiPD"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Materi Pembelajaran</label><textarea name="materi"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Lintas Disiplin Ilmu</label><textarea name="lintasDisiplin"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Pemanfaatan Lingkungan sebagai Sumber Belajar</label><textarea name="lingkungan"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Kemitraan Pembelajaran</label><textarea name="kemitraan"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Praktik Pedagogis</label><textarea name="praktikPedagogis"></textarea></div>
+            <div class="form-group" style="margin-bottom:20px;"><label>Pemanfaatan Digital</label><textarea name="pemanfaatanDigital"></textarea></div>
+
+            <h3>Langkah Pembelajaran</h3>
+            <div class="form-group" style="margin-bottom:14px;"><label>Kegiatan Awal</label><textarea name="langkahAwal"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Memahami</label><textarea name="langkahMemahami"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Mengaplikasi</label><textarea name="langkahMengaplikasi"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Merefleksi</label><textarea name="langkahMerefleksi"></textarea></div>
+            <div class="form-group" style="margin-bottom:20px;"><label>Kegiatan Penutup</label><textarea name="langkahPenutup"></textarea></div>
+
+            <h3>Asesmen</h3>
+            <div class="form-group" style="margin-bottom:14px;"><label>Asesmen Awal</label><textarea name="asesmenAwal"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Asesmen Proses</label><textarea name="asesmenProses"></textarea></div>
+            <div class="form-group" style="margin-bottom:16px;"><label>Asesmen Akhir</label><textarea name="asesmenAkhir"></textarea></div>
+
             <button type="submit" class="btn-primary">Simpan RPP</button>
             <div class="form-msg" id="msgRPP"></div>
           </form>
         </div>
         <div class="feature-panel">
           <h3>RPP Tersimpan</h3>
-          <div class="table-wrap"><table class="data-table" id="tableRPP"><thead><tr><th>Mapel</th><th>Kelas</th><th>Tanggal Buat</th></tr></thead><tbody><tr><td colspan="3" class="empty-state">Memuat...</td></tr></tbody></table></div>
+          <div class="table-wrap"><table class="data-table" id="tableRPP"><thead><tr><th>Mapel</th><th>Kelas</th><th>Topik</th><th>Semester</th><th>Tanggal Buat</th></tr></thead><tbody><tr><td colspan="5" class="empty-state">Memuat...</td></tr></tbody></table></div>
         </div>
       </div>
 
@@ -835,14 +863,14 @@ async function muatJadwal() {
 
 async function muatRPP() {
   const tbody = document.querySelector('#tableRPP tbody');
-  tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Memuat...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Memuat...</td></tr>';
   try {
     const hasil = await jsonpCall('rpp_list', { nip: SESI.refID });
-    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Belum ada RPP</td></tr>'; return; }
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada RPP</td></tr>'; return; }
     tbody.innerHTML = hasil.data.map(r => `
-      <tr><td>${esc(r.Mapel)}</td><td>${esc(r.Kelas)}</td><td>${formatTanggalIndo(r.TanggalBuat)}</td></tr>
+      <tr><td>${esc(r.Mapel)}</td><td>${esc(r.Kelas)}</td><td>${esc(r.Topik)}</td><td>${esc(r.Semester)}</td><td>${formatTanggalIndo(r.TanggalBuat)}</td></tr>
     `).join('');
-  } catch (e) { tbody.innerHTML = '<tr><td colspan="3" class="empty-state">Gagal memuat data</td></tr>'; }
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Gagal memuat data</td></tr>'; }
 }
 document.getElementById('formRPP').addEventListener('submit', async (e) => {
   e.preventDefault();
