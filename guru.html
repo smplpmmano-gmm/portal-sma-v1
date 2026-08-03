@@ -321,11 +321,11 @@
           </div>
           <div class="stat-card mustard">
             <div class="stat-icon" style="background:var(--navy)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div>
-              <div class="stat-num" id="statPengumuman">–</div>
-              <div class="stat-sub">Pengumuman Aktif</div>
+              <div class="stat-num" id="statPertemuan">–</div>
+              <div class="stat-sub" id="statPertemuanRincian">Pertemuan per Kelas</div>
             </div>
           </div>
         </div>
@@ -724,9 +724,18 @@ async function muatStatistik() {
     ['statKelasDiampu','statJP','statSiswaAsuh'].forEach(id => document.getElementById(id).textContent = '–');
   }
   try {
-    const hasilPengumuman = await jsonpCall('pengumuman_list', { role: 'Guru' });
-    document.getElementById('statPengumuman').textContent = hasilPengumuman.success ? hasilPengumuman.data.length : '0';
-  } catch (e) { document.getElementById('statPengumuman').textContent = '–'; }
+    const hasilJurnal = await jsonpCall('jurnal_list', { nip: SESI.refID });
+    if (hasilJurnal.success && hasilJurnal.data.length) {
+      document.getElementById('statPertemuan').textContent = hasilJurnal.data.length;
+      const perKelas = {};
+      hasilJurnal.data.forEach(j => { perKelas[j.Kelas] = (perKelas[j.Kelas] || 0) + 1; });
+      const rincian = Object.entries(perKelas).map(([k, jml]) => `${k}: ${jml}x`).join(' • ');
+      document.getElementById('statPertemuanRincian').textContent = rincian;
+    } else {
+      document.getElementById('statPertemuan').textContent = '0';
+      document.getElementById('statPertemuanRincian').textContent = 'Belum ada jurnal';
+    }
+  } catch (e) { document.getElementById('statPertemuan').textContent = '–'; }
 }
 
 async function muatPengumuman() {
