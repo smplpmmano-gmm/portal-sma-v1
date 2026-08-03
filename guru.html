@@ -207,9 +207,21 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           Siswa Asuh
         </button>
+        <button class="nav-item" data-view="jurnal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          Jurnal Mengajar
+        </button>
+        <button class="nav-item" data-view="bankMateri">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          Bank Materi
+        </button>
         <button class="nav-item" data-view="presensiDiri">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           Presensi Diri
+        </button>
+        <button class="nav-item" data-view="rekapKehadiran">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-4"/></svg>
+          Rekap Kehadiran
         </button>
         <button class="nav-item" data-view="cuti">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M9 16l2 2 4-4"/></svg>
@@ -442,6 +454,50 @@
         </div>
       </div>
 
+      <div class="view" id="view-jurnal">
+        <div class="feature-panel">
+          <h3>Isi Jurnal Mengajar Hari Ini</h3>
+          <form id="formJurnal">
+            <div class="form-grid">
+              <div class="form-group"><label>Tanggal</label><input type="date" name="tanggal" required></div>
+              <div class="form-group"><label>Kelas</label><input type="text" name="kelas" placeholder="cth. X-1" required></div>
+              <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
+              <div class="form-group"><label>Jam Ke</label><input type="text" name="jamKe" placeholder="cth. 3-4"></div>
+            </div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Materi yang Diajarkan</label><textarea name="materi" required></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Kegiatan Pembelajaran</label><textarea name="kegiatan"></textarea></div>
+            <div class="form-group" style="margin-bottom:14px;"><label>Siswa Tidak Hadir</label><input type="text" name="siswaTidakHadir" placeholder="cth. Nama A, Nama B"></div>
+            <div class="form-group" style="margin-bottom:16px;"><label>Catatan/Kendala</label><textarea name="catatan"></textarea></div>
+            <button type="submit" class="btn-primary">Simpan Jurnal</button>
+            <div class="form-msg" id="msgJurnal"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Riwayat Jurnal Mengajar</h3>
+          <div class="table-wrap"><table class="data-table" id="tableJurnal"><thead><tr><th>Tanggal</th><th>Kelas</th><th>Mapel</th><th>Materi</th></tr></thead><tbody><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <div class="view" id="view-bankMateri">
+        <div class="feature-panel">
+          <h3>Tambah Link Materi/Tugas</h3>
+          <form id="formMateri">
+            <div class="form-grid">
+              <div class="form-group"><label>Mata Pelajaran</label><input type="text" name="mapel" required></div>
+              <div class="form-group"><label>Kelas</label><input type="text" name="kelas" placeholder="cth. X-1" required></div>
+              <div class="form-group"><label>Judul</label><input type="text" name="judul" required></div>
+              <div class="form-group"><label>Link</label><input type="url" name="link" placeholder="https://..." required></div>
+            </div>
+            <button type="submit" class="btn-primary">Simpan Materi</button>
+            <div class="form-msg" id="msgMateri"></div>
+          </form>
+        </div>
+        <div class="feature-panel">
+          <h3>Materi/Tugas Tersimpan</h3>
+          <div class="table-wrap"><table class="data-table" id="tableMateri"><thead><tr><th>Mapel</th><th>Kelas</th><th>Judul</th><th>Link</th></tr></thead><tbody><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
       <div class="view" id="view-presensiDiri">
         <div class="feature-panel">
           <h3>Presensi Hari Ini</h3>
@@ -462,6 +518,26 @@
         <div class="feature-panel">
           <h3>Riwayat Presensi Saya</h3>
           <div class="table-wrap"><table class="data-table" id="tablePresensiDiri"><thead><tr><th>Tanggal</th><th>Status</th></tr></thead><tbody><tr><td colspan="2" class="empty-state">Memuat...</td></tr></tbody></table></div>
+        </div>
+      </div>
+
+      <div class="view" id="view-rekapKehadiran">
+        <div class="feature-panel">
+          <h3>Rekap Kehadiran Siswa</h3>
+          <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:16px;">Ringkasan dari absensi yang sudah pernah Bapak input, dikelompokkan per siswa.</p>
+          <div class="form-grid">
+            <div class="form-group"><label>Kelas</label>
+              <select id="rekapKelas"><option value="">Pilih kelas</option></select>
+            </div>
+          </div>
+          <button type="button" class="btn-primary" id="btnTampilkanRekap">Tampilkan Rekap</button>
+
+          <div class="table-wrap" style="margin-top:20px;">
+            <table class="data-table" id="tableRekapKehadiran">
+              <thead><tr><th>NISN</th><th>Nama</th><th>Hadir</th><th>Sakit</th><th>Izin</th><th>Alpa</th><th>% Kehadiran</th></tr></thead>
+              <tbody><tr><td colspan="7" class="empty-state">Pilih kelas dulu</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -583,7 +659,7 @@ syncSidebarBackdrop();
 
 const judulView = {
   beranda: 'Beranda', absensi: 'Absensi Siswa', nilai: 'Nilai Siswa',
-  jadwal: 'Jadwal Mengajar', siswaAsuh: 'Siswa Asuh', presensiDiri: 'Presensi Diri', cuti: 'Ajukan Cuti'
+  jadwal: 'Jadwal Mengajar', siswaAsuh: 'Siswa Asuh', rekapKehadiran: 'Rekap Kehadiran', jurnal: 'Jurnal Mengajar', bankMateri: 'Bank Materi', presensiDiri: 'Presensi Diri', cuti: 'Ajukan Cuti'
 };
 const dataDimuat = {};
 
@@ -612,6 +688,9 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
       if (target === 'nilai') muatNilai();
       if (target === 'jadwal') muatJadwal();
       if (target === 'siswaAsuh') muatSiswaAsuh();
+      if (target === 'rekapKehadiran') muatRekapKehadiranKelas();
+      if (target === 'jurnal') muatJurnal();
+      if (target === 'bankMateri') muatMateri();
       if (target === 'presensiDiri') muatPresensiDiri();
       if (target === 'cuti') muatCuti();
     }
@@ -953,6 +1032,127 @@ document.getElementById('formCatatan').addEventListener('submit', async (e) => {
     msg.textContent = hasil.success ? hasil.message : hasil.error;
     msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
     if (hasil.success) { form.reset(); muatCatatanPerkembangan(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
+
+// =====================================================
+// REKAP KEHADIRAN SISWA (olah data dari Absensi yang sudah ada)
+// =====================================================
+async function muatRekapKehadiranKelas() {
+  const selectKelas = document.getElementById('rekapKelas');
+  try {
+    const hasilJadwal = await jsonpCall('jadwal_mengajar', { nip: SESI.refID });
+    if (hasilJadwal.success) {
+      const kelasUnik = [...new Set(hasilJadwal.data.map(j => j.Kelas))];
+      selectKelas.innerHTML = '<option value="">Pilih kelas</option>' +
+        kelasUnik.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
+    }
+  } catch (e) { /* biarkan kosong kalau gagal */ }
+}
+
+document.getElementById('btnTampilkanRekap').addEventListener('click', async () => {
+  const kelas = document.getElementById('rekapKelas').value;
+  const tbody = document.querySelector('#tableRekapKehadiran tbody');
+  if (!kelas) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Pilih kelas dulu</td></tr>'; return; }
+
+  tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Memuat...</td></tr>';
+  try {
+    const [hasilSiswa, hasilAbsensi] = await Promise.all([
+      jsonpCall('siswa_list', { kelas }),
+      jsonpCall('absensi_rekap', { nip: SESI.refID, kelas })
+    ]);
+
+    if (!hasilSiswa.success || !hasilSiswa.data.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Belum ada siswa di kelas ini</td></tr>';
+      return;
+    }
+
+    const rekapPerSiswa = {};
+    hasilSiswa.data.forEach(s => {
+      rekapPerSiswa[s.NISN] = { nama: s.Nama, Hadir: 0, Sakit: 0, Izin: 0, Alpa: 0 };
+    });
+    if (hasilAbsensi.success) {
+      hasilAbsensi.data.forEach(a => {
+        if (rekapPerSiswa[a.NISN] && rekapPerSiswa[a.NISN][a.Status] !== undefined) {
+          rekapPerSiswa[a.NISN][a.Status]++;
+        }
+      });
+    }
+
+    tbody.innerHTML = Object.entries(rekapPerSiswa).map(([nisn, r]) => {
+      const total = r.Hadir + r.Sakit + r.Izin + r.Alpa;
+      const persen = total > 0 ? Math.round((r.Hadir / total) * 100) : 0;
+      const warnaBadge = persen >= 90 ? 'success' : (persen >= 75 ? '' : 'error');
+      return `<tr>
+        <td>${esc(nisn)}</td><td>${esc(r.nama)}</td>
+        <td>${r.Hadir}</td><td>${r.Sakit}</td><td>${r.Izin}</td><td>${r.Alpa}</td>
+        <td><span class="badge" style="${persen < 75 ? 'background:#fdecea;color:#c0392b;' : ''}">${total > 0 ? persen + '%' : '-'}</span></td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Gagal memuat data</td></tr>';
+  }
+});
+
+// =====================================================
+// JURNAL MENGAJAR HARIAN
+// =====================================================
+async function muatJurnal() {
+  const tbody = document.querySelector('#tableJurnal tbody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('jurnal_list', { nip: SESI.refID });
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada jurnal</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(j => `
+      <tr><td>${j.Tanggal}</td><td>${esc(j.Kelas)}</td><td>${esc(j.Mapel)}</td><td>${esc(j.Materi)}</td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formJurnal').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgJurnal');
+  const data = Object.fromEntries(new FormData(form).entries());
+  data.nip = SESI.refID;
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('jurnal_save', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); muatJurnal(); }
+  } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
+  btn.disabled = false;
+});
+
+// =====================================================
+// BANK MATERI/TUGAS
+// =====================================================
+async function muatMateri() {
+  const tbody = document.querySelector('#tableMateri tbody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Memuat...</td></tr>';
+  try {
+    const hasil = await jsonpCall('materi_list', { nip: SESI.refID });
+    if (!hasil.success || !hasil.data.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Belum ada materi</td></tr>'; return; }
+    tbody.innerHTML = hasil.data.map(m => `
+      <tr><td>${esc(m.Mapel)}</td><td>${esc(m.Kelas)}</td><td>${esc(m.Judul)}</td><td><a href="${esc(m.Link)}" target="_blank" style="color:var(--navy);font-weight:600;">Buka Link</a></td></tr>
+    `).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Gagal memuat data</td></tr>'; }
+}
+document.getElementById('formMateri').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const msg = document.getElementById('msgMateri');
+  const data = Object.fromEntries(new FormData(form).entries());
+  data.nip = SESI.refID;
+  btn.disabled = true; msg.textContent = ''; msg.className = 'form-msg';
+  try {
+    const hasil = await jsonpCall('materi_save', data);
+    msg.textContent = hasil.success ? hasil.message : hasil.error;
+    msg.className = 'form-msg ' + (hasil.success ? 'success' : 'error');
+    if (hasil.success) { form.reset(); muatMateri(); }
   } catch (err) { msg.textContent = 'Gagal terhubung ke server'; msg.className = 'form-msg error'; }
   btn.disabled = false;
 });
