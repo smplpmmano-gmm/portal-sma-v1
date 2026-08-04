@@ -353,27 +353,87 @@
 
       <!-- ========== MENU BARU (placeholder, belum berfungsi) ========== -->
       <div id="menu-konseling" class="menu-section">
-        <div class="page-header"><h2>Catatan Konseling</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          <div>Menu Catatan Konseling — form &amp; tabel sudah punya kode di percakapan sebelumnya, tinggal ditempel di sini.</div>
+        <div class="page-header">
+          <h2>Catatan Konseling</h2>
+          <button class="btn-primary" onclick="bukaFormKonseling()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Catatan Baru</button>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <select id="filterKelasKonseling" onchange="muatKonseling()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Kelas</option>
+          </select>
+          <select id="filterStatusKonseling" onchange="muatKonseling()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Status</option>
+            <option value="Selesai">Selesai</option>
+            <option value="Perlu Pemantauan">Perlu Pemantauan</option>
+            <option value="Dirujuk">Dirujuk</option>
+          </select>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th>
+              <th style="padding:10px 8px;">Jenis</th><th style="padding:10px 8px;">Kategori</th><th style="padding:10px 8px;">Status</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelKonseling"></tbody>
+        </table>
       </div>
 
       <div id="menu-rujukan" class="menu-section">
-        <div class="page-header"><h2>Rujukan Kasus</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M17 8l4 4-4 4M3 12h18"/></svg>
-          <div>Menu Rujukan Kasus — backend sudah siap, tinggal tempel HTML form &amp; tabelnya.</div>
+        <div class="page-header">
+          <h2>Rujukan Kasus</h2>
+          <button onclick="bukaFormRujukan()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Rujukan Baru</button>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <select id="filterKelasRujukan" onchange="muatRujukan()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Kelas</option>
+          </select>
+          <select id="filterStatusRujukan" onchange="muatRujukan()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Status</option>
+            <option value="Diajukan">Diajukan</option>
+            <option value="Diproses">Diproses</option>
+            <option value="Selesai">Selesai</option>
+          </select>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th>
+              <th style="padding:10px 8px;">Dirujuk Ke</th><th style="padding:10px 8px;">Status</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelRujukan"></tbody>
+        </table>
       </div>
 
       <div id="menu-jadwal" class="menu-section">
-        <div class="page-header"><h2>Jadwal Bimbingan/Konseling</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          <div>Menu Jadwal Bimbingan/Konseling — belum dibuatkan sheet &amp; fungsinya.</div>
+        <div class="page-header">
+          <h2>Jadwal Bimbingan/Konseling</h2>
+          <button onclick="bukaFormJadwal()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Jadwal Baru</button>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <select id="filterStatusJadwal" onchange="muatJadwal()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Status</option>
+            <option value="Terjadwal">Terjadwal</option>
+            <option value="Selesai">Selesai</option>
+            <option value="Batal">Batal</option>
+          </select>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Jam</th><th style="padding:10px 8px;">Nama Siswa</th>
+              <th style="padding:10px 8px;">Jenis Layanan</th><th style="padding:10px 8px;">Tempat</th><th style="padding:10px 8px;">Status</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelJadwal"></tbody>
+        </table>
       </div>
 
       <div id="menu-akpd" class="menu-section">
@@ -472,6 +532,127 @@
         </div>
       </div>
       <!-- ========== END MENU BARU ========== -->
+
+      <!-- Modal Form Jadwal Bimbingan/Konseling -->
+      <div id="modalJadwal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 id="judulModalJadwal" style="margin-bottom:16px; color:var(--navy);">Jadwal Baru</h3>
+          <form id="formJadwal" onsubmit="simpanJadwal(event)">
+            <input type="hidden" id="jadwalId">
+            <label>NISN Siswa</label>
+            <input type="text" id="jadwalNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Nama Siswa</label>
+            <input type="text" id="jadwalNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Kelas</label>
+            <input type="text" id="jadwalKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tanggal</label>
+            <input type="date" id="jadwalTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Jam</label>
+            <input type="time" id="jadwalJam" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Jenis Layanan</label>
+            <select id="jadwalJenis" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Konseling Individu">Konseling Individu</option>
+              <option value="Konseling Kelompok">Konseling Kelompok</option>
+              <option value="Bimbingan Klasikal">Bimbingan Klasikal</option>
+            </select>
+            <label>Tempat</label>
+            <input type="text" id="jadwalTempat" placeholder="Ruang BK / Kelas / dll" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Status</label>
+            <select id="jadwalStatus" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Terjadwal">Terjadwal</option>
+              <option value="Selesai">Selesai</option>
+              <option value="Batal">Batal</option>
+            </select>
+            <label>Keterangan</label>
+            <textarea id="jadwalKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalJadwal')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Form Rujukan Kasus -->
+      <div id="modalRujukan" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 id="judulModalRujukan" style="margin-bottom:16px; color:var(--navy);">Rujukan Kasus Baru</h3>
+          <form id="formRujukan" onsubmit="simpanRujukan(event)">
+            <input type="hidden" id="rujukanId">
+            <label>NISN Siswa</label>
+            <input type="text" id="rujukanNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Nama Siswa</label>
+            <input type="text" id="rujukanNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Kelas</label>
+            <input type="text" id="rujukanKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tanggal Rujukan</label>
+            <input type="date" id="rujukanTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Asal Rujukan</label>
+            <input type="text" id="rujukanAsal" placeholder="Wali Kelas / Guru Mapel / Orang Tua / dll" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Dirujuk Ke</label>
+            <input type="text" id="rujukanDirujukKe" placeholder="Kepala Sekolah / Psikolog / Puskesmas / dll" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Alasan Rujukan</label>
+            <textarea id="rujukanAlasan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <label>Status</label>
+            <select id="rujukanStatus" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Diajukan">Diajukan</option>
+              <option value="Diproses">Diproses</option>
+              <option value="Selesai">Selesai</option>
+            </select>
+            <label>Hasil Rujukan</label>
+            <textarea id="rujukanHasil" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalRujukan')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Form Catatan Konseling -->
+      <div id="modalKonseling" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 id="judulModalKonseling" style="margin-bottom:16px; color:var(--navy);">Catatan Konseling Baru</h3>
+          <form id="formKonseling" onsubmit="simpanKonseling(event)">
+            <input type="hidden" id="konselingId">
+            <label>NISN Siswa</label>
+            <input type="text" id="konselingNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Nama Siswa</label>
+            <input type="text" id="konselingNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Kelas</label>
+            <input type="text" id="konselingKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tanggal Konseling</label>
+            <input type="date" id="konselingTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Jenis Konseling</label>
+            <select id="konselingJenis" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Individu">Individu</option>
+              <option value="Kelompok">Kelompok</option>
+              <option value="Klasikal">Klasikal</option>
+            </select>
+            <label>Kategori Masalah</label>
+            <select id="konselingKategori" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Pribadi">Pribadi</option>
+              <option value="Sosial">Sosial</option>
+              <option value="Belajar">Belajar</option>
+              <option value="Karier">Karier</option>
+            </select>
+            <label>Uraian Masalah</label>
+            <textarea id="konselingUraian" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <label>Tindak Lanjut</label>
+            <textarea id="konselingTindakLanjut" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <label>Status</label>
+            <select id="konselingStatus" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Selesai">Selesai</option>
+              <option value="Perlu Pemantauan">Perlu Pemantauan</option>
+              <option value="Dirujuk">Dirujuk</option>
+            </select>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalKonseling')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
     </main>
   </div>
@@ -675,6 +856,238 @@ const judulMenu = {
   pengumuman: 'Pengumuman'
 };
 
+function tutupModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+// ===== CATATAN KONSELING =====
+function muatKonseling() {
+  const kelas = document.getElementById('filterKelasKonseling').value;
+  const status = document.getElementById('filterStatusKonseling').value;
+  let url = API_URL + '?action=konseling_list';
+  if (kelas) url += '&kelas=' + kelas;
+  if (status) url += '&status=' + encodeURIComponent(status);
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelKonseling');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.TanggalKonseling + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.JenisKonseling + '</td>' +
+        '<td style="padding:8px;">' + row.KategoriMasalah + '</td>' +
+        '<td style="padding:8px;">' + row.Status + '</td>' +
+        '<td style="padding:8px;"><button onclick="editKonseling(\'' + row.ID + '\')">Edit</button> <button onclick="hapusKonseling(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormKonseling() {
+  document.getElementById('formKonseling').reset();
+  document.getElementById('konselingId').value = '';
+  document.getElementById('judulModalKonseling').innerText = 'Catatan Konseling Baru';
+  document.getElementById('modalKonseling').style.display = 'flex';
+}
+
+function simpanKonseling(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'konseling_simpan',
+    id: document.getElementById('konselingId').value,
+    nisn: document.getElementById('konselingNisn').value,
+    namaSiswa: document.getElementById('konselingNama').value,
+    kelas: document.getElementById('konselingKelas').value,
+    tanggalKonseling: document.getElementById('konselingTanggal').value,
+    jenisKonseling: document.getElementById('konselingJenis').value,
+    kategoriMasalah: document.getElementById('konselingKategori').value,
+    uraianMasalah: document.getElementById('konselingUraian').value,
+    tindakLanjut: document.getElementById('konselingTindakLanjut').value,
+    status: document.getElementById('konselingStatus').value,
+    guruBK: sesiAktif.namaLengkap
+  }, function(res) {
+    tutupModal('modalKonseling');
+    muatKonseling();
+  });
+}
+
+function editKonseling(id) {
+  callApi(API_URL + '?action=konseling_list', function(res) {
+    const row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('konselingId').value = row.ID;
+    document.getElementById('konselingNisn').value = row.NISN;
+    document.getElementById('konselingNama').value = row.NamaSiswa;
+    document.getElementById('konselingKelas').value = row.Kelas;
+    document.getElementById('konselingTanggal').value = row.TanggalKonseling;
+    document.getElementById('konselingJenis').value = row.JenisKonseling;
+    document.getElementById('konselingKategori').value = row.KategoriMasalah;
+    document.getElementById('konselingUraian').value = row.UraianMasalah;
+    document.getElementById('konselingTindakLanjut').value = row.TindakLanjut;
+    document.getElementById('konselingStatus').value = row.Status;
+    document.getElementById('judulModalKonseling').innerText = 'Edit Catatan Konseling';
+    document.getElementById('modalKonseling').style.display = 'flex';
+  });
+}
+
+function hapusKonseling(id) {
+  if (!confirm('Yakin hapus catatan konseling ini?')) return;
+  callApiPost({ action: 'konseling_hapus', id: id }, function() { muatKonseling(); });
+}
+
+// ===== RUJUKAN KASUS =====
+function muatRujukan() {
+  const kelas = document.getElementById('filterKelasRujukan').value;
+  const status = document.getElementById('filterStatusRujukan').value;
+  let url = API_URL + '?action=rujukan_list';
+  if (kelas) url += '&kelas=' + kelas;
+  if (status) url += '&status=' + encodeURIComponent(status);
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelRujukan');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.TanggalRujukan + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.DirujukKe + '</td>' +
+        '<td style="padding:8px;">' + row.StatusRujukan + '</td>' +
+        '<td style="padding:8px;"><button onclick="editRujukan(\'' + row.ID + '\')">Edit</button> <button onclick="hapusRujukan(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormRujukan() {
+  document.getElementById('formRujukan').reset();
+  document.getElementById('rujukanId').value = '';
+  document.getElementById('judulModalRujukan').innerText = 'Rujukan Kasus Baru';
+  document.getElementById('modalRujukan').style.display = 'flex';
+}
+
+function simpanRujukan(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'rujukan_simpan',
+    id: document.getElementById('rujukanId').value,
+    nisn: document.getElementById('rujukanNisn').value,
+    namaSiswa: document.getElementById('rujukanNama').value,
+    kelas: document.getElementById('rujukanKelas').value,
+    tanggalRujukan: document.getElementById('rujukanTanggal').value,
+    asalRujukan: document.getElementById('rujukanAsal').value,
+    dirujukKe: document.getElementById('rujukanDirujukKe').value,
+    alasanRujukan: document.getElementById('rujukanAlasan').value,
+    statusRujukan: document.getElementById('rujukanStatus').value,
+    hasilRujukan: document.getElementById('rujukanHasil').value,
+    guruBK: sesiAktif.namaLengkap
+  }, function() {
+    tutupModal('modalRujukan');
+    muatRujukan();
+  });
+}
+
+function editRujukan(id) {
+  callApi(API_URL + '?action=rujukan_list', function(res) {
+    const row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('rujukanId').value = row.ID;
+    document.getElementById('rujukanNisn').value = row.NISN;
+    document.getElementById('rujukanNama').value = row.NamaSiswa;
+    document.getElementById('rujukanKelas').value = row.Kelas;
+    document.getElementById('rujukanTanggal').value = row.TanggalRujukan;
+    document.getElementById('rujukanAsal').value = row.AsalRujukan;
+    document.getElementById('rujukanDirujukKe').value = row.DirujukKe;
+    document.getElementById('rujukanAlasan').value = row.AlasanRujukan;
+    document.getElementById('rujukanStatus').value = row.StatusRujukan;
+    document.getElementById('rujukanHasil').value = row.HasilRujukan;
+    document.getElementById('judulModalRujukan').innerText = 'Edit Rujukan Kasus';
+    document.getElementById('modalRujukan').style.display = 'flex';
+  });
+}
+
+function hapusRujukan(id) {
+  if (!confirm('Yakin hapus rujukan kasus ini?')) return;
+  callApiPost({ action: 'rujukan_hapus', id: id }, function() { muatRujukan(); });
+}
+
+// ===== JADWAL BIMBINGAN/KONSELING =====
+function muatJadwal() {
+  const status = document.getElementById('filterStatusJadwal').value;
+  let url = API_URL + '?action=jadwal_list';
+  if (status) url += '&status=' + encodeURIComponent(status);
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelJadwal');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.TanggalJadwal + '</td>' +
+        '<td style="padding:8px;">' + row.JamJadwal + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.JenisLayanan + '</td>' +
+        '<td style="padding:8px;">' + row.Tempat + '</td>' +
+        '<td style="padding:8px;">' + row.Status + '</td>' +
+        '<td style="padding:8px;"><button onclick="editJadwal(\'' + row.ID + '\')">Edit</button> <button onclick="hapusJadwal(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormJadwal() {
+  document.getElementById('formJadwal').reset();
+  document.getElementById('jadwalId').value = '';
+  document.getElementById('judulModalJadwal').innerText = 'Jadwal Baru';
+  document.getElementById('modalJadwal').style.display = 'flex';
+}
+
+function simpanJadwal(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'jadwal_simpan',
+    id: document.getElementById('jadwalId').value,
+    nisn: document.getElementById('jadwalNisn').value,
+    namaSiswa: document.getElementById('jadwalNama').value,
+    kelas: document.getElementById('jadwalKelas').value,
+    tanggalJadwal: document.getElementById('jadwalTanggal').value,
+    jamJadwal: document.getElementById('jadwalJam').value,
+    jenisLayanan: document.getElementById('jadwalJenis').value,
+    tempat: document.getElementById('jadwalTempat').value,
+    status: document.getElementById('jadwalStatus').value,
+    keterangan: document.getElementById('jadwalKeterangan').value,
+    guruBK: sesiAktif.namaLengkap
+  }, function() {
+    tutupModal('modalJadwal');
+    muatJadwal();
+  });
+}
+
+function editJadwal(id) {
+  callApi(API_URL + '?action=jadwal_list', function(res) {
+    const row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('jadwalId').value = row.ID;
+    document.getElementById('jadwalNisn').value = row.NISN;
+    document.getElementById('jadwalNama').value = row.NamaSiswa;
+    document.getElementById('jadwalKelas').value = row.Kelas;
+    document.getElementById('jadwalTanggal').value = row.TanggalJadwal;
+    document.getElementById('jadwalJam').value = row.JamJadwal;
+    document.getElementById('jadwalJenis').value = row.JenisLayanan;
+    document.getElementById('jadwalTempat').value = row.Tempat;
+    document.getElementById('jadwalStatus').value = row.Status;
+    document.getElementById('jadwalKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalJadwal').innerText = 'Edit Jadwal';
+    document.getElementById('modalJadwal').style.display = 'flex';
+  });
+}
+
+function hapusJadwal(id) {
+  if (!confirm('Yakin hapus jadwal ini?')) return;
+  callApiPost({ action: 'jadwal_hapus', id: id }, function() { muatJadwal(); });
+}
+
 function tampilkanMenu(menu) {
   document.querySelectorAll('.menu-section').forEach(function(el) { el.classList.remove('active'); });
   const target = document.getElementById('menu-' + menu);
@@ -691,6 +1104,9 @@ function tampilkanMenu(menu) {
     sidebarEl.classList.remove('mobile-open');
     sidebarBackdrop.classList.remove('show');
   }
+  if (menu === 'konseling') muatKonseling();
+  if (menu === 'rujukan') muatRujukan();
+  if (menu === 'jadwal') muatJadwal();
 }
 </script>
 </body>
