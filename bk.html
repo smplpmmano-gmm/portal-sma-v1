@@ -28,10 +28,16 @@
     box-shadow:0 25px 50px -12px rgba(27,42,74,0.25);
     background:#fff;
     min-height:860px;
+    position:relative;
   }
 
   /* SIDEBAR */
-  .sidebar{ width:250px; flex-shrink:0; background:var(--navy); padding:28px 16px; display:flex; flex-direction:column; }
+  .sidebar{ width:250px; flex-shrink:0; background:var(--navy); padding:28px 16px; display:flex; flex-direction:column; transition:width .2s ease; }
+  .sidebar.collapsed{ width:76px; padding:28px 10px; }
+  .sidebar.collapsed .brand-text, .sidebar.collapsed .role-tag, .sidebar.collapsed .nav-label, .sidebar.collapsed .user-card{ display:none; }
+  .sidebar.collapsed .brand{ justify-content:center; }
+  .sidebar.collapsed .nav-item{ justify-content:center; }
+
   .brand{ display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:32px; }
   .brand-badge{ width:36px; height:36px; border-radius:12px; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; flex-shrink:0; }
   .brand-title{ color:#fff; font-weight:700; font-size:15px; line-height:1.2; }
@@ -61,25 +67,35 @@
   .user-card{ background:rgba(255,255,255,0.06); border-radius:12px; padding:12px; color:rgba(255,255,255,0.7); font-size:12px; }
   .user-card strong{ display:block; color:#fff; font-size:13px; margin-top:2px; }
 
+  /* Overlay mobile */
+  .sidebar-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:40; }
+  .sidebar-backdrop.show{ display:block; }
+
   /* MAIN */
   main{ flex:1; padding:32px; overflow-y:auto; }
-  .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
-  .topbar h1{ font-size:22px; color:var(--navy); }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; gap:16px; }
+  .topbar-left{ display:flex; align-items:center; gap:14px; }
+  .sidebar-toggle{ width:38px; height:38px; border-radius:10px; background:var(--mustard-soft); border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; color:var(--navy); }
+  .sidebar-toggle:hover{ background:var(--mustard); }
+  .topbar h1{ font-size:20px; color:var(--navy); }
   .topbar p{ font-size:13px; color:var(--text-muted); margin-top:2px; }
+  #topbarSapaan{ font-size:16px; font-weight:600; color:var(--navy); }
   .topbar-actions{ display:flex; align-items:center; gap:12px; }
-  .icon-btn{ width:40px; height:40px; border-radius:50%; background:var(--mustard-soft); display:flex; align-items:center; justify-content:center; }
-  .avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; }
+  .icon-btn{ width:40px; height:40px; border-radius:50%; background:var(--mustard-soft); display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+  .avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 
-  .section-label{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-bottom:12px; }
-
-  .quick-grid{ display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; margin-bottom:32px; }
-  .quick-item{
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
-    padding:16px 8px; border-radius:16px; border:1px solid var(--border);
-    background:#fff; cursor:pointer; transition:all .18s ease; text-align:center;
-  }
-  .quick-item:hover{ transform:translateY(-4px); box-shadow:0 10px 20px rgba(27,42,74,0.12); border-color:var(--mustard); }
-  .quick-item span{ font-size:11.5px; font-weight:600; color:#475569; line-height:1.25; }
+  .dropdown-wrap{ position:relative; }
+  .dropdown-panel{ display:none; position:absolute; top:50px; right:0; background:#fff; border-radius:14px; box-shadow:0 15px 35px rgba(27,42,74,.18); border:1px solid var(--border); width:280px; z-index:60; padding:14px; }
+  .dropdown-panel.show{ display:block; }
+  .dropdown-title{ font-size:13px; font-weight:700; color:var(--navy); margin-bottom:10px; }
+  .dropdown-empty{ font-size:12.5px; color:var(--text-muted); padding:10px 0; text-align:center; }
+  .notif-dot{ position:absolute; top:-2px; right:-2px; background:#e0554f; color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; align-items:center; justify-content:center; padding:0 3px; display:none; }
+  .profile-header{ display:flex; align-items:center; gap:10px; padding-bottom:12px; border-bottom:1px solid var(--border); margin-bottom:10px; }
+  .profile-avatar{ width:42px; height:42px; border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
+  .profile-name{ font-size:13.5px; font-weight:700; color:var(--navy); }
+  .profile-role{ font-size:11.5px; color:var(--text-muted); }
+  .dropdown-logout{ width:100%; display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; border-radius:10px; border:none; background:var(--cream); color:#c0392b; font-size:13px; font-weight:600; cursor:pointer; }
+  .dropdown-logout:hover{ background:#fbe2e2; }
 
   .stat-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:32px; }
   .stat-card{ border-radius:16px; padding:20px; display:flex; align-items:center; gap:12px; border:1px solid var(--border); background:#fff; }
@@ -113,7 +129,6 @@
   .notice-title{ font-size:13.5px; font-weight:600; color:var(--navy); }
   .notice-date{ font-size:11.5px; color:var(--text-muted); }
 
-  /* MENU SECTION PLACEHOLDER (menu baru, belum berfungsi) */
   .menu-section{ display:none; }
   .menu-section.active{ display:block; }
   .page-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
@@ -126,24 +141,26 @@
 
   @media (max-width: 900px){
     .shell{ flex-direction:column; }
-    .sidebar{ width:100%; }
-    nav{ flex-direction:row; flex-wrap:wrap; max-height:none; }
-    .quick-grid{ grid-template-columns:repeat(3,1fr); }
+    .sidebar{ position:fixed; top:0; left:0; height:100vh; z-index:50; width:250px !important; transform:translateX(-100%); transition:transform .25s ease; }
+    .sidebar.mobile-open{ transform:translateX(0); }
     .stat-grid{ grid-template-columns:repeat(2,1fr); }
     .bottom-grid{ grid-template-columns:1fr; }
+    #topbarSapaan{ font-size:14px; }
   }
 </style>
 </head>
 <body>
 
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
 <div class="page-wrap">
   <div class="shell">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebarEl">
       <div class="brand">
         <div class="brand-badge">S</div>
-        <div>
+        <div class="brand-text">
           <div class="brand-title">Portal</div>
           <div class="brand-sub"> SMAN 30 Halmahera Selatan</div>
         </div>
@@ -154,67 +171,67 @@
       <nav>
         <a class="nav-item active" href="#" data-menu="beranda" onclick="tampilkanMenu('beranda'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-          Beranda
+          <span class="nav-label">Beranda</span>
         </a>
         <a class="nav-item" href="#" data-menu="konseling" onclick="tampilkanMenu('konseling'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 11h6M19 8v6"/></svg>
-          Catatan Konseling
+          <span class="nav-label">Catatan Konseling</span>
         </a>
         <a class="nav-item" href="#" data-menu="rujukan" onclick="tampilkanMenu('rujukan'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8l4 4-4 4M3 12h18"/></svg>
-          Rujukan Kasus
+          <span class="nav-label">Rujukan Kasus</span>
         </a>
         <a class="nav-item" href="#" data-menu="jadwal" onclick="tampilkanMenu('jadwal'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          Jadwal Bimbingan/Konseling
+          <span class="nav-label">Jadwal Bimbingan/Konseling</span>
         </a>
         <a class="nav-item" href="#" data-menu="akpd" onclick="tampilkanMenu('akpd'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M9 7h6M9 11h6M9 15h3"/></svg>
-          Angket AKPD/Minat Bakat
+          <span class="nav-label">Angket AKPD/Minat Bakat</span>
         </a>
         <a class="nav-item" href="#" data-menu="presensi" onclick="tampilkanMenu('presensi'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          Rekap Presensi Siswa
+          <span class="nav-label">Rekap Presensi Siswa</span>
         </a>
         <a class="nav-item" href="#" data-menu="surat" onclick="tampilkanMenu('surat'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
-          Surat Panggilan Ortu
+          <span class="nav-label">Surat Panggilan Ortu</span>
         </a>
         <a class="nav-item" href="#" data-menu="homevisit" onclick="tampilkanMenu('homevisit'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 22V12h6v10"/></svg>
-          Home Visit
+          <span class="nav-label">Home Visit</span>
         </a>
         <a class="nav-item" href="#" data-menu="siswabinaan" onclick="tampilkanMenu('siswabinaan'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Data Siswa Binaan
+          <span class="nav-label">Data Siswa Binaan</span>
         </a>
         <a class="nav-item" href="#" data-menu="klasikal" onclick="tampilkanMenu('klasikal'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
-          Bimbingan Klasikal
+          <span class="nav-label">Bimbingan Klasikal</span>
         </a>
         <a class="nav-item" href="#" data-menu="programbk" onclick="tampilkanMenu('programbk'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13l2 2 4-4"/></svg>
-          Program Tahunan/Semester BK
+          <span class="nav-label">Program Tahunan/Semester BK</span>
         </a>
         <a class="nav-item" href="#" data-menu="pelanggaran" onclick="tampilkanMenu('pelanggaran'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
-          Kasus Pelanggaran
+          <span class="nav-label">Kasus Pelanggaran</span>
         </a>
         <a class="nav-item" href="#" data-menu="poin" onclick="tampilkanMenu('poin'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>
-          Poin Pelanggaran/Reward
+          <span class="nav-label">Poin Pelanggaran/Reward</span>
         </a>
         <a class="nav-item" href="#" data-menu="psikotes" onclick="tampilkanMenu('psikotes'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          Tes/Psikotes
+          <span class="nav-label">Tes/Psikotes</span>
         </a>
         <a class="nav-item" href="#" data-menu="laporan" onclick="tampilkanMenu('laporan'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
-          Laporan BK
+          <span class="nav-label">Laporan BK</span>
         </a>
         <a class="nav-item" href="#" data-menu="pengumuman" onclick="tampilkanMenu('pengumuman'); return false;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          Pengumuman
+          <span class="nav-label">Pengumuman</span>
         </a>
       </nav>
 
@@ -230,48 +247,48 @@
     <!-- MAIN -->
     <main>
       <div class="topbar">
-        <div>
-          <h1 id="topbarTitle">Dashboard</h1>
-          <p id="topbarSub">Senin, 27 Juli 2026</p>
+        <div class="topbar-left">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Tampilkan/sembunyikan menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <h1 id="pageTitle">Beranda</h1>
+            <p id="topbarSapaan">Memuat...</p>
+          </div>
         </div>
         <div class="topbar-actions">
-          <div class="icon-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="dropdown-wrap">
+            <div class="icon-btn" id="notifBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="notif-dot" id="notifDot">0</span>
+            </div>
+            <div class="dropdown-panel" id="notifPanel">
+              <div class="dropdown-title">Notifikasi Pengumuman</div>
+              <div id="notifList"><div class="dropdown-empty">Memuat...</div></div>
+            </div>
           </div>
-          <div class="avatar" id="userAvatar">BK</div>
+
+          <div class="dropdown-wrap">
+            <div class="avatar" id="userAvatar">BK</div>
+            <div class="dropdown-panel" id="profilePanel" style="width:230px;">
+              <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatarInner">BK</div>
+                <div>
+                  <div class="profile-name" id="profileName">–</div>
+                  <div class="profile-role">Guru BK</div>
+                </div>
+              </div>
+              <button class="dropdown-logout" onclick="logout()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Keluar
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- ========== MENU: BERANDA ========== -->
       <div id="menu-beranda" class="menu-section active">
-        <div class="section-label">Aksi Cepat</div>
-        <div class="quick-grid">
-          <div class="quick-item" onclick="tampilkanMenu('konseling')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 11h6M19 8v6"/></svg>
-            <span>Catatan Konseling</span>
-          </div>
-          <div class="quick-item" onclick="tampilkanMenu('jadwal')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-            <span>Jadwal Bimbingan</span>
-          </div>
-          <div class="quick-item" onclick="tampilkanMenu('pelanggaran')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
-            <span>Kasus Pelanggaran</span>
-          </div>
-          <div class="quick-item" onclick="tampilkanMenu('surat')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
-            <span>Surat Panggilan Ortu</span>
-          </div>
-          <div class="quick-item" onclick="tampilkanMenu('siswabinaan')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span>Data Siswa Binaan</span>
-          </div>
-          <div class="quick-item" onclick="tampilkanMenu('laporan')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
-            <span>Laporan BK</span>
-          </div>
-        </div>
-
         <div class="stat-grid">
           <div class="stat-card navy">
             <div class="stat-icon" style="background:var(--mustard)">
@@ -315,38 +332,20 @@
           <div class="panel">
             <div class="cal-head">
               <h3 style="margin:0">Kalender</h3>
-              <div class="cal-nav">&lt; <strong>Juli 2026</strong> &gt;</div>
+              <div class="cal-nav">
+                <span onclick="gantiBulan(-1)" style="cursor:pointer;">&lt;</span>
+                <strong id="calBulanTahun">Memuat...</strong>
+                <span onclick="gantiBulan(1)" style="cursor:pointer;">&gt;</span>
+              </div>
             </div>
-            <div class="cal-grid">
-              <span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>
-              <span class="day dim">29</span><span class="day dim">30</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span>
-              <span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day">11</span><span class="day">12</span>
-              <span class="day">13</span><span class="day">14</span><span class="day">15</span><span class="day">16</span><span class="day">17</span><span class="day">18</span><span class="day">19</span>
-              <span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span>
-              <span class="day today">27</span><span class="day event">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span>
-            </div>
-            <div class="legend"><span class="dot"></span> Ujian Semester</div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div class="legend"><span class="dot"></span> Tanggal bertanda kuning = ada agenda/pengumuman</div>
           </div>
 
           <div class="panel">
             <h3>Papan Pengumuman</h3>
-            <div class="notice-item">
-              <div class="notice-icon" style="background:var(--mustard)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8a2 2 0 1 1-3.2 2.4"/></svg>
-              </div>
-              <div>
-                <div class="notice-title">Libur Semester Ganjil</div>
-                <div class="notice-date">15 Desember 2026</div>
-              </div>
-            </div>
-            <div class="notice-item">
-              <div class="notice-icon" style="background:var(--navy)">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-              </div>
-              <div>
-                <div class="notice-title">Pengumpulan Nilai Rapor</div>
-                <div class="notice-date">10 Desember 2026</div>
-              </div>
+            <div id="noticeBoard">
+              <div class="dropdown-empty">Memuat...</div>
             </div>
           </div>
         </div>
@@ -480,15 +479,21 @@
 </div>
 
 <script>
+let sesiAktif = null;
+
 (function cekSesi() {
   const sesi = JSON.parse(localStorage.getItem('portalSmaSesi') || 'null');
   if (!sesi || sesi.role !== 'BK') {
     window.location.href = 'login.html';
     return;
   }
+  sesiAktif = sesi;
   document.getElementById('userCardName').textContent = sesi.namaLengkap;
   const inisial = sesi.namaLengkap.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
   document.getElementById('userAvatar').textContent = inisial;
+  document.getElementById('profileAvatarInner').textContent = inisial;
+  document.getElementById('profileName').textContent = sesi.namaLengkap;
+  document.getElementById('topbarSapaan').textContent = sapaanWaktu() + ', ' + sesi.namaLengkap.split(' ')[0];
 })();
 
 function logout() {
@@ -496,9 +501,163 @@ function logout() {
   window.location.href = 'login.html';
 }
 
-// Judul topbar per menu (sesuaikan/tambah kapan saja)
+function sapaanWaktu() {
+  const jam = new Date().getHours();
+  if (jam >= 4 && jam < 11) return 'Selamat pagi';
+  if (jam >= 11 && jam < 15) return 'Selamat siang';
+  if (jam >= 15 && jam < 18) return 'Selamat sore';
+  return 'Selamat malam';
+}
+
+// ===== SIDEBAR TOGGLE (desktop: collapse, mobile: overlay) =====
+const sidebarEl = document.getElementById('sidebarEl');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+function isMobileView() { return window.innerWidth <= 900; }
+
+function terapkanStateSidebarAwal() {
+  if (isMobileView()) {
+    sidebarEl.classList.remove('collapsed');
+  } else if (localStorage.getItem('bkSidebarCollapsed') === '1') {
+    sidebarEl.classList.add('collapsed');
+  }
+}
+terapkanStateSidebarAwal();
+
+document.getElementById('sidebarToggle').addEventListener('click', function() {
+  if (isMobileView()) {
+    sidebarEl.classList.toggle('mobile-open');
+    sidebarBackdrop.classList.toggle('show');
+  } else {
+    sidebarEl.classList.toggle('collapsed');
+    localStorage.setItem('bkSidebarCollapsed', sidebarEl.classList.contains('collapsed') ? '1' : '0');
+  }
+});
+
+sidebarBackdrop.addEventListener('click', function() {
+  sidebarEl.classList.remove('mobile-open');
+  sidebarBackdrop.classList.remove('show');
+});
+
+// ===== DROPDOWN NOTIFIKASI & PROFIL =====
+function toggleDropdown(id) {
+  document.querySelectorAll('.dropdown-panel').forEach(function(p) {
+    if (p.id !== id) p.classList.remove('show');
+  });
+  document.getElementById(id).classList.toggle('show');
+}
+document.getElementById('notifBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  toggleDropdown('notifPanel');
+});
+document.getElementById('userAvatar').addEventListener('click', function(e) {
+  e.stopPropagation();
+  toggleDropdown('profilePanel');
+});
+document.querySelectorAll('.dropdown-panel').forEach(function(p) {
+  p.addEventListener('click', function(e) { e.stopPropagation(); });
+});
+document.addEventListener('click', function() {
+  document.querySelectorAll('.dropdown-panel').forEach(function(p) { p.classList.remove('show'); });
+});
+
+// ===== KALENDER DINAMIS + PENGUMUMAN =====
+// Data sementara (dummy) — nanti diganti ambil dari backend/sheet Pengumuman
+const pengumumanBK = [
+  { tanggal: '2026-08-10', judul: 'Rapat Koordinasi BK & Wali Kelas' },
+  { tanggal: '2026-08-17', judul: 'Upacara HUT Kemerdekaan RI' },
+  { tanggal: '2026-08-22', judul: 'Batas Akhir Pengisian Angket AKPD' }
+];
+
+let tanggalRef = new Date();
+
+function formatTanggalISO(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function renderKalender() {
+  const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const tahun = tanggalRef.getFullYear();
+  const bulan = tanggalRef.getMonth();
+  document.getElementById('calBulanTahun').textContent = namaBulan[bulan] + ' ' + tahun;
+
+  const firstDay = new Date(tahun, bulan, 1);
+  const jumlahHari = new Date(tahun, bulan + 1, 0).getDate();
+  const prevLastDate = new Date(tahun, bulan, 0).getDate();
+  const startOffset = (firstDay.getDay() + 6) % 7; // Senin = 0
+
+  const todayStr = formatTanggalISO(new Date());
+  const eventDates = pengumumanBK.map(function(p) { return p.tanggal; });
+
+  let html = '<span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>';
+
+  for (let i = startOffset; i > 0; i--) {
+    html += '<span class="day dim">' + (prevLastDate - i + 1) + '</span>';
+  }
+  for (let d = 1; d <= jumlahHari; d++) {
+    const dateStr = formatTanggalISO(new Date(tahun, bulan, d));
+    let cls = 'day';
+    if (dateStr === todayStr) cls += ' today';
+    else if (eventDates.indexOf(dateStr) !== -1) cls += ' event';
+    html += '<span class="' + cls + '">' + d + '</span>';
+  }
+  const totalCell = startOffset + jumlahHari;
+  const sisa = (7 - (totalCell % 7)) % 7;
+  for (let d = 1; d <= sisa; d++) {
+    html += '<span class="day dim">' + d + '</span>';
+  }
+
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+function gantiBulan(offset) {
+  tanggalRef = new Date(tanggalRef.getFullYear(), tanggalRef.getMonth() + offset, 1);
+  renderKalender();
+}
+
+function renderPapanPengumuman() {
+  const board = document.getElementById('noticeBoard');
+  if (!pengumumanBK.length) {
+    board.innerHTML = '<div class="dropdown-empty">Belum ada pengumuman.</div>';
+    return;
+  }
+  const namaBulanSingkat = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const terurut = pengumumanBK.slice().sort(function(a, b) { return new Date(a.tanggal) - new Date(b.tanggal); });
+  board.innerHTML = terurut.map(function(p) {
+    const parts = p.tanggal.split('-').map(Number);
+    return '<div class="notice-item">' +
+      '<div class="notice-icon" style="background:var(--mustard-soft)">' +
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8a2 2 0 1 1-3.2 2.4"/></svg>' +
+      '</div><div><div class="notice-title">' + p.judul + '</div>' +
+      '<div class="notice-date">' + parts[2] + ' ' + namaBulanSingkat[parts[1] - 1] + ' ' + parts[0] + '</div></div></div>';
+  }).join('');
+}
+
+function renderNotifikasi() {
+  const list = document.getElementById('notifList');
+  const dot = document.getElementById('notifDot');
+  if (!pengumumanBK.length) {
+    list.innerHTML = '<div class="dropdown-empty">Tidak ada notifikasi.</div>';
+    dot.style.display = 'none';
+    return;
+  }
+  dot.style.display = 'flex';
+  dot.textContent = pengumumanBK.length;
+  list.innerHTML = pengumumanBK.map(function(p) {
+    return '<div class="notice-item" style="margin-bottom:8px;">' +
+      '<div class="notice-icon" style="background:var(--mustard-soft)">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
+      '</div><div><div class="notice-title" style="font-size:12.5px;">' + p.judul + '</div></div></div>';
+  }).join('');
+}
+
+renderKalender();
+renderPapanPengumuman();
+renderNotifikasi();
+
+// Judul topbar per menu
 const judulMenu = {
-  beranda: 'Dashboard',
+  beranda: 'Beranda',
   konseling: 'Catatan Konseling',
   rujukan: 'Rujukan Kasus',
   jadwal: 'Jadwal Bimbingan/Konseling',
@@ -525,7 +684,13 @@ function tampilkanMenu(menu) {
   const navTarget = document.querySelector('.nav-item[data-menu="' + menu + '"]');
   if (navTarget) navTarget.classList.add('active');
 
-  document.getElementById('topbarTitle').textContent = judulMenu[menu] || 'Dashboard';
+  document.getElementById('pageTitle').textContent = judulMenu[menu] || 'Beranda';
+
+  // Auto-tutup sidebar di mode mobile setelah pilih menu
+  if (isMobileView()) {
+    sidebarEl.classList.remove('mobile-open');
+    sidebarBackdrop.classList.remove('show');
+  }
 }
 </script>
 </body>
