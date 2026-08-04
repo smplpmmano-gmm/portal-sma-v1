@@ -294,7 +294,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             </div>
             <div>
-              <div class="stat-num">7</div>
+              <div class="stat-num" id="statSesiKonseling">–</div>
               <div class="stat-sub">Sesi Konseling Bulan Ini</div>
             </div>
           </div>
@@ -303,7 +303,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
             </div>
             <div>
-              <div class="stat-num">12</div>
+              <div class="stat-num" id="statSiswaPerhatian">–</div>
               <div class="stat-sub">Siswa Perlu Perhatian</div>
             </div>
           </div>
@@ -312,7 +312,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div>
-              <div class="stat-num">28</div>
+              <div class="stat-num" id="statAngketBelum">–</div>
               <div class="stat-sub">Angket Belum Diisi</div>
             </div>
           </div>
@@ -321,7 +321,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
             </div>
             <div>
-              <div class="stat-num">2</div>
+              <div class="stat-num" id="statSuratTerkirim">–</div>
               <div class="stat-sub">Surat Panggilan Terkirim</div>
             </div>
           </div>
@@ -568,12 +568,7 @@ document.addEventListener('click', function() {
 
 // ===== KALENDER DINAMIS + PENGUMUMAN =====
 // Data sementara (dummy) — nanti diganti ambil dari backend/sheet Pengumuman
-const pengumumanBK = [
-  { tanggal: '2026-08-10', judul: 'Rapat Koordinasi BK & Wali Kelas' },
-  { tanggal: '2026-08-17', judul: 'Upacara HUT Kemerdekaan RI' },
-  { tanggal: '2026-08-22', judul: 'Batas Akhir Pengisian Angket AKPD' }
-];
-
+const pengumumanBK = [];
 let tanggalRef = new Date();
 
 function formatTanggalISO(d) {
