@@ -576,7 +576,6 @@
       <div class="view" id="view-pengumuman">
         <div id="daftarPengumumanGuru"></div>
       </div>
-
     </main>
   </div>
 </div>
@@ -1261,65 +1260,6 @@ function tutupSemuaDropdown() {
   profilePanel.classList.remove('open');
 }
 
-// ===== PENGUMUMAN (Guru) =====
-let pengumumanGuru = [];
-
-function muatNotifikasi() {
-  callApi(API_URL + '?action=pengumuman_list&role=Guru', function(res) {
-    pengumumanGuru = res.data.map(function(row) {
-      return { id: row.ID, tanggal: row.Tanggal, judul: row.Judul, isi: row.Isi };
-    });
-
-    const list = document.getElementById('notifList');
-    const dot = document.getElementById('notifDot');
-    if (!list || !dot) return;
-
-    const terakhirDibaca = localStorage.getItem('guruPengumumanTerakhirDibaca');
-    const batasWaktu = terakhirDibaca ? new Date(terakhirDibaca) : new Date(0);
-    const belumDibaca = pengumumanGuru.filter(function(p) { return new Date(p.tanggal) > batasWaktu; });
-
-    if (!pengumumanGuru.length) {
-      list.innerHTML = '<div class="dropdown-empty">Tidak ada notifikasi.</div>';
-      dot.style.display = 'none';
-      return;
-    }
-
-    dot.style.display = belumDibaca.length > 0 ? 'flex' : 'none';
-    dot.textContent = belumDibaca.length;
-
-    const terurut = pengumumanGuru.slice().sort(function(a, b) { return new Date(b.tanggal) - new Date(a.tanggal); });
-    list.innerHTML = terurut.slice(0, 5).map(function(p) {
-      const baru = new Date(p.tanggal) > batasWaktu;
-      return '<div class="notice-item" style="margin-bottom:8px; cursor:pointer;' + (baru ? ' border-left:3px solid var(--mustard);' : '') + '" onclick="document.querySelector(\'.nav-item[data-view=&quot;pengumuman&quot;]\').click()">' +
-        '<div class="notice-icon" style="background:var(--mustard-soft)">' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
-        '</div><div><div class="notice-title" style="font-size:12.5px;">' + p.judul + '</div></div></div>';
-    }).join('');
-  });
-}
-
-function muatPengumumanGuru() {
-  callApi(API_URL + '?action=pengumuman_list&role=Guru', function(res) {
-    const wrap = document.getElementById('daftarPengumumanGuru');
-    if (!wrap) return;
-    if (!res.data.length) {
-      wrap.innerHTML = '<div class="dropdown-empty">Belum ada pengumuman untuk Guru.</div>';
-    } else {
-      wrap.innerHTML = res.data.map(function(row) {
-        return '<div class="notice-item" style="margin-bottom:12px;">' +
-          '<div class="notice-icon" style="background:var(--mustard-soft)">' +
-          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
-          '</div><div><div class="notice-title">' + row.Judul + '</div>' +
-          '<div class="notice-date">' + row.Tanggal + '</div>' +
-          (row.Isi ? '<div style="font-size:12.5px; color:#64748b; margin-top:4px;">' + row.Isi + '</div>' : '') +
-          '</div></div>';
-      }).join('');
-    }
-  });
-}
-
-muatNotifikasi();
-
 notifBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   const sedangTerbuka = notifPanel.classList.contains('open');
@@ -1338,6 +1278,8 @@ document.addEventListener('click', tutupSemuaDropdown);
 notifPanel.addEventListener('click', (e) => e.stopPropagation());
 profilePanel.addEventListener('click', (e) => e.stopPropagation());
 
+let pengumumanGuru = [];
+
 async function muatNotifikasi() {
   const list = document.getElementById('notifList');
   const dot = document.getElementById('notifDot');
@@ -1349,13 +1291,20 @@ async function muatNotifikasi() {
       dot.style.display = 'none';
       return;
     }
-    dot.textContent = hasil.data.length > 9 ? '9+' : hasil.data.length;
-    dot.style.display = 'flex';
-    list.innerHTML = hasil.data.map(p => `
-      <div class="dropdown-item">
+    pengumumanGuru = hasil.data.map(p => ({ id: p.ID, tanggal: p.Tanggal, judul: p.Judul, isi: p.Isi }));
+
+    const terakhirDibaca = localStorage.getItem('guruPengumumanTerakhirDibaca');
+    const batasWaktu = terakhirDibaca ? new Date(terakhirDibaca) : new Date(0);
+    const belumDibaca = pengumumanGuru.filter(p => new Date(p.tanggal) > batasWaktu);
+
+    dot.style.display = belumDibaca.length > 0 ? 'flex' : 'none';
+    dot.textContent = belumDibaca.length > 9 ? '9+' : belumDibaca.length;
+
+    list.innerHTML = pengumumanGuru.slice(0, 5).map(p => `
+      <div class="dropdown-item" style="cursor:pointer;" onclick="document.querySelector('.nav-item[data-view=&quot;pengumuman&quot;]').click()">
         <div>
-          <div class="d-title">${esc(p.Judul)}</div>
-          <div class="d-sub">${formatTanggalIndo(p.Tanggal)}</div>
+          <div class="d-title">${esc(p.judul)}</div>
+          <div class="d-sub">${formatTanggalIndo(p.tanggal)}</div>
         </div>
       </div>
     `).join('');
@@ -1364,65 +1313,27 @@ async function muatNotifikasi() {
   }
 }
 
-// ===== PENGUMUMAN (Guru) =====
-let pengumumanGuru = [];
-
-function muatPengumumanGuru() {
-  callApi(API_URL + '?action=pengumuman_list&role=Guru', function(res) {
-    pengumumanGuru = res.data.map(function(row) {
-      return { id: row.ID, tanggal: row.Tanggal, judul: row.Judul, isi: row.Isi };
-    });
-
-    const wrap = document.getElementById('daftarPengumumanGuru');
-    if (wrap) {
-      if (!res.data.length) {
-        wrap.innerHTML = '<div class="dropdown-empty">Belum ada pengumuman untuk Guru.</div>';
-      } else {
-        wrap.innerHTML = res.data.map(function(row) {
-          return '<div class="notice-item" style="margin-bottom:12px;">' +
-            '<div class="notice-icon" style="background:var(--mustard-soft)">' +
-            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
-            '</div><div><div class="notice-title">' + row.Judul + '</div>' +
-            '<div class="notice-date">' + row.Tanggal + '</div>' +
-            (row.Isi ? '<div style="font-size:12.5px; color:#64748b; margin-top:4px;">' + row.Isi + '</div>' : '') +
-            '</div></div>';
-        }).join('');
-      }
+async function muatPengumumanGuru() {
+  const wrap = document.getElementById('daftarPengumumanGuru');
+  if (!wrap) return;
+  try {
+    const hasil = await jsonpCall('pengumuman_list', { role: 'Guru' });
+    if (!hasil.success || !hasil.data.length) {
+      wrap.innerHTML = '<div class="dropdown-empty">Belum ada pengumuman untuk Guru.</div>';
+      return;
     }
-
-    renderNotifikasiGuru();
-  });
-}
-
-function renderNotifikasiGuru() {
-  const list = document.getElementById('notifList');
-  const dot = document.getElementById('notifDot');
-  if (!list || !dot) return;
-
-  const terakhirDibaca = localStorage.getItem('guruPengumumanTerakhirDibaca');
-  const batasWaktu = terakhirDibaca ? new Date(terakhirDibaca) : new Date(0);
-  const belumDibaca = pengumumanGuru.filter(function(p) { return new Date(p.tanggal) > batasWaktu; });
-
-  if (!pengumumanGuru.length) {
-    list.innerHTML = '<div class="dropdown-empty">Tidak ada notifikasi.</div>';
-    dot.style.display = 'none';
-    return;
+    wrap.innerHTML = hasil.data.map(p => `
+      <div class="notice-item" style="margin-bottom:12px;">
+        <div class="notice-icon" style="background:var(--mustard-soft)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+        </div>
+        <div><div class="notice-title">${esc(p.Judul)}</div><div class="notice-date">${formatTanggalIndo(p.Tanggal)}</div>${p.Isi ? '<div style="font-size:12.5px;color:#64748b;margin-top:4px;">' + esc(p.Isi) + '</div>' : ''}</div>
+      </div>
+    `).join('');
+  } catch (e) {
+    wrap.innerHTML = '<div class="dropdown-empty">Gagal memuat pengumuman</div>';
   }
-
-  dot.style.display = belumDibaca.length > 0 ? 'flex' : 'none';
-  dot.textContent = belumDibaca.length;
-
-  const terurut = pengumumanGuru.slice().sort(function(a, b) { return new Date(b.tanggal) - new Date(a.tanggal); });
-  list.innerHTML = terurut.slice(0, 5).map(function(p) {
-    const baru = new Date(p.tanggal) > batasWaktu;
-    return '<div class="notice-item" style="margin-bottom:8px; cursor:pointer;' + (baru ? ' border-left:3px solid var(--mustard);' : '') + '" onclick="document.querySelector(\'.nav-item[data-view=&quot;pengumuman&quot;]\').click()">' +
-      '<div class="notice-icon" style="background:var(--mustard-soft)">' +
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
-      '</div><div><div class="notice-title" style="font-size:12.5px;">' + p.judul + '</div></div></div>';
-  }).join('');
 }
-
-muatPengumumanGuru();
 </script>
 </body>
 </html>
