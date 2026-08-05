@@ -307,7 +307,7 @@
           </button>
           <div>
             <h1 id="pageTitle">Beranda</h1>
-            <p>Senin, 27 Juli 2026</p>
+            <p id="topbarSapaan">Memuat...</p>
           </div>
         </div>
         <div class="topbar-actions">
@@ -386,15 +386,13 @@
           <div class="panel">
             <div class="cal-head">
               <h3 style="margin:0">Kalender</h3>
-              <div class="cal-nav">&lt; <strong>Juli 2026</strong> &gt;</div>
+              <div class="cal-nav">&lt; <strong>Juli 2026</strong> &gt;</div><div class="cal-nav">
+              <span onclick="gantiBulan(-1)" style="cursor:pointer;">&lt;</span>
+              <strong id="calBulanTahun">Memuat...</strong>
+              <span onclick="gantiBulan(1)" style="cursor:pointer;">&gt;</span>
             </div>
-            <div class="cal-grid">
+            <div class="cal-grid" id="calGrid">
               <span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>
-              <span class="day dim">29</span><span class="day dim">30</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span>
-              <span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day">11</span><span class="day">12</span>
-              <span class="day">13</span><span class="day">14</span><span class="day">15</span><span class="day">16</span><span class="day">17</span><span class="day">18</span><span class="day">19</span>
-              <span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span>
-              <span class="day today">27</span><span class="day event">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span>
             </div>
             <div id="calendarEvents">
               <div class="legend" style="color:var(--text-muted);">Memuat agenda...</div>
@@ -635,6 +633,21 @@ let SESI = null;
   document.getElementById('profileName').textContent = SESI.namaLengkap;
 })();
 
+function renderSapaan() {
+  const jam = new Date().getHours();
+  let sapaan = 'Selamat Malam';
+  if (jam >= 4 && jam < 11) sapaan = 'Selamat Pagi';
+  else if (jam >= 11 && jam < 15) sapaan = 'Selamat Siang';
+  else if (jam >= 15 && jam < 18) sapaan = 'Selamat Sore';
+
+  const namaHari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const now = new Date();
+  const tanggalLengkap = namaHari[now.getDay()] + ', ' + now.getDate() + ' ' + namaBulan[now.getMonth()] + ' ' + now.getFullYear();
+  const namaDepan = SESI ? SESI.namaLengkap.split(' ')[0] : '';
+  document.getElementById('topbarSapaan').textContent = sapaan + ', ' + namaDepan + ' — ' + tanggalLengkap;
+}
+
 function logout() {
   localStorage.removeItem('portalSmaSesi');
   window.location.href = 'login.html';
@@ -781,17 +794,65 @@ async function muatPengumuman() {
   }
 }
 
+let tanggalRefKalender = new Date();
+let tanggalBeragenda = [];
+
+function formatTanggalISO(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function renderKalender() {
+  const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const tahun = tanggalRefKalender.getFullYear();
+  const bulan = tanggalRefKalender.getMonth();
+  document.getElementById('calBulanTahun').textContent = namaBulan[bulan] + ' ' + tahun;
+
+  const firstDay = new Date(tahun, bulan, 1);
+  const jumlahHari = new Date(tahun, bulan + 1, 0).getDate();
+  const prevLastDate = new Date(tahun, bulan, 0).getDate();
+  const startOffset = (firstDay.getDay() + 6) % 7;
+
+  const todayStr = formatTanggalISO(new Date());
+
+  let html = '<span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>';
+  for (let i = startOffset; i > 0; i--) {
+    html += '<span class="day dim">' + (prevLastDate - i + 1) + '</span>';
+  }
+  for (let d = 1; d <= jumlahHari; d++) {
+    const dateStr = formatTanggalISO(new Date(tahun, bulan, d));
+    let cls = 'day';
+    if (dateStr === todayStr) cls += ' today';
+    else if (tanggalBeragenda.indexOf(dateStr) !== -1) cls += ' event';
+    html += '<span class="' + cls + '">' + d + '</span>';
+  }
+  const totalCell = startOffset + jumlahHari;
+  const sisa = (7 - (totalCell % 7)) % 7;
+  for (let d = 1; d <= sisa; d++) {
+    html += '<span class="day dim">' + d + '</span>';
+  }
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+function gantiBulan(offset) {
+  tanggalRefKalender = new Date(tanggalRefKalender.getFullYear(), tanggalRefKalender.getMonth() + offset, 1);
+  renderKalender();
+}
+
 async function muatKalender() {
   const wrap = document.getElementById('calendarEvents');
   try {
     const hasil = await jsonpCall('kalender_list');
     if (!hasil.success || !hasil.data.length) {
       wrap.innerHTML = '<div class="legend" style="color:var(--text-muted);">Belum ada agenda</div>';
+      renderKalender();
       return;
     }
+    tanggalBeragenda = hasil.data.map(k => formatTanggalISO(new Date(k.Tanggal)));
+    renderKalender();
     wrap.innerHTML = hasil.data.slice(0, 3).map(k => `<div class="legend"><span class="dot"></span> ${formatTanggalIndo(k.Tanggal)} — ${esc(k.Keterangan)}</div>`).join('');
   } catch (e) {
     wrap.innerHTML = '<div class="legend" style="color:var(--text-muted);">Gagal memuat agenda</div>';
+    renderKalender();
   }
 }
 
@@ -972,6 +1033,7 @@ document.getElementById('formPengaturan').addEventListener('submit', async (e) =
 });
 
 // Muat Beranda saat pertama kali dibuka
+renderSapaan();
 muatStatistik();
 muatPengumuman();
 muatKalender();
