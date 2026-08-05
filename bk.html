@@ -517,27 +517,71 @@
       </div>
 
       <div id="menu-homevisit" class="menu-section">
-        <div class="page-header"><h2>Home Visit</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 22V12h6v10"/></svg>
-          <div>Menu Home Visit — catatan internal, belum dibuatkan sheet &amp; fungsinya.</div>
+        <div class="page-header">
+          <h2>Home Visit</h2>
+          <button onclick="bukaFormHomevisit()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Catatan Baru</button>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <select id="filterKelasHomevisit" onchange="muatHomevisit()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Kelas</option>
+          </select>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th>
+              <th style="padding:10px 8px;">Tujuan Kunjungan</th><th style="padding:10px 8px;">Yang Ditemui</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelHomevisit"></tbody>
+        </table>
       </div>
 
       <div id="menu-siswabinaan" class="menu-section">
-        <div class="page-header"><h2>Data Siswa Binaan</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-          <div>Menu Data Siswa Binaan — cakupan seluruh siswa sekolah, belum dibuatkan fungsinya.</div>
+        <div class="page-header">
+          <h2>Data Siswa Binaan</h2>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <select id="filterKelasSiswaBinaan" onchange="muatSiswaBinaan()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Kelas</option>
+          </select>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">NISN</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th>
+              <th style="padding:10px 8px;">Jml. Konseling</th><th style="padding:10px 8px;">Jml. Kasus</th>
+            </tr>
+          </thead>
+          <tbody id="tabelSiswaBinaan"></tbody>
+        </table>
       </div>
 
       <div id="menu-klasikal" class="menu-section">
-        <div class="page-header"><h2>Bimbingan Klasikal</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
-          <div>Menu Bimbingan Klasikal — belum dibuatkan sheet &amp; fungsinya.</div>
+        <div class="page-header">
+          <h2>Bimbingan Klasikal</h2>
+          <button onclick="bukaFormKlasikal()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Layanan Baru</button>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <select id="filterKelasKlasikal" onchange="muatKlasikal()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Kelas</option>
+          </select>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Kelas</th><th style="padding:10px 8px;">Jam Ke</th>
+              <th style="padding:10px 8px;">Topik</th><th style="padding:10px 8px;">Metode</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelKlasikal"></tbody>
+        </table>
       </div>
 
       <div id="menu-programbk" class="menu-section">
@@ -659,6 +703,64 @@
             <textarea id="suratKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
             <div style="display:flex; gap:10px; margin-top:16px;">
               <button type="button" onclick="tutupModal('modalSurat')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Form Home Visit -->
+      <div id="modalHomevisit" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 id="judulModalHomevisit" style="margin-bottom:16px; color:var(--navy);">Catatan Home Visit Baru</h3>
+          <form id="formHomevisit" onsubmit="simpanHomevisit(event)">
+            <input type="hidden" id="homevisitId">
+            <label>NISN Siswa</label>
+            <input type="text" id="homevisitNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Nama Siswa</label>
+            <input type="text" id="homevisitNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Kelas</label>
+            <input type="text" id="homevisitKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tanggal Kunjungan</label>
+            <input type="date" id="homevisitTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Alamat Dikunjungi</label>
+            <input type="text" id="homevisitAlamat" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tujuan Kunjungan</label>
+            <textarea id="homevisitTujuan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <label>Yang Ditemui</label>
+            <input type="text" id="homevisitYangDitemui" placeholder="Orang tua / Wali / dll" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Hasil Kunjungan</label>
+            <textarea id="homevisitHasil" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalHomevisit')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Form Bimbingan Klasikal -->
+      <div id="modalKlasikal" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 id="judulModalKlasikal" style="margin-bottom:16px; color:var(--navy);">Layanan Klasikal Baru</h3>
+          <form id="formKlasikal" onsubmit="simpanKlasikal(event)">
+            <input type="hidden" id="klasikalId">
+            <label>Tanggal Layanan</label>
+            <input type="date" id="klasikalTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Kelas</label>
+            <input type="text" id="klasikalKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Jam Ke</label>
+            <input type="text" id="klasikalJamKe" placeholder="Contoh: 3-4" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Topik</label>
+            <input type="text" id="klasikalTopik" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tujuan Layanan</label>
+            <textarea id="klasikalTujuan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <label>Metode Layanan</label>
+            <input type="text" id="klasikalMetode" placeholder="Ceramah, Diskusi, Permainan, dll" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Hasil Evaluasi</label>
+            <textarea id="klasikalEvaluasi" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalKlasikal')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
               <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
             </div>
           </form>
@@ -1092,6 +1194,169 @@ function muatPresensi() {
   });
 }
 
+// ===== HOME VISIT =====
+function muatHomevisit() {
+  const kelas = document.getElementById('filterKelasHomevisit').value;
+  let url = API_URL + '?action=homevisit_list';
+  if (kelas) url += '&kelas=' + kelas;
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelHomevisit');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.TanggalKunjungan + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.TujuanKunjungan + '</td>' +
+        '<td style="padding:8px;">' + (row.YangDitemui || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editHomevisit(\'' + row.ID + '\')">Edit</button> <button onclick="hapusHomevisit(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormHomevisit() {
+  document.getElementById('formHomevisit').reset();
+  document.getElementById('homevisitId').value = '';
+  document.getElementById('judulModalHomevisit').innerText = 'Catatan Home Visit Baru';
+  document.getElementById('modalHomevisit').style.display = 'flex';
+}
+
+function simpanHomevisit(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'homevisit_simpan',
+    id: document.getElementById('homevisitId').value,
+    nisn: document.getElementById('homevisitNisn').value,
+    namaSiswa: document.getElementById('homevisitNama').value,
+    kelas: document.getElementById('homevisitKelas').value,
+    tanggalKunjungan: document.getElementById('homevisitTanggal').value,
+    alamatDikunjungi: document.getElementById('homevisitAlamat').value,
+    tujuanKunjungan: document.getElementById('homevisitTujuan').value,
+    yangDitemui: document.getElementById('homevisitYangDitemui').value,
+    hasilKunjungan: document.getElementById('homevisitHasil').value,
+    guruBK: sesiAktif.namaLengkap
+  }, function() {
+    tutupModal('modalHomevisit');
+    muatHomevisit();
+  });
+}
+
+function editHomevisit(id) {
+  callApi(API_URL + '?action=homevisit_list', function(res) {
+    const row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('homevisitId').value = row.ID;
+    document.getElementById('homevisitNisn').value = row.NISN;
+    document.getElementById('homevisitNama').value = row.NamaSiswa;
+    document.getElementById('homevisitKelas').value = row.Kelas;
+    document.getElementById('homevisitTanggal').value = row.TanggalKunjungan;
+    document.getElementById('homevisitAlamat').value = row.AlamatDikunjungi;
+    document.getElementById('homevisitTujuan').value = row.TujuanKunjungan;
+    document.getElementById('homevisitYangDitemui').value = row.YangDitemui;
+    document.getElementById('homevisitHasil').value = row.HasilKunjungan;
+    document.getElementById('judulModalHomevisit').innerText = 'Edit Home Visit';
+    document.getElementById('modalHomevisit').style.display = 'flex';
+  });
+}
+
+function hapusHomevisit(id) {
+  if (!confirm('Yakin hapus catatan Home Visit ini?')) return;
+  callApiPost({ action: 'homevisit_hapus', id: id }, function() { muatHomevisit(); });
+}
+
+// ===== DATA SISWA BINAAN (read-only) =====
+function muatSiswaBinaan() {
+  const kelas = document.getElementById('filterKelasSiswaBinaan').value;
+  let url = API_URL + '?action=siswabinaan_list';
+  if (kelas) url += '&kelas=' + kelas;
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelSiswaBinaan');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.NISN + '</td>' +
+        '<td style="padding:8px;">' + row.NamaLengkap + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.JumlahKonseling + '</td>' +
+        '<td style="padding:8px;">' + row.JumlahKasus + '</td>' +
+        '</tr>';
+    });
+  });
+}
+
+// ===== BIMBINGAN KLASIKAL =====
+function muatKlasikal() {
+  const kelas = document.getElementById('filterKelasKlasikal').value;
+  let url = API_URL + '?action=klasikal_list';
+  if (kelas) url += '&kelas=' + kelas;
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelKlasikal');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.TanggalLayanan + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.JamKe + '</td>' +
+        '<td style="padding:8px;">' + row.Topik + '</td>' +
+        '<td style="padding:8px;">' + row.MetodeLayanan + '</td>' +
+        '<td style="padding:8px;"><button onclick="editKlasikal(\'' + row.ID + '\')">Edit</button> <button onclick="hapusKlasikal(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormKlasikal() {
+  document.getElementById('formKlasikal').reset();
+  document.getElementById('klasikalId').value = '';
+  document.getElementById('judulModalKlasikal').innerText = 'Layanan Klasikal Baru';
+  document.getElementById('modalKlasikal').style.display = 'flex';
+}
+
+function simpanKlasikal(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'klasikal_simpan',
+    id: document.getElementById('klasikalId').value,
+    tanggalLayanan: document.getElementById('klasikalTanggal').value,
+    kelas: document.getElementById('klasikalKelas').value,
+    jamKe: document.getElementById('klasikalJamKe').value,
+    topik: document.getElementById('klasikalTopik').value,
+    tujuanLayanan: document.getElementById('klasikalTujuan').value,
+    metodeLayanan: document.getElementById('klasikalMetode').value,
+    hasilEvaluasi: document.getElementById('klasikalEvaluasi').value,
+    guruBK: sesiAktif.namaLengkap
+  }, function() {
+    tutupModal('modalKlasikal');
+    muatKlasikal();
+  });
+}
+
+function editKlasikal(id) {
+  callApi(API_URL + '?action=klasikal_list', function(res) {
+    const row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('klasikalId').value = row.ID;
+    document.getElementById('klasikalTanggal').value = row.TanggalLayanan;
+    document.getElementById('klasikalKelas').value = row.Kelas;
+    document.getElementById('klasikalJamKe').value = row.JamKe;
+    document.getElementById('klasikalTopik').value = row.Topik;
+    document.getElementById('klasikalTujuan').value = row.TujuanLayanan;
+    document.getElementById('klasikalMetode').value = row.MetodeLayanan;
+    document.getElementById('klasikalEvaluasi').value = row.HasilEvaluasi;
+    document.getElementById('judulModalKlasikal').innerText = 'Edit Layanan Klasikal';
+    document.getElementById('modalKlasikal').style.display = 'flex';
+  });
+}
+
+function hapusKlasikal(id) {
+  if (!confirm('Yakin hapus layanan klasikal ini?')) return;
+  callApiPost({ action: 'klasikal_hapus', id: id }, function() { muatKlasikal(); });
+}
+
 // ===== SURAT PANGGILAN ORANG TUA =====
 function togglePerihalLainnya() {
   const val = document.getElementById('suratPerihal').value;
@@ -1426,6 +1691,9 @@ function tampilkanMenu(menu) {
   if (menu === 'konseling') muatKonseling();
   if (menu === 'rujukan') muatRujukan();
   if (menu === 'jadwal') muatJadwal();
+  if (menu === 'homevisit') muatHomevisit();
+  if (menu === 'siswabinaan') muatSiswaBinaan();
+  if (menu === 'klasikal') muatKlasikal();
 }
 </script>
 </body>
