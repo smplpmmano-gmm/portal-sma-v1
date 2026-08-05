@@ -237,6 +237,10 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M9 16l2 2 4-4"/></svg>
           Ajukan Cuti
         </button>
+        <button class="nav-item" data-view="pengumuman">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Pengumuman
+        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -569,6 +573,9 @@
           <div class="table-wrap"><table class="data-table" id="tableCuti"><thead><tr><th>Mulai</th><th>Selesai</th><th>Alasan</th><th>Status</th></tr></thead><tbody><tr><td colspan="4" class="empty-state">Memuat...</td></tr></tbody></table></div>
         </div>
       </div>
+      <div class="view" id="view-pengumuman">
+        <div id="daftarPengumumanGuru"></div>
+      </div>
 
     </main>
   </div>
@@ -669,7 +676,7 @@ syncSidebarBackdrop();
 
 const judulView = {
   beranda: 'Beranda', absensi: 'Absensi Siswa', nilai: 'Nilai Siswa',
-  jadwal: 'Jadwal Mengajar', siswaAsuh: 'Siswa Asuh', rekapKehadiran: 'Rekap Kehadiran', jurnal: 'Jurnal Mengajar', bankMateri: 'Bank Materi', presensiDiri: 'Presensi Diri', cuti: 'Ajukan Cuti'
+  jadwal: 'Jadwal Mengajar', siswaAsuh: 'Siswa Asuh', rekapKehadiran: 'Rekap Kehadiran', jurnal: 'Jurnal Mengajar', bankMateri: 'Bank Materi', presensiDiri: 'Presensi Diri', cuti: 'Ajukan Cuti', pengumuman: 'Pengumuman'
 };
 const dataDimuat = {};
 
@@ -685,6 +692,10 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + target).classList.add('active');
     document.getElementById('pageTitle').textContent = judulView[target];
+    if (target === 'pengumuman') {
+      localStorage.setItem('guruPengumumanTerakhirDibaca', new Date().toISOString());
+      muatNotifikasi();
+    }
 
     if (window.innerWidth <= 900) {
       sidebarEl.classList.remove('collapsed');
@@ -703,9 +714,12 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
       if (target === 'bankMateri') muatMateri();
       if (target === 'presensiDiri') muatPresensiDiri();
       if (target === 'cuti') muatCuti();
+      if (target === 'pengumuman') muatPengumumanGuru();
     }
   });
 });
+
+
 
 async function muatStatistik() {
   try {
@@ -1247,6 +1261,65 @@ function tutupSemuaDropdown() {
   profilePanel.classList.remove('open');
 }
 
+// ===== PENGUMUMAN (Guru) =====
+let pengumumanGuru = [];
+
+function muatNotifikasi() {
+  callApi(API_URL + '?action=pengumuman_list&role=Guru', function(res) {
+    pengumumanGuru = res.data.map(function(row) {
+      return { id: row.ID, tanggal: row.Tanggal, judul: row.Judul, isi: row.Isi };
+    });
+
+    const list = document.getElementById('notifList');
+    const dot = document.getElementById('notifDot');
+    if (!list || !dot) return;
+
+    const terakhirDibaca = localStorage.getItem('guruPengumumanTerakhirDibaca');
+    const batasWaktu = terakhirDibaca ? new Date(terakhirDibaca) : new Date(0);
+    const belumDibaca = pengumumanGuru.filter(function(p) { return new Date(p.tanggal) > batasWaktu; });
+
+    if (!pengumumanGuru.length) {
+      list.innerHTML = '<div class="dropdown-empty">Tidak ada notifikasi.</div>';
+      dot.style.display = 'none';
+      return;
+    }
+
+    dot.style.display = belumDibaca.length > 0 ? 'flex' : 'none';
+    dot.textContent = belumDibaca.length;
+
+    const terurut = pengumumanGuru.slice().sort(function(a, b) { return new Date(b.tanggal) - new Date(a.tanggal); });
+    list.innerHTML = terurut.slice(0, 5).map(function(p) {
+      const baru = new Date(p.tanggal) > batasWaktu;
+      return '<div class="notice-item" style="margin-bottom:8px; cursor:pointer;' + (baru ? ' border-left:3px solid var(--mustard);' : '') + '" onclick="document.querySelector(\'.nav-item[data-view=&quot;pengumuman&quot;]\').click()">' +
+        '<div class="notice-icon" style="background:var(--mustard-soft)">' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
+        '</div><div><div class="notice-title" style="font-size:12.5px;">' + p.judul + '</div></div></div>';
+    }).join('');
+  });
+}
+
+function muatPengumumanGuru() {
+  callApi(API_URL + '?action=pengumuman_list&role=Guru', function(res) {
+    const wrap = document.getElementById('daftarPengumumanGuru');
+    if (!wrap) return;
+    if (!res.data.length) {
+      wrap.innerHTML = '<div class="dropdown-empty">Belum ada pengumuman untuk Guru.</div>';
+    } else {
+      wrap.innerHTML = res.data.map(function(row) {
+        return '<div class="notice-item" style="margin-bottom:12px;">' +
+          '<div class="notice-icon" style="background:var(--mustard-soft)">' +
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
+          '</div><div><div class="notice-title">' + row.Judul + '</div>' +
+          '<div class="notice-date">' + row.Tanggal + '</div>' +
+          (row.Isi ? '<div style="font-size:12.5px; color:#64748b; margin-top:4px;">' + row.Isi + '</div>' : '') +
+          '</div></div>';
+      }).join('');
+    }
+  });
+}
+
+muatNotifikasi();
+
 notifBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   const sedangTerbuka = notifPanel.classList.contains('open');
@@ -1290,6 +1363,66 @@ async function muatNotifikasi() {
     list.innerHTML = '<div class="dropdown-empty">Gagal memuat notifikasi</div>';
   }
 }
+
+// ===== PENGUMUMAN (Guru) =====
+let pengumumanGuru = [];
+
+function muatPengumumanGuru() {
+  callApi(API_URL + '?action=pengumuman_list&role=Guru', function(res) {
+    pengumumanGuru = res.data.map(function(row) {
+      return { id: row.ID, tanggal: row.Tanggal, judul: row.Judul, isi: row.Isi };
+    });
+
+    const wrap = document.getElementById('daftarPengumumanGuru');
+    if (wrap) {
+      if (!res.data.length) {
+        wrap.innerHTML = '<div class="dropdown-empty">Belum ada pengumuman untuk Guru.</div>';
+      } else {
+        wrap.innerHTML = res.data.map(function(row) {
+          return '<div class="notice-item" style="margin-bottom:12px;">' +
+            '<div class="notice-icon" style="background:var(--mustard-soft)">' +
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
+            '</div><div><div class="notice-title">' + row.Judul + '</div>' +
+            '<div class="notice-date">' + row.Tanggal + '</div>' +
+            (row.Isi ? '<div style="font-size:12.5px; color:#64748b; margin-top:4px;">' + row.Isi + '</div>' : '') +
+            '</div></div>';
+        }).join('');
+      }
+    }
+
+    renderNotifikasiGuru();
+  });
+}
+
+function renderNotifikasiGuru() {
+  const list = document.getElementById('notifList');
+  const dot = document.getElementById('notifDot');
+  if (!list || !dot) return;
+
+  const terakhirDibaca = localStorage.getItem('guruPengumumanTerakhirDibaca');
+  const batasWaktu = terakhirDibaca ? new Date(terakhirDibaca) : new Date(0);
+  const belumDibaca = pengumumanGuru.filter(function(p) { return new Date(p.tanggal) > batasWaktu; });
+
+  if (!pengumumanGuru.length) {
+    list.innerHTML = '<div class="dropdown-empty">Tidak ada notifikasi.</div>';
+    dot.style.display = 'none';
+    return;
+  }
+
+  dot.style.display = belumDibaca.length > 0 ? 'flex' : 'none';
+  dot.textContent = belumDibaca.length;
+
+  const terurut = pengumumanGuru.slice().sort(function(a, b) { return new Date(b.tanggal) - new Date(a.tanggal); });
+  list.innerHTML = terurut.slice(0, 5).map(function(p) {
+    const baru = new Date(p.tanggal) > batasWaktu;
+    return '<div class="notice-item" style="margin-bottom:8px; cursor:pointer;' + (baru ? ' border-left:3px solid var(--mustard);' : '') + '" onclick="document.querySelector(\'.nav-item[data-view=&quot;pengumuman&quot;]\').click()">' +
+      '<div class="notice-icon" style="background:var(--mustard-soft)">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
+      '</div><div><div class="notice-title" style="font-size:12.5px;">' + p.judul + '</div></div></div>';
+  }).join('');
+}
+
+muatPengumumanGuru();
 </script>
 </body>
 </html>
