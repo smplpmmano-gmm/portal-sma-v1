@@ -261,10 +261,6 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
               <span class="notif-dot" id="notifDot">0</span>
             </div>
-            <div class="dropdown-panel" id="notifPanel">
-              <div class="dropdown-title">Notifikasi Pengumuman</div>
-              <div id="notifList"><div class="dropdown-empty">Memuat...</div></div>
-            </div>
           </div>
 
           <div class="dropdown-wrap">
@@ -674,27 +670,70 @@
       </div>
 
       <div id="menu-psikotes" class="menu-section">
-        <div class="page-header"><h2>Tes/Psikotes</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <div>Menu Tes/Psikotes — belum dibuatkan sheet &amp; fungsinya.</div>
+        <div class="page-header">
+          <h2>Tes/Psikotes</h2>
+          <button onclick="bukaFormPsikotes()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Data Baru</button>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <select id="filterKelasPsikotes" onchange="muatPsikotes()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Kelas</option>
+          </select>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th>
+              <th style="padding:10px 8px;">Jenis Tes</th><th style="padding:10px 8px;">Penyelenggara</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelPsikotes"></tbody>
+        </table>
       </div>
 
       <div id="menu-laporan" class="menu-section">
-        <div class="page-header"><h2>Laporan BK</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
-          <div>Menu Laporan BK — akan menarik &amp; merangkum data dari semua menu lain, belum dibuatkan fungsinya.</div>
+        <div class="page-header">
+          <h2>Laporan BK</h2>
+        </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:20px;">
+          <input type="date" id="laporanDari" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+          <input type="date" id="laporanSampai" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+          <button onclick="muatLaporan()" style="background:var(--mustard); color:var(--navy); border:none; padding:8px 18px; border-radius:10px; font-weight:600; cursor:pointer;">Tampilkan</button>
+          <button onclick="window.print()" style="background:#fff; color:var(--navy); border:1px solid var(--border); padding:8px 18px; border-radius:10px; font-weight:600; cursor:pointer;">Cetak</button>
+        </div>
+
+        <div class="stat-grid" id="laporanStatGrid" style="grid-template-columns:repeat(4,1fr);"></div>
+
+        <div class="panel" style="margin-top:20px;">
+          <h3>Rincian Catatan Konseling</h3>
+          <table class="data-table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+                <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th><th style="padding:10px 8px;">Kategori</th><th style="padding:10px 8px;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabelLaporanKonseling"></tbody>
+          </table>
+        </div>
+
+        <div class="panel" style="margin-top:20px;">
+          <h3>Rincian Kasus Pelanggaran</h3>
+          <table class="data-table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+                <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th><th style="padding:10px 8px;">Jenis</th><th style="padding:10px 8px;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabelLaporanPelanggaran"></tbody>
+          </table>
         </div>
       </div>
 
       <div id="menu-pengumuman" class="menu-section">
         <div class="page-header"><h2>Pengumuman</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <div>Menu Pengumuman — mengikuti pola Pengumuman role lain (Admin/Guru), belum dipasang di sini.</div>
-        </div>
+        <div id="daftarPengumumanBK"></div>
       </div>
 
       <!-- Modal Form Angket AKPD/Minat Bakat -->
@@ -943,6 +982,36 @@
         </div>
       </div>
 
+      <!-- Modal Form Tes/Psikotes -->
+      <div id="modalPsikotes" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 id="judulModalPsikotes" style="margin-bottom:16px; color:var(--navy);">Data Tes Baru</h3>
+          <form id="formPsikotes" onsubmit="simpanPsikotes(event)">
+            <input type="hidden" id="psikotesId">
+            <label>NISN Siswa</label>
+            <input type="text" id="psikotesNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Nama Siswa</label>
+            <input type="text" id="psikotesNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Kelas</label>
+            <input type="text" id="psikotesKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tanggal Tes</label>
+            <input type="date" id="psikotesTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Jenis Tes</label>
+            <input type="text" id="psikotesJenis" placeholder="Tes Minat Bakat, Psikotes, dll" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Penyelenggara</label>
+            <input type="text" id="psikotesPenyelenggara" placeholder="Psikolog / Lembaga / Internal Sekolah" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Hasil Ringkas</label>
+            <textarea id="psikotesHasil" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <label>Catatan</label>
+            <textarea id="psikotesCatatan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalPsikotes')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
       <!-- ========== END MENU BARU ========== -->
 
       <!-- Modal Form Jadwal Bimbingan/Konseling -->
@@ -1146,7 +1215,7 @@ function toggleDropdown(id) {
 }
 document.getElementById('notifBtn').addEventListener('click', function(e) {
   e.stopPropagation();
-  toggleDropdown('notifPanel');
+  tampilkanMenu('pengumuman');
 });
 document.getElementById('userAvatar').addEventListener('click', function(e) {
   e.stopPropagation();
@@ -1161,7 +1230,7 @@ document.addEventListener('click', function() {
 
 // ===== KALENDER DINAMIS + PENGUMUMAN =====
 // Data sementara (dummy) — nanti diganti ambil dari backend/sheet Pengumuman
-const pengumumanBK = [];
+let pengumumanBK = [];
 let tanggalRef = new Date();
 
 function formatTanggalISO(d) {
@@ -1244,9 +1313,7 @@ function renderNotifikasi() {
   }).join('');
 }
 
-renderKalender();
-renderPapanPengumuman();
-renderNotifikasi();
+muatPengumumanBK();
 
 // Judul topbar per menu
 const judulMenu = {
@@ -1365,6 +1432,124 @@ function muatPresensi() {
         '<td style="padding:8px;">' + row.Sakit + '</td>' +
         '<td style="padding:8px;">' + row.Izin + '</td>' +
         '<td style="padding:8px; font-weight:' + (row.Alpa > 3 ? '700' : '400') + ';">' + row.Alpa + '</td>' +
+        '</tr>';
+    });
+  });
+}
+
+// ===== TES/PSIKOTES =====
+function muatPsikotes() {
+  const kelas = document.getElementById('filterKelasPsikotes').value;
+  let url = API_URL + '?action=psikotes_list';
+  if (kelas) url += '&kelas=' + kelas;
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelPsikotes');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.TanggalTes + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.JenisTes + '</td>' +
+        '<td style="padding:8px;">' + row.Penyelenggara + '</td>' +
+        '<td style="padding:8px;"><button onclick="editPsikotes(\'' + row.ID + '\')">Edit</button> <button onclick="hapusPsikotes(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormPsikotes() {
+  document.getElementById('formPsikotes').reset();
+  document.getElementById('psikotesId').value = '';
+  document.getElementById('judulModalPsikotes').innerText = 'Data Tes Baru';
+  document.getElementById('modalPsikotes').style.display = 'flex';
+}
+
+function simpanPsikotes(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'psikotes_simpan',
+    id: document.getElementById('psikotesId').value,
+    nisn: document.getElementById('psikotesNisn').value,
+    namaSiswa: document.getElementById('psikotesNama').value,
+    kelas: document.getElementById('psikotesKelas').value,
+    tanggalTes: document.getElementById('psikotesTanggal').value,
+    jenisTes: document.getElementById('psikotesJenis').value,
+    penyelenggara: document.getElementById('psikotesPenyelenggara').value,
+    hasilRingkas: document.getElementById('psikotesHasil').value,
+    catatan: document.getElementById('psikotesCatatan').value,
+    guruBK: sesiAktif.namaLengkap
+  }, function() {
+    tutupModal('modalPsikotes');
+    muatPsikotes();
+  });
+}
+
+function editPsikotes(id) {
+  callApi(API_URL + '?action=psikotes_list', function(res) {
+    const row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('psikotesId').value = row.ID;
+    document.getElementById('psikotesNisn').value = row.NISN;
+    document.getElementById('psikotesNama').value = row.NamaSiswa;
+    document.getElementById('psikotesKelas').value = row.Kelas;
+    document.getElementById('psikotesTanggal').value = row.TanggalTes;
+    document.getElementById('psikotesJenis').value = row.JenisTes;
+    document.getElementById('psikotesPenyelenggara').value = row.Penyelenggara;
+    document.getElementById('psikotesHasil').value = row.HasilRingkas;
+    document.getElementById('psikotesCatatan').value = row.Catatan;
+    document.getElementById('judulModalPsikotes').innerText = 'Edit Data Tes';
+    document.getElementById('modalPsikotes').style.display = 'flex';
+  });
+}
+
+function hapusPsikotes(id) {
+  if (!confirm('Yakin hapus data tes ini?')) return;
+  callApiPost({ action: 'psikotes_hapus', id: id }, function() { muatPsikotes(); });
+}
+
+// ===== LAPORAN BK =====
+function muatLaporan() {
+  const dari = document.getElementById('laporanDari').value;
+  const sampai = document.getElementById('laporanSampai').value;
+  let url = API_URL + '?action=laporan_bk';
+  if (dari) url += '&dari=' + dari;
+  if (sampai) url += '&sampai=' + sampai;
+
+  callApi(url, function(res) {
+    const r = res.rekap;
+    const statGrid = document.getElementById('laporanStatGrid');
+    statGrid.innerHTML =
+      '<div class="stat-card navy"><div><div class="stat-num">' + r.catatanKonseling + '</div><div class="stat-sub">Catatan Konseling</div></div></div>' +
+      '<div class="stat-card"><div><div class="stat-num">' + r.rujukanKasus + '</div><div class="stat-sub">Rujukan Kasus</div></div></div>' +
+      '<div class="stat-card"><div><div class="stat-num">' + r.homeVisit + '</div><div class="stat-sub">Home Visit</div></div></div>' +
+      '<div class="stat-card mustard"><div><div class="stat-num">' + r.kasusPelanggaran + '</div><div class="stat-sub">Kasus Pelanggaran</div></div></div>' +
+      '<div class="stat-card"><div><div class="stat-num">' + r.bimbinganKlasikal + '</div><div class="stat-sub">Bimbingan Klasikal</div></div></div>' +
+      '<div class="stat-card"><div><div class="stat-num">' + r.suratPanggilan + '</div><div class="stat-sub">Surat Panggilan</div></div></div>' +
+      '<div class="stat-card"><div><div class="stat-num">' + r.tesPsikotes + '</div><div class="stat-sub">Tes/Psikotes</div></div></div>';
+
+    const tbodyKonseling = document.getElementById('tabelLaporanKonseling');
+    tbodyKonseling.innerHTML = '';
+    res.detail.catatanKonseling.forEach(function(row) {
+      tbodyKonseling.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.TanggalKonseling + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.KategoriMasalah + '</td>' +
+        '<td style="padding:8px;">' + row.Status + '</td>' +
+        '</tr>';
+    });
+
+    const tbodyPelanggaran = document.getElementById('tabelLaporanPelanggaran');
+    tbodyPelanggaran.innerHTML = '';
+    res.detail.kasusPelanggaran.forEach(function(row) {
+      tbodyPelanggaran.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.TanggalKejadian + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.JenisPelanggaran + '</td>' +
+        '<td style="padding:8px;">' + row.Status + '</td>' +
         '</tr>';
     });
   });
@@ -1997,7 +2182,7 @@ function hapusRujukan(id) {
 // ===== JADWAL BIMBINGAN/KONSELING =====
 function muatJadwal() {
   const status = document.getElementById('filterStatusJadwal').value;
-  let url = API_URL + '?action=jadwal_list';
+  let url = API_URL + '?action=jadwalbk_list';
   if (status) url += '&status=' + encodeURIComponent(status);
 
   callApi(url, function(res) {
@@ -2027,7 +2212,7 @@ function bukaFormJadwal() {
 function simpanJadwal(event) {
   event.preventDefault();
   callApiPost({
-    action: 'jadwal_simpan',
+    action: 'jadwalbk_simpan',
     id: document.getElementById('jadwalId').value,
     nisn: document.getElementById('jadwalNisn').value,
     namaSiswa: document.getElementById('jadwalNama').value,
@@ -2066,7 +2251,36 @@ function editJadwal(id) {
 
 function hapusJadwal(id) {
   if (!confirm('Yakin hapus jadwal ini?')) return;
-  callApiPost({ action: 'jadwal_hapus', id: id }, function() { muatJadwal(); });
+  callApiPost({ action: 'jadwalbk_hapus', id: id }, function() { muatJadwal(); });
+}
+
+function muatPengumumanBK() {
+  callApi(API_URL + '?action=pengumuman_list&role=BK', function(res) {
+    pengumumanBK = res.data.map(function(row) {
+      return { id: row.ID, tanggal: row.Tanggal, judul: row.Judul, isi: row.Isi };
+    });
+
+    const wrap = document.getElementById('daftarPengumumanBK');
+    if (wrap) {
+      if (!res.data.length) {
+        wrap.innerHTML = '<div class="placeholder-box">Belum ada pengumuman untuk BK.</div>';
+      } else {
+        wrap.innerHTML = res.data.map(function(row) {
+          return '<div class="notice-item" style="margin-bottom:12px;">' +
+            '<div class="notice-icon" style="background:var(--mustard-soft)">' +
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>' +
+            '</div><div><div class="notice-title">' + row.Judul + '</div>' +
+            '<div class="notice-date">' + row.Tanggal + '</div>' +
+            (row.Isi ? '<div style="font-size:12.5px; color:#64748b; margin-top:4px;">' + row.Isi + '</div>' : '') +
+            '</div></div>';
+        }).join('');
+      }
+    }
+
+    renderKalender();
+    renderPapanPengumuman();
+    renderNotifikasi();
+  });
 }
 
 function tampilkanMenu(menu) {
@@ -2097,6 +2311,9 @@ function tampilkanMenu(menu) {
   if (menu === 'programbk') muatProgrambk();
   if (menu === 'pelanggaran') muatPelanggaran();
   if (menu === 'poin') muatPoinRekap();
+  if (menu === 'psikotes') muatPsikotes();
+  if (menu === 'laporan') muatLaporan();
+  if (menu === 'pengumuman') muatPengumumanBK();
 }
 </script>
 </body>
