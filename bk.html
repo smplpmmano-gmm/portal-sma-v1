@@ -585,27 +585,92 @@
       </div>
 
       <div id="menu-programbk" class="menu-section">
-        <div class="page-header"><h2>Program Tahunan/Semester BK</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13l2 2 4-4"/></svg>
-          <div>Menu Program Tahunan/Semester BK — belum dibuatkan sheet &amp; fungsinya.</div>
+        <div class="page-header">
+          <h2>Program Tahunan/Semester BK</h2>
+          <button onclick="bukaFormProgrambk()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Program Baru</button>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <input type="text" id="filterTahunProgrambk" placeholder="Tahun Ajaran (2026/2027)" onchange="muatProgrambk()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+          <select id="filterSemesterProgrambk" onchange="muatProgrambk()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Semester</option>
+            <option value="Ganjil">Ganjil</option>
+            <option value="Genap">Genap</option>
+          </select>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Semester</th><th style="padding:10px 8px;">Bidang</th><th style="padding:10px 8px;">Jenis Layanan</th>
+              <th style="padding:10px 8px;">Sasaran Kelas</th><th style="padding:10px 8px;">Waktu</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelProgrambk"></tbody>
+        </table>
       </div>
 
       <div id="menu-pelanggaran" class="menu-section">
-        <div class="page-header"><h2>Kasus Pelanggaran</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
-          <div>Menu Kasus Pelanggaran — belum dibuatkan sheet &amp; fungsinya.</div>
+        <div class="page-header">
+          <h2>Kasus Pelanggaran</h2>
+          <button onclick="bukaFormPelanggaran()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Kasus Baru</button>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <select id="filterKelasPelanggaran" onchange="muatPelanggaran()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Kelas</option>
+          </select>
+          <select id="filterStatusPelanggaran" onchange="muatPelanggaran()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Status</option>
+            <option value="Baru">Baru</option>
+            <option value="Diproses">Diproses</option>
+            <option value="Selesai">Selesai</option>
+          </select>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th>
+              <th style="padding:10px 8px;">Jenis</th><th style="padding:10px 8px;">Status</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelPelanggaran"></tbody>
+        </table>
       </div>
 
       <div id="menu-poin" class="menu-section">
-        <div class="page-header"><h2>Poin Pelanggaran/Reward</h2></div>
-        <div class="placeholder-box">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>
-          <div>Menu Poin Pelanggaran/Reward — belum dibuatkan sheet &amp; fungsinya.</div>
+        <div class="page-header">
+          <h2>Poin Pelanggaran/Reward</h2>
+          <button onclick="bukaFormPoin()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Catat Poin</button>
         </div>
+
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+          <select id="filterKelasPoin" onchange="muatPoinRekap()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+            <option value="">Semua Kelas</option>
+          </select>
+        </div>
+
+        <div class="section-label">Rekap Total Poin per Siswa</div>
+        <table class="data-table" style="width:100%; border-collapse:collapse; margin-bottom:24px;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th><th style="padding:10px 8px;">Total Poin</th>
+            </tr>
+          </thead>
+          <tbody id="tabelPoinRekap"></tbody>
+        </table>
+
+        <div class="section-label">Riwayat Poin</div>
+        <table class="data-table" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Jenis</th>
+              <th style="padding:10px 8px;">Keterangan</th><th style="padding:10px 8px;">Poin</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelPoinRiwayat"></tbody>
+        </table>
       </div>
 
       <div id="menu-psikotes" class="menu-section">
@@ -761,6 +826,117 @@
             <textarea id="klasikalEvaluasi" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
             <div style="display:flex; gap:10px; margin-top:16px;">
               <button type="button" onclick="tutupModal('modalKlasikal')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Form Program Tahunan/Semester BK -->
+      <div id="modalProgrambk" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 id="judulModalProgrambk" style="margin-bottom:16px; color:var(--navy);">Program BK Baru</h3>
+          <form id="formProgrambk" onsubmit="simpanProgrambk(event)">
+            <input type="hidden" id="programbkId">
+            <label>Tahun Ajaran</label>
+            <input type="text" id="programbkTahun" placeholder="2026/2027" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Semester</label>
+            <select id="programbkSemester" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Ganjil">Ganjil</option>
+              <option value="Genap">Genap</option>
+            </select>
+            <label>Bidang Layanan</label>
+            <select id="programbkBidang" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Pribadi">Pribadi</option>
+              <option value="Sosial">Sosial</option>
+              <option value="Belajar">Belajar</option>
+              <option value="Karier">Karier</option>
+            </select>
+            <label>Jenis Layanan</label>
+            <input type="text" id="programbkJenis" placeholder="Konseling Individu, Bimbingan Klasikal, dll" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tujuan</label>
+            <textarea id="programbkTujuan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <label>Sasaran Kelas</label>
+            <input type="text" id="programbkSasaran" placeholder="X, XI, XII, atau semua" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Waktu Pelaksanaan</label>
+            <input type="text" id="programbkWaktu" placeholder="Minggu ke-1 Agustus, dll" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Keterangan</label>
+            <textarea id="programbkKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalProgrambk')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Form Kasus Pelanggaran -->
+      <div id="modalPelanggaran" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 id="judulModalPelanggaran" style="margin-bottom:16px; color:var(--navy);">Kasus Pelanggaran Baru</h3>
+          <form id="formPelanggaran" onsubmit="simpanPelanggaran(event)">
+            <input type="hidden" id="pelanggaranId">
+            <label>NISN Siswa</label>
+            <input type="text" id="pelanggaranNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Nama Siswa</label>
+            <input type="text" id="pelanggaranNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Kelas</label>
+            <input type="text" id="pelanggaranKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tanggal Kejadian</label>
+            <input type="date" id="pelanggaranTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Jenis Pelanggaran</label>
+            <input type="text" id="pelanggaranJenis" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Kategori</label>
+            <select id="pelanggaranKategori" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Ringan">Ringan</option>
+              <option value="Sedang">Sedang</option>
+              <option value="Berat">Berat</option>
+            </select>
+            <label>Kronologi</label>
+            <textarea id="pelanggaranKronologi" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <label>Tindakan Diberikan</label>
+            <textarea id="pelanggaranTindakan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+            <label>Saksi</label>
+            <input type="text" id="pelanggaranSaksi" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Status</label>
+            <select id="pelanggaranStatus" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Baru">Baru</option>
+              <option value="Diproses">Diproses</option>
+              <option value="Selesai">Selesai</option>
+            </select>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalPelanggaran')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Form Poin Pelanggaran/Reward -->
+      <div id="modalPoin" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 style="margin-bottom:16px; color:var(--navy);">Catat Poin</h3>
+          <form id="formPoin" onsubmit="simpanPoin(event)">
+            <input type="hidden" id="poinId">
+            <label>NISN Siswa</label>
+            <input type="text" id="poinNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Nama Siswa</label>
+            <input type="text" id="poinNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Kelas</label>
+            <input type="text" id="poinKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Tanggal</label>
+            <input type="date" id="poinTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Jenis</label>
+            <select id="poinJenis" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Pelanggaran">Pelanggaran (poin minus)</option>
+              <option value="Reward">Reward (poin plus)</option>
+            </select>
+            <label>Keterangan</label>
+            <input type="text" id="poinKeterangan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Poin (isi minus untuk pelanggaran, contoh: -10)</label>
+            <input type="number" id="poinNilai" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalPoin')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
               <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
             </div>
           </form>
@@ -1192,6 +1368,230 @@ function muatPresensi() {
         '</tr>';
     });
   });
+}
+
+// ===== PROGRAM TAHUNAN/SEMESTER BK =====
+function muatProgrambk() {
+  const tahun = document.getElementById('filterTahunProgrambk').value;
+  const semester = document.getElementById('filterSemesterProgrambk').value;
+  let url = API_URL + '?action=programbk_list';
+  if (tahun) url += '&tahunAjaran=' + encodeURIComponent(tahun);
+  if (semester) url += '&semester=' + semester;
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelProgrambk');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.Semester + ' ' + row.TahunAjaran + '</td>' +
+        '<td style="padding:8px;">' + row.BidangLayanan + '</td>' +
+        '<td style="padding:8px;">' + row.JenisLayanan + '</td>' +
+        '<td style="padding:8px;">' + row.SasaranKelas + '</td>' +
+        '<td style="padding:8px;">' + row.WaktuPelaksanaan + '</td>' +
+        '<td style="padding:8px;"><button onclick="editProgrambk(\'' + row.ID + '\')">Edit</button> <button onclick="hapusProgrambk(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormProgrambk() {
+  document.getElementById('formProgrambk').reset();
+  document.getElementById('programbkId').value = '';
+  document.getElementById('judulModalProgrambk').innerText = 'Program BK Baru';
+  document.getElementById('modalProgrambk').style.display = 'flex';
+}
+
+function simpanProgrambk(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'programbk_simpan',
+    id: document.getElementById('programbkId').value,
+    tahunAjaran: document.getElementById('programbkTahun').value,
+    semester: document.getElementById('programbkSemester').value,
+    bidangLayanan: document.getElementById('programbkBidang').value,
+    jenisLayanan: document.getElementById('programbkJenis').value,
+    tujuan: document.getElementById('programbkTujuan').value,
+    sasaranKelas: document.getElementById('programbkSasaran').value,
+    waktuPelaksanaan: document.getElementById('programbkWaktu').value,
+    keterangan: document.getElementById('programbkKeterangan').value,
+    guruBK: sesiAktif.namaLengkap
+  }, function() {
+    tutupModal('modalProgrambk');
+    muatProgrambk();
+  });
+}
+
+function editProgrambk(id) {
+  callApi(API_URL + '?action=programbk_list', function(res) {
+    const row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('programbkId').value = row.ID;
+    document.getElementById('programbkTahun').value = row.TahunAjaran;
+    document.getElementById('programbkSemester').value = row.Semester;
+    document.getElementById('programbkBidang').value = row.BidangLayanan;
+    document.getElementById('programbkJenis').value = row.JenisLayanan;
+    document.getElementById('programbkTujuan').value = row.Tujuan;
+    document.getElementById('programbkSasaran').value = row.SasaranKelas;
+    document.getElementById('programbkWaktu').value = row.WaktuPelaksanaan;
+    document.getElementById('programbkKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalProgrambk').innerText = 'Edit Program BK';
+    document.getElementById('modalProgrambk').style.display = 'flex';
+  });
+}
+
+function hapusProgrambk(id) {
+  if (!confirm('Yakin hapus program ini?')) return;
+  callApiPost({ action: 'programbk_hapus', id: id }, function() { muatProgrambk(); });
+}
+
+// ===== KASUS PELANGGARAN =====
+function muatPelanggaran() {
+  const kelas = document.getElementById('filterKelasPelanggaran').value;
+  const status = document.getElementById('filterStatusPelanggaran').value;
+  let url = API_URL + '?action=pelanggaran_list';
+  if (kelas) url += '&kelas=' + kelas;
+  if (status) url += '&status=' + encodeURIComponent(status);
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelPelanggaran');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.TanggalKejadian + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.JenisPelanggaran + '</td>' +
+        '<td style="padding:8px;">' + row.Status + '</td>' +
+        '<td style="padding:8px;"><button onclick="editPelanggaran(\'' + row.ID + '\')">Edit</button> <button onclick="hapusPelanggaran(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormPelanggaran() {
+  document.getElementById('formPelanggaran').reset();
+  document.getElementById('pelanggaranId').value = '';
+  document.getElementById('judulModalPelanggaran').innerText = 'Kasus Pelanggaran Baru';
+  document.getElementById('modalPelanggaran').style.display = 'flex';
+}
+
+function simpanPelanggaran(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'pelanggaran_simpan',
+    id: document.getElementById('pelanggaranId').value,
+    nisn: document.getElementById('pelanggaranNisn').value,
+    namaSiswa: document.getElementById('pelanggaranNama').value,
+    kelas: document.getElementById('pelanggaranKelas').value,
+    tanggalKejadian: document.getElementById('pelanggaranTanggal').value,
+    jenisPelanggaran: document.getElementById('pelanggaranJenis').value,
+    kategoriPelanggaran: document.getElementById('pelanggaranKategori').value,
+    kronologi: document.getElementById('pelanggaranKronologi').value,
+    tindakanDiberikan: document.getElementById('pelanggaranTindakan').value,
+    saksi: document.getElementById('pelanggaranSaksi').value,
+    status: document.getElementById('pelanggaranStatus').value,
+    guruBK: sesiAktif.namaLengkap
+  }, function() {
+    tutupModal('modalPelanggaran');
+    muatPelanggaran();
+  });
+}
+
+function editPelanggaran(id) {
+  callApi(API_URL + '?action=pelanggaran_list', function(res) {
+    const row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('pelanggaranId').value = row.ID;
+    document.getElementById('pelanggaranNisn').value = row.NISN;
+    document.getElementById('pelanggaranNama').value = row.NamaSiswa;
+    document.getElementById('pelanggaranKelas').value = row.Kelas;
+    document.getElementById('pelanggaranTanggal').value = row.TanggalKejadian;
+    document.getElementById('pelanggaranJenis').value = row.JenisPelanggaran;
+    document.getElementById('pelanggaranKategori').value = row.KategoriPelanggaran;
+    document.getElementById('pelanggaranKronologi').value = row.Kronologi;
+    document.getElementById('pelanggaranTindakan').value = row.TindakanDiberikan;
+    document.getElementById('pelanggaranSaksi').value = row.Saksi;
+    document.getElementById('pelanggaranStatus').value = row.Status;
+    document.getElementById('judulModalPelanggaran').innerText = 'Edit Kasus Pelanggaran';
+    document.getElementById('modalPelanggaran').style.display = 'flex';
+  });
+}
+
+function hapusPelanggaran(id) {
+  if (!confirm('Yakin hapus kasus pelanggaran ini?')) return;
+  callApiPost({ action: 'pelanggaran_hapus', id: id }, function() { muatPelanggaran(); });
+}
+
+// ===== POIN PELANGGARAN/REWARD =====
+function muatPoinRekap() {
+  const kelas = document.getElementById('filterKelasPoin').value;
+  let url = API_URL + '?action=poin_rekap';
+  if (kelas) url += '&kelas=' + kelas;
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelPoinRekap');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      const warna = row.TotalPoin < 0 ? 'color:#c0392b; font-weight:700;' : 'color:#2e7d32; font-weight:700;';
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px; ' + warna + '">' + row.TotalPoin + '</td>' +
+        '</tr>';
+    });
+  });
+  muatPoinRiwayat();
+}
+
+function muatPoinRiwayat() {
+  const kelas = document.getElementById('filterKelasPoin').value;
+  let url = API_URL + '?action=poin_list';
+  if (kelas) url += '&kelas=' + kelas;
+
+  callApi(url, function(res) {
+    const tbody = document.getElementById('tabelPoinRiwayat');
+    tbody.innerHTML = '';
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.Tanggal + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Jenis + '</td>' +
+        '<td style="padding:8px;">' + row.Keterangan + '</td>' +
+        '<td style="padding:8px;">' + row.Poin + '</td>' +
+        '<td style="padding:8px;"><button onclick="hapusPoin(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormPoin() {
+  document.getElementById('formPoin').reset();
+  document.getElementById('poinId').value = '';
+  document.getElementById('modalPoin').style.display = 'flex';
+}
+
+function simpanPoin(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'poin_simpan',
+    id: document.getElementById('poinId').value,
+    nisn: document.getElementById('poinNisn').value,
+    namaSiswa: document.getElementById('poinNama').value,
+    kelas: document.getElementById('poinKelas').value,
+    tanggal: document.getElementById('poinTanggal').value,
+    jenis: document.getElementById('poinJenis').value,
+    keterangan: document.getElementById('poinKeterangan').value,
+    poin: document.getElementById('poinNilai').value,
+    guruBK: sesiAktif.namaLengkap
+  }, function() {
+    tutupModal('modalPoin');
+    muatPoinRekap();
+  });
+}
+
+function hapusPoin(id) {
+  if (!confirm('Yakin hapus catatan poin ini?')) return;
+  callApiPost({ action: 'poin_hapus', id: id }, function() { muatPoinRekap(); });
 }
 
 // ===== HOME VISIT =====
@@ -1694,6 +2094,9 @@ function tampilkanMenu(menu) {
   if (menu === 'homevisit') muatHomevisit();
   if (menu === 'siswabinaan') muatSiswaBinaan();
   if (menu === 'klasikal') muatKlasikal();
+  if (menu === 'programbk') muatProgrambk();
+  if (menu === 'pelanggaran') muatPelanggaran();
+  if (menu === 'poin') muatPoinRekap();
 }
 </script>
 </body>
