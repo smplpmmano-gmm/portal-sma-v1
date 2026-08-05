@@ -505,16 +505,18 @@
           <form id="formPengumuman">
             <div class="form-grid">
               <div class="form-group"><label>Judul</label><input type="text" name="judul" required></div>
-              <div class="form-group"><label>Target</label>
-                <select name="targetRole">
-                  <option value="Semua">Semua</option>
-                  <option value="Admin">Admin</option>
-                  <option value="Guru">Guru</option>
-                  <option value="BK">BK</option>
-                  <option value="Tendik">Tendik</option>
-                  <option value="Siswa">Siswa</option>
-                  <option value="OrangTua">Orang Tua</option>
-                </select>
+              <div class="form-group">
+                <label>Target</label>
+                <div id="targetRoleCheckbox" style="display:flex; flex-wrap:wrap; gap:10px; padding:8px 0;">
+                  <label style="display:flex; align-items:center; gap:5px; font-weight:400; font-size:13px;"><input type="checkbox" class="chkTargetRole" value="Admin"> Admin</label>
+                  <label style="display:flex; align-items:center; gap:5px; font-weight:400; font-size:13px;"><input type="checkbox" class="chkTargetRole" value="Guru"> Guru</label>
+                  <label style="display:flex; align-items:center; gap:5px; font-weight:400; font-size:13px;"><input type="checkbox" class="chkTargetRole" value="BK"> BK</label>
+                  <label style="display:flex; align-items:center; gap:5px; font-weight:400; font-size:13px;"><input type="checkbox" class="chkTargetRole" value="Tendik"> Tendik</label>
+                  <label style="display:flex; align-items:center; gap:5px; font-weight:400; font-size:13px;"><input type="checkbox" class="chkTargetRole" value="Siswa"> Siswa</label>
+                  <label style="display:flex; align-items:center; gap:5px; font-weight:400; font-size:13px;"><input type="checkbox" class="chkTargetRole" value="OrangTua"> Orang Tua</label>
+                  <label style="display:flex; align-items:center; gap:5px; font-weight:600; font-size:13px; color:var(--navy);"><input type="checkbox" id="chkTargetSemua"> Semua</label>
+                </div>
+                <input type="hidden" name="targetRole" id="targetRoleHidden">
               </div>
             </div>
             <div class="form-group" style="margin-bottom:16px;"><label>Isi Pengumuman</label><textarea name="isi" required></textarea></div>
@@ -587,6 +589,34 @@
 
 <script>
 const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLW8XdWVgQb3CMR1xz1V8CEDMm3e4ZhaGDZCNGZsiqvnGrhLfxSfeKtND-mKhyd-pS/exec';
+
+(function initTargetRoleCheckbox() {
+  const checkboxRole = document.querySelectorAll('.chkTargetRole');
+  const checkboxSemua = document.getElementById('chkTargetSemua');
+  const hiddenInput = document.getElementById('targetRoleHidden');
+
+  function updateHiddenTarget() {
+    if (checkboxSemua.checked) {
+      hiddenInput.value = 'Semua';
+      return;
+    }
+    const dipilih = Array.from(checkboxRole).filter(function(c) { return c.checked; }).map(function(c) { return c.value; });
+    hiddenInput.value = dipilih.join(',');
+  }
+
+  checkboxSemua.addEventListener('change', function() {
+    if (checkboxSemua.checked) {
+      checkboxRole.forEach(function(c) { c.checked = false; c.disabled = true; });
+    } else {
+      checkboxRole.forEach(function(c) { c.disabled = false; });
+    }
+    updateHiddenTarget();
+  });
+
+  checkboxRole.forEach(function(c) {
+    c.addEventListener('change', updateHiddenTarget);
+  });
+})();
 
 // =====================================================
 // SESI LOGIN
