@@ -438,6 +438,33 @@
 
       <div id="menu-akpd" class="menu-section">
         <div class="page-header">
+          <h2>Sesi Angket AKPD/Minat Bakat</h2>
+          <button onclick="bukaFormAngketSesi()" style="background:var(--navy); color:#fff; border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Buat Sesi Angket</button>
+        </div>
+
+        <table class="data-table" style="width:100%; border-collapse:collapse; margin-bottom:28px;">
+          <thead>
+            <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+              <th style="padding:10px 8px;">Judul</th><th style="padding:10px 8px;">Kelas</th><th style="padding:10px 8px;">Batas Waktu</th>
+              <th style="padding:10px 8px;">Status</th><th style="padding:10px 8px;">Jumlah Mengisi</th><th style="padding:10px 8px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabelAngketSesi"></tbody>
+        </table>
+
+        <div id="panelRekapSesi" style="display:none; margin-bottom:28px;">
+          <h3 id="judulRekapSesi" style="color:var(--navy); margin-bottom:12px;"></h3>
+          <table class="data-table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+                <th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th><th style="padding:10px 8px;">Jumlah "Ya"</th><th style="padding:10px 8px;">% Kebutuhan</th><th style="padding:10px 8px;">Tanggal Isi</th>
+              </tr>
+            </thead>
+            <tbody id="tabelRekapSesi"></tbody>
+          </table>
+        </div>
+
+        <div class="page-header">
           <h2>Angket AKPD/Minat Bakat</h2>
           <button onclick="bukaFormAkpd()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Input Manual</button>
         </div>
@@ -738,6 +765,32 @@
       <div id="menu-pengumuman" class="menu-section">
         <div class="page-header"><h2>Pengumuman</h2></div>
         <div id="daftarPengumumanBK"></div>
+      </div>
+
+      <!-- Modal Form Sesi Angket -->
+      <div id="modalAngketSesi" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+          <h3 style="margin-bottom:16px; color:var(--navy);">Buat Sesi Angket Baru</h3>
+          <form id="formAngketSesi" onsubmit="simpanAngketSesi(event)">
+            <label>Judul Sesi</label>
+            <input type="text" id="sesiJudul" placeholder="Angket AKPD Kelas X - Semester Ganjil" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Jenis Angket</label>
+            <select id="sesiJenis" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="AKPD">AKPD (Kebutuhan Peserta Didik)</option>
+              <option value="Minat Bakat">Minat Bakat</option>
+            </select>
+            <label>Kelas Sasaran</label>
+            <input type="text" id="sesiKelas" placeholder="X, XI, XII, atau contoh: X-1" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Mulai Waktu Pengisian</label>
+            <input type="datetime-local" id="sesiMulai" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <label>Batas Waktu Pengisian</label>
+            <input type="datetime-local" id="sesiBatas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+            <div style="display:flex; gap:10px; margin-top:16px;">
+              <button type="button" onclick="tutupModal('modalAngketSesi')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+              <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--navy); color:#fff; font-weight:600; cursor:pointer;">Buat Sesi</button>
+            </div>
+          </form>
+        </div>
       </div>
 
       <!-- Modal Form Angket AKPD/Minat Bakat -->
@@ -1395,6 +1448,79 @@ const judulMenu = {
 
 function tutupModal(id) {
   document.getElementById(id).style.display = 'none';
+}
+
+// ===== SESI ANGKET (dibuat BK, batas waktu, diisi siswa lewat portalnya) =====
+function muatAngketSesi() {
+  callApi(API_URL + '?action=angketSesi_list', function(res) {
+    const tbody = document.getElementById('tabelAngketSesi');
+    tbody.innerHTML = '';
+    if (!res.data.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada sesi angket.</td></tr>';
+      return;
+    }
+    res.data.forEach(function(row) {
+      const batas = new Date(row.BatasWaktu);
+      const sudahLewat = new Date() > batas;
+      const statusTampil = row.Status === 'Ditutup' ? 'Ditutup' : (sudahLewat ? 'Waktu Habis' : 'Aktif');
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.Judul + '</td>' +
+        '<td style="padding:8px;">' + row.SasaranKelas + '</td>' +
+        '<td style="padding:8px;">' + batas.toLocaleString('id-ID') + '</td>' +
+        '<td style="padding:8px;">' + statusTampil + '</td>' +
+        '<td style="padding:8px;"><button onclick="lihatRekapSesi(\'' + row.ID + '\', \'' + row.Judul.replace(/'/g, "\\'") + '\')">Lihat Rekap</button></td>' +
+        '<td style="padding:8px;">' + (row.Status === 'Aktif' ? '<button onclick="tutupSesiAngket(\'' + row.ID + '\')">Tutup</button>' : '-') + '</td>' +
+        '</tr>';
+    });
+  });
+}
+
+function bukaFormAngketSesi() {
+  document.getElementById('formAngketSesi').reset();
+  document.getElementById('modalAngketSesi').style.display = 'flex';
+}
+
+function simpanAngketSesi(event) {
+  event.preventDefault();
+  callApiPost({
+    action: 'angketSesi_simpan',
+    judul: document.getElementById('sesiJudul').value,
+    jenisAngket: document.getElementById('sesiJenis').value,
+    sasaranKelas: document.getElementById('sesiKelas').value,
+    tanggalMulai: document.getElementById('sesiMulai').value,
+    batasWaktu: document.getElementById('sesiBatas').value,
+    dibuatOleh: sesiAktif.namaLengkap
+  }, function() {
+    tutupModal('modalAngketSesi');
+    muatAngketSesi();
+  });
+}
+
+function tutupSesiAngket(id) {
+  if (!confirm('Tutup sesi angket ini? Siswa tidak akan bisa mengisi lagi setelah ditutup.')) return;
+  callApiPost({ action: 'angketSesi_tutup', id: id }, function() { muatAngketSesi(); });
+}
+
+function lihatRekapSesi(sesiId, judul) {
+  callApi(API_URL + '?action=angketRekap_sesi&sesiId=' + sesiId, function(res) {
+    document.getElementById('panelRekapSesi').style.display = 'block';
+    document.getElementById('judulRekapSesi').innerText = 'Rekap: ' + judul + ' (' + res.data.length + ' siswa sudah mengisi)';
+    const tbody = document.getElementById('tabelRekapSesi');
+    tbody.innerHTML = '';
+    if (!res.data.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="padding:12px; color:var(--text-muted);">Belum ada siswa yang mengisi.</td></tr>';
+      return;
+    }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.JumlahYa + '</td>' +
+        '<td style="padding:8px;">' + row.PersenKebutuhan + '%</td>' +
+        '<td style="padding:8px;">' + new Date(row.TanggalIsi).toLocaleDateString('id-ID') + '</td>' +
+        '</tr>';
+    });
+  });
 }
 
 // ===== ANGKET AKPD/MINAT BAKAT =====
@@ -2363,6 +2489,7 @@ function tampilkanMenu(menu) {
   if (menu === 'konseling') muatKonseling();
   if (menu === 'rujukan') muatRujukan();
   if (menu === 'jadwal') muatJadwal();
+  if (menu === 'akpd') { muatAkpd(); muatAngketSesi(); }
   if (menu === 'homevisit') muatHomevisit();
   if (menu === 'siswabinaan') muatSiswaBinaan();
   if (menu === 'klasikal') muatKlasikal();
