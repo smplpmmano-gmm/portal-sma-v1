@@ -2573,7 +2573,7 @@ function simpanJadwal(event) {
 }
 
 function editJadwal(id) {
-  callApi(API_URL + '?action=jadwal_list', function(res) {
+  callApi(API_URL + '?action=jadwalbk_list', function(res) {
     const row = res.data.find(function(r) { return r.ID == id; });
     if (!row) return;
     document.getElementById('jadwalId').value = row.ID;
