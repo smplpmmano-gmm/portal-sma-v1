@@ -457,7 +457,7 @@
           <table class="data-table" style="width:100%; border-collapse:collapse;">
             <thead>
               <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
-                <th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th><th style="padding:10px 8px;">Jumlah "Ya"</th><th style="padding:10px 8px;">% Kebutuhan</th><th style="padding:10px 8px;">Tanggal Isi</th>
+                <th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th><th style="padding:10px 8px;">Jumlah "Ya"</th><th style="padding:10px 8px;">% Kebutuhan</th><th style="padding:10px 8px;">Tanggal Isi</th><th style="padding:10px 8px;">Kecerdasan Dominan</th>
               </tr>
             </thead>
             <tbody id="tabelRekapSesi"></tbody>
@@ -581,7 +581,7 @@
           <thead>
             <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
               <th style="padding:10px 8px;">NISN</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th>
-              <th style="padding:10px 8px;">Jml. Konseling</th><th style="padding:10px 8px;">Jml. Kasus</th>
+              <th style="padding:10px 8px;">Jml. Konseling</th><th style="padding:10px 8px;">Jml. Kasus</th><th style="padding:10px 8px;">Kecerdasan Dominan</th>
             </tr>
           </thead>
           <tbody id="tabelSiswaBinaan"></tbody>
@@ -736,6 +736,18 @@
         </div>
 
         <div class="stat-grid" id="laporanStatGrid" style="grid-template-columns:repeat(4,1fr);"></div>
+
+        <div class="panel" style="margin-top:20px;">
+          <h3>Rekap Minat Bakat Sekolah</h3>
+          <table class="data-table" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+                <th style="padding:10px 8px;">Kategori Kecerdasan</th><th style="padding:10px 8px;">Jumlah Siswa</th><th style="padding:10px 8px;">Status Wadah</th>
+              </tr>
+            </thead>
+            <tbody id="tabelLaporanMinatBakat"></tbody>
+          </table>
+        </div>
 
         <div class="panel" style="margin-top:20px;">
           <h3>Rincian Catatan Konseling</h3>
@@ -1508,16 +1520,20 @@ function lihatRekapSesi(sesiId, judul) {
     const tbody = document.getElementById('tabelRekapSesi');
     tbody.innerHTML = '';
     if (!res.data.length) {
-      tbody.innerHTML = '<tr><td colspan="5" style="padding:12px; color:var(--text-muted);">Belum ada siswa yang mengisi.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada siswa yang mengisi.</td></tr>';
       return;
     }
     res.data.forEach(function(row) {
+      const punyaHasil = row.KecerdasanDominan && row.HasilTeks;
       tbody.innerHTML += '<tr>' +
         '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
         '<td style="padding:8px;">' + row.Kelas + '</td>' +
         '<td style="padding:8px;">' + row.JumlahYa + '</td>' +
         '<td style="padding:8px;">' + row.PersenKebutuhan + '%</td>' +
         '<td style="padding:8px;">' + new Date(row.TanggalIsi).toLocaleDateString('id-ID') + '</td>' +
+        '<td style="padding:8px;">' + (punyaHasil ?
+          row.KecerdasanDominan + ' <button onclick="alert(\'' + row.HasilTeks.replace(/'/g, "\\'").replace(/\n/g, ' ') + '\')">Lihat Detail</button>'
+          : '-') + '</td>' +
         '</tr>';
     });
   });
@@ -1713,6 +1729,20 @@ function muatLaporan() {
       '<div class="stat-card"><div><div class="stat-num">' + r.suratPanggilan + '</div><div class="stat-sub">Surat Panggilan</div></div></div>' +
       '<div class="stat-card"><div><div class="stat-num">' + r.tesPsikotes + '</div><div class="stat-sub">Tes/Psikotes</div></div></div>';
 
+    const tbodyMinatBakat = document.getElementById('tabelLaporanMinatBakat');
+    tbodyMinatBakat.innerHTML = '';
+    if (!res.rekapMinatBakat || !res.rekapMinatBakat.length) {
+      tbodyMinatBakat.innerHTML = '<tr><td colspan="3" style="padding:12px; color:var(--text-muted);">Belum ada data Minat Bakat pada rentang ini.</td></tr>';
+    } else {
+      res.rekapMinatBakat.forEach(function(row) {
+        const sorot = row.statusWadah === 'belum-ada' ? ' style="background:#fdecea;"' : '';
+        tbodyMinatBakat.innerHTML += '<tr' + sorot + '>' +
+          '<td style="padding:8px;">' + row.kategori + '</td>' +
+          '<td style="padding:8px; font-weight:700;">' + row.jumlahSiswa + '</td>' +
+          '<td style="padding:8px;">' + row.statusWadah + (row.statusWadah === 'belum-ada' ? ' ⚠️' : '') + '</td>' +
+          '</tr>';
+      });
+    }
     const tbodyKonseling = document.getElementById('tabelLaporanKonseling');
     tbodyKonseling.innerHTML = '';
     res.detail.catatanKonseling.forEach(function(row) {
@@ -2051,6 +2081,9 @@ function muatSiswaBinaan() {
         '<td style="padding:8px;">' + row.Kelas + '</td>' +
         '<td style="padding:8px;">' + row.JumlahKonseling + '</td>' +
         '<td style="padding:8px;">' + row.JumlahKasus + '</td>' +
+        '<td style="padding:8px;">' + (row.KecerdasanDominan ?
+          row.KecerdasanDominan + ' <button onclick="alert(\'' + row.HasilTeksMinat.replace(/'/g, "\\'").replace(/\n/g, ' ') + '\')">Lihat</button>'
+          : '<span style="color:var(--text-muted);">Belum isi</span>') + '</td>' +
         '</tr>';
     });
   });
