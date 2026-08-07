@@ -413,12 +413,16 @@
       <div id="menu-jadwal" class="menu-section">
         <div class="page-header">
           <h2>Jadwal Bimbingan/Konseling</h2>
-          <button onclick="bukaFormJadwal()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Jadwal Baru</button>
+          <div style="display:flex; gap:10px;">
+            <button onclick="generateJadwalBKOtomatis()" style="background:var(--navy); color:#fff; border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">Generate Otomatis (dari AKPD)</button>
+            <button onclick="bukaFormJadwal()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Jadwal Baru</button>
+          </div>
         </div>
 
         <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
           <select id="filterStatusJadwal" onchange="muatJadwal()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
             <option value="">Semua Status</option>
+            <option value="Belum Dijadwalkan">Belum Dijadwalkan</option>
             <option value="Terjadwal">Terjadwal</option>
             <option value="Selesai">Selesai</option>
             <option value="Batal">Batal</option>
@@ -593,6 +597,7 @@
           <h2>Bimbingan Klasikal</h2>
           <div style="display:flex; gap:10px;">
             <button onclick="generateJadwalKelasX()" style="background:var(--navy); color:#fff; border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">Generate Jadwal Kelas X</button>
+            <button onclick="generateJadwalXIXII()" style="background:var(--navy); color:#fff; border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">Generate Jadwal Kelas XI/XII</button>
             <button onclick="bukaFormKlasikal()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Layanan Baru</button>
           </div>
         </div>
@@ -1123,14 +1128,16 @@
             <input type="time" id="jadwalJam" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
             <label>Jenis Layanan</label>
             <select id="jadwalJenis" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Bimbingan Individual">Bimbingan Individual</option>
+              <option value="Bimbingan Kelompok">Bimbingan Kelompok</option>
               <option value="Konseling Individu">Konseling Individu</option>
               <option value="Konseling Kelompok">Konseling Kelompok</option>
-              <option value="Bimbingan Klasikal">Bimbingan Klasikal</option>
             </select>
             <label>Tempat</label>
             <input type="text" id="jadwalTempat" placeholder="Ruang BK / Kelas / dll" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
             <label>Status</label>
             <select id="jadwalStatus" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+              <option value="Belum Dijadwalkan">Belum Dijadwalkan</option>
               <option value="Terjadwal">Terjadwal</option>
               <option value="Selesai">Selesai</option>
               <option value="Batal">Batal</option>
@@ -2454,6 +2461,22 @@ function hapusRujukan(id) {
 }
 
 // ===== JADWAL BIMBINGAN/KONSELING =====
+function generateJadwalXIXII() {
+  if (!confirm('Buat jadwal Bimbingan Klasikal Kelas XI/XII? Tanggal akan dikosongkan, Bapak isi manual nanti.')) return;
+  callApiPost({ action: 'klasikal_generate_xi_xii', guruBK: sesiAktif.namaLengkap }, function(res) {
+    alert(res.message || (res.success ? 'Jadwal berhasil dibuat' : 'Gagal membuat jadwal'));
+    muatKlasikal();
+  });
+}
+
+function generateJadwalBKOtomatis() {
+  if (!confirm('Deteksi kebutuhan Bimbingan Kelompok & Konseling Individu dari hasil AKPD yang sudah masuk?')) return;
+  callApiPost({ action: 'jadwalbk_generate', guruBK: sesiAktif.namaLengkap }, function(res) {
+    alert(res.message || (res.success ? 'Jadwal berhasil dibuat' : 'Gagal membuat jadwal'));
+    muatJadwal();
+  });
+}
+
 function muatJadwal() {
   const status = document.getElementById('filterStatusJadwal').value;
   let url = API_URL + '?action=jadwalbk_list';
@@ -2464,8 +2487,8 @@ function muatJadwal() {
     tbody.innerHTML = '';
     res.data.forEach(function(row) {
       tbody.innerHTML += '<tr>' +
-        '<td style="padding:8px;">' + row.TanggalJadwal + '</td>' +
-        '<td style="padding:8px;">' + row.JamJadwal + '</td>' +
+        '<td style="padding:8px;">' + (row.TanggalJadwal || '-') + '</td>' +
+        '<td style="padding:8px;">' + (row.JamJadwal || '-') + '</td>' +
         '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
         '<td style="padding:8px;">' + row.JenisLayanan + '</td>' +
         '<td style="padding:8px;">' + row.Tempat + '</td>' +
