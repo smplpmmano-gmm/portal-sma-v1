@@ -479,9 +479,69 @@
     <tbody id="tabelBukuTamu"></tbody>
   </table>
 </div>
-      <div id="menu-skSuratKeputusan" class="menu-section"><div class="page-header"><h2>SK & Surat Keputusan</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-mutasiSiswa" class="menu-section"><div class="page-header"><h2>Rekap Mutasi Siswa</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-legalisir" class="menu-section"><div class="page-header"><h2>Legalisir Dokumen</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
+      <div id="menu-skSuratKeputusan" class="menu-section">
+  <div class="page-header">
+    <h2>SK & Surat Keputusan</h2>
+    <button onclick="bukaFormSKSuratKeputusan()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ SK Baru</button>
+  </div>
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+    <select id="filterJenisSK" onchange="muatSKSuratKeputusan()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+      <option value="">Semua Jenis</option>
+      <option value="Kepegawaian">Kepegawaian</option>
+      <option value="Kesiswaan">Kesiswaan</option>
+      <option value="Kepanitiaan">Kepanitiaan</option>
+      <option value="Lainnya">Lainnya</option>
+    </select>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Nomor SK</th><th style="padding:10px 8px;">Tentang</th><th style="padding:10px 8px;">Tanggal</th>
+        <th style="padding:10px 8px;">Jenis</th><th style="padding:10px 8px;">Pihak Terkait</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelSKSuratKeputusan"></tbody>
+  </table>
+</div>
+
+<div id="menu-mutasiSiswa" class="menu-section">
+  <div class="page-header">
+    <h2>Rekap Mutasi Siswa</h2>
+    <button onclick="bukaFormMutasiSiswa()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Mutasi Baru</button>
+  </div>
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+    <select id="filterJenisMutasi" onchange="muatMutasiSiswa()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+      <option value="">Semua Jenis</option>
+      <option value="Pindah Masuk">Pindah Masuk</option>
+      <option value="Pindah Keluar">Pindah Keluar</option>
+    </select>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th>
+        <th style="padding:10px 8px;">Jenis Mutasi</th><th style="padding:10px 8px;">Sekolah Asal/Tujuan</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelMutasiSiswa"></tbody>
+  </table>
+</div>
+
+<div id="menu-legalisir" class="menu-section">
+  <div class="page-header">
+    <h2>Legalisir Dokumen</h2>
+    <button onclick="bukaFormLegalisirDokumen()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Legalisir Baru</button>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Jenis Dokumen</th>
+        <th style="padding:10px 8px;">Jumlah Lembar</th><th style="padding:10px 8px;">Pemohon</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelLegalisirDokumen"></tbody>
+  </table>
+</div>
       <div id="menu-dataKepegawaian" class="menu-section"><div class="page-header"><h2>Data Kepegawaian Ringkas</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-agendaKegiatan" class="menu-section"><div class="page-header"><h2>Agenda Kegiatan Sekolah</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-pengajuanAtk" class="menu-section"><div class="page-header"><h2>Pengajuan ATK/Sarana</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
@@ -663,6 +723,100 @@
       <textarea id="btKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
       <div style="display:flex; gap:10px; margin-top:16px;">
         <button type="button" onclick="tutupModal('modalBukuTamu')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal SK & Surat Keputusan -->
+<div id="modalSKSuratKeputusan" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalSKSuratKeputusan" style="margin-bottom:16px; color:var(--navy);">SK Baru</h3>
+    <form id="formSKSuratKeputusan" onsubmit="simpanSKSuratKeputusan(event)">
+      <input type="hidden" id="skpId">
+      <label>Nomor SK</label>
+      <input type="text" id="skpNomor" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tentang</label>
+      <input type="text" id="skpTentang" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tanggal SK</label>
+      <input type="date" id="skpTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jenis</label>
+      <select id="skpJenis" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option value="Kepegawaian">Kepegawaian</option>
+        <option value="Kesiswaan">Kesiswaan</option>
+        <option value="Kepanitiaan">Kepanitiaan</option>
+        <option value="Lainnya">Lainnya</option>
+      </select>
+      <label>Pihak Terkait</label>
+      <input type="text" id="skpPihak" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Link Dokumen</label>
+      <input type="url" id="skpLink" placeholder="https://drive.google.com/..." style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keterangan</label>
+      <textarea id="skpKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalSKSuratKeputusan')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Mutasi Siswa -->
+<div id="modalMutasiSiswa" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalMutasiSiswa" style="margin-bottom:16px; color:var(--navy);">Mutasi Baru</h3>
+    <form id="formMutasiSiswa" onsubmit="simpanMutasiSiswa(event)">
+      <input type="hidden" id="mutId">
+      <label>NISN</label>
+      <input type="text" id="mutNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Nama Siswa</label>
+      <input type="text" id="mutNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Kelas</label>
+      <input type="text" id="mutKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jenis Mutasi</label>
+      <select id="mutJenis" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option value="Pindah Masuk">Pindah Masuk</option>
+        <option value="Pindah Keluar">Pindah Keluar</option>
+      </select>
+      <label>Tanggal Mutasi</label>
+      <input type="date" id="mutTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Sekolah Asal/Tujuan</label>
+      <input type="text" id="mutSekolah" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Alasan</label>
+      <textarea id="mutAlasan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <label>Keterangan</label>
+      <textarea id="mutKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalMutasiSiswa')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Legalisir Dokumen -->
+<div id="modalLegalisirDokumen" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalLegalisirDokumen" style="margin-bottom:16px; color:var(--navy);">Legalisir Baru</h3>
+    <form id="formLegalisirDokumen" onsubmit="simpanLegalisirDokumen(event)">
+      <input type="hidden" id="legId">
+      <label>NISN</label>
+      <input type="text" id="legNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Nama Siswa</label>
+      <input type="text" id="legNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jenis Dokumen</label>
+      <input type="text" id="legJenis" placeholder="cth. Ijazah, SKHUN, Rapor" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jumlah Lembar</label>
+      <input type="number" id="legJumlah" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tanggal Legalisir</label>
+      <input type="date" id="legTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Pemohon</label>
+      <input type="text" id="legPemohon" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keterangan</label>
+      <textarea id="legKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalLegalisirDokumen')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
         <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
       </div>
     </form>
@@ -1257,6 +1411,182 @@ function hapusBukuTamu(id) {
   jsonpCall('bukutamu_hapus', { id: id }).then(function() { muatBukuTamu(); });
 }
 
+// ===== SK & SURAT KEPUTUSAN =====
+function muatSKSuratKeputusan() {
+  jsonpCall('sksuratkeputusan_list', { jenis: document.getElementById('filterJenisSK').value }).then(function(res) {
+    var tbody = document.getElementById('tabelSKSuratKeputusan');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada data.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.NomorSK + '</td>' +
+        '<td style="padding:8px;">' + row.TentangSK + '</td>' +
+        '<td style="padding:8px;">' + formatTgl(row.TanggalSK) + '</td>' +
+        '<td style="padding:8px;">' + row.JenisSK + '</td>' +
+        '<td style="padding:8px;">' + (row.PihakTerkait || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editSKSuratKeputusan(\'' + row.ID + '\')">Edit</button> <button onclick="hapusSKSuratKeputusan(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormSKSuratKeputusan() {
+  document.getElementById('formSKSuratKeputusan').reset();
+  document.getElementById('skpId').value = '';
+  document.getElementById('judulModalSKSuratKeputusan').innerText = 'SK Baru';
+  document.getElementById('modalSKSuratKeputusan').style.display = 'flex';
+}
+function simpanSKSuratKeputusan(event) {
+  event.preventDefault();
+  jsonpCall('sksuratkeputusan_simpan', {
+    id: document.getElementById('skpId').value,
+    nomorSK: document.getElementById('skpNomor').value,
+    tentangSK: document.getElementById('skpTentang').value,
+    tanggalSK: document.getElementById('skpTanggal').value,
+    jenisSK: document.getElementById('skpJenis').value,
+    pihakTerkait: document.getElementById('skpPihak').value,
+    link: document.getElementById('skpLink').value,
+    keterangan: document.getElementById('skpKeterangan').value
+  }).then(function() { tutupModal('modalSKSuratKeputusan'); muatSKSuratKeputusan(); });
+}
+function editSKSuratKeputusan(id) {
+  jsonpCall('sksuratkeputusan_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('skpId').value = row.ID;
+    document.getElementById('skpNomor').value = row.NomorSK;
+    document.getElementById('skpTentang').value = row.TentangSK;
+    document.getElementById('skpTanggal').value = row.TanggalSK;
+    document.getElementById('skpJenis').value = row.JenisSK;
+    document.getElementById('skpPihak').value = row.PihakTerkait;
+    document.getElementById('skpLink').value = row.Link;
+    document.getElementById('skpKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalSKSuratKeputusan').innerText = 'Edit SK';
+    document.getElementById('modalSKSuratKeputusan').style.display = 'flex';
+  });
+}
+function hapusSKSuratKeputusan(id) {
+  if (!confirm('Yakin hapus SK ini?')) return;
+  jsonpCall('sksuratkeputusan_hapus', { id: id }).then(function() { muatSKSuratKeputusan(); });
+}
+
+// ===== REKAP MUTASI SISWA =====
+function muatMutasiSiswa() {
+  jsonpCall('mutasisiswa_list', { jenis: document.getElementById('filterJenisMutasi').value }).then(function(res) {
+    var tbody = document.getElementById('tabelMutasiSiswa');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada data.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + formatTgl(row.TanggalMutasi) + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.KelasAsal + '</td>' +
+        '<td style="padding:8px;">' + row.JenisMutasi + '</td>' +
+        '<td style="padding:8px;">' + row.SekolahTujuanAsal + '</td>' +
+        '<td style="padding:8px;"><button onclick="editMutasiSiswa(\'' + row.ID + '\')">Edit</button> <button onclick="hapusMutasiSiswa(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormMutasiSiswa() {
+  document.getElementById('formMutasiSiswa').reset();
+  document.getElementById('mutId').value = '';
+  document.getElementById('judulModalMutasiSiswa').innerText = 'Mutasi Baru';
+  document.getElementById('modalMutasiSiswa').style.display = 'flex';
+}
+function simpanMutasiSiswa(event) {
+  event.preventDefault();
+  jsonpCall('mutasisiswa_simpan', {
+    id: document.getElementById('mutId').value,
+    nisn: document.getElementById('mutNisn').value,
+    namaSiswa: document.getElementById('mutNama').value,
+    kelasAsal: document.getElementById('mutKelas').value,
+    jenisMutasi: document.getElementById('mutJenis').value,
+    tanggalMutasi: document.getElementById('mutTanggal').value,
+    sekolahTujuanAsal: document.getElementById('mutSekolah').value,
+    alasan: document.getElementById('mutAlasan').value,
+    keterangan: document.getElementById('mutKeterangan').value
+  }).then(function() { tutupModal('modalMutasiSiswa'); muatMutasiSiswa(); });
+}
+function editMutasiSiswa(id) {
+  jsonpCall('mutasisiswa_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('mutId').value = row.ID;
+    document.getElementById('mutNisn').value = row.NISN;
+    document.getElementById('mutNama').value = row.NamaSiswa;
+    document.getElementById('mutKelas').value = row.KelasAsal;
+    document.getElementById('mutJenis').value = row.JenisMutasi;
+    document.getElementById('mutTanggal').value = row.TanggalMutasi;
+    document.getElementById('mutSekolah').value = row.SekolahTujuanAsal;
+    document.getElementById('mutAlasan').value = row.Alasan;
+    document.getElementById('mutKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalMutasiSiswa').innerText = 'Edit Mutasi';
+    document.getElementById('modalMutasiSiswa').style.display = 'flex';
+  });
+}
+function hapusMutasiSiswa(id) {
+  if (!confirm('Yakin hapus data mutasi ini?')) return;
+  jsonpCall('mutasisiswa_hapus', { id: id }).then(function() { muatMutasiSiswa(); });
+}
+
+// ===== LEGALISIR DOKUMEN =====
+function muatLegalisirDokumen() {
+  jsonpCall('legalisirdokumen_list', {}).then(function(res) {
+    var tbody = document.getElementById('tabelLegalisirDokumen');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada data.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + formatTgl(row.TanggalLegalisir) + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.JenisDokumen + '</td>' +
+        '<td style="padding:8px;">' + row.JumlahLembar + '</td>' +
+        '<td style="padding:8px;">' + (row.Pemohon || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editLegalisirDokumen(\'' + row.ID + '\')">Edit</button> <button onclick="hapusLegalisirDokumen(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormLegalisirDokumen() {
+  document.getElementById('formLegalisirDokumen').reset();
+  document.getElementById('legId').value = '';
+  document.getElementById('judulModalLegalisirDokumen').innerText = 'Legalisir Baru';
+  document.getElementById('modalLegalisirDokumen').style.display = 'flex';
+}
+function simpanLegalisirDokumen(event) {
+  event.preventDefault();
+  jsonpCall('legalisirdokumen_simpan', {
+    id: document.getElementById('legId').value,
+    nisn: document.getElementById('legNisn').value,
+    namaSiswa: document.getElementById('legNama').value,
+    jenisDokumen: document.getElementById('legJenis').value,
+    jumlahLembar: document.getElementById('legJumlah').value,
+    tanggalLegalisir: document.getElementById('legTanggal').value,
+    pemohon: document.getElementById('legPemohon').value,
+    keterangan: document.getElementById('legKeterangan').value
+  }).then(function() { tutupModal('modalLegalisirDokumen'); muatLegalisirDokumen(); });
+}
+function editLegalisirDokumen(id) {
+  jsonpCall('legalisirdokumen_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('legId').value = row.ID;
+    document.getElementById('legNisn').value = row.NISN;
+    document.getElementById('legNama').value = row.NamaSiswa;
+    document.getElementById('legJenis').value = row.JenisDokumen;
+    document.getElementById('legJumlah').value = row.JumlahLembar;
+    document.getElementById('legTanggal').value = row.TanggalLegalisir;
+    document.getElementById('legPemohon').value = row.Pemohon;
+    document.getElementById('legKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalLegalisirDokumen').innerText = 'Edit Legalisir';
+    document.getElementById('modalLegalisirDokumen').style.display = 'flex';
+  });
+}
+function hapusLegalisirDokumen(id) {
+  if (!confirm('Yakin hapus data legalisir ini?')) return;
+  jsonpCall('legalisirdokumen_hapus', { id: id }).then(function() { muatLegalisirDokumen(); });
+}
+
 // ===== NAVIGASI MENU (SPA placeholder) =====
 const judulMenu = {
   beranda: 'Beranda',
@@ -1286,6 +1616,9 @@ function tampilkanMenu(menu) {
   if (menu === 'presensiGuruStaf') muatPresensiStaf();
   if (menu === 'inventaris') muatInventaris();
   if (menu === 'bukuTamu') muatBukuTamu();
+  if (menu === 'skSuratKeputusan') muatSKSuratKeputusan();
+  if (menu === 'mutasiSiswa') muatMutasiSiswa();
+  if (menu === 'legalisir') muatLegalisirDokumen();
 
   if (isMobileView()) {
     sidebarEl.classList.remove('mobile-open');
