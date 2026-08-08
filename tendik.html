@@ -419,9 +419,66 @@
     <tbody id="tabelSuratKetSiswa"></tbody>
   </table>
 </div>
-      <div id="menu-presensiGuruStaf" class="menu-section"><div class="page-header"><h2>Rekap Presensi Guru & Staf</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-inventaris" class="menu-section"><div class="page-header"><h2>Data Inventaris</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-bukuTamu" class="menu-section"><div class="page-header"><h2>Buku Tamu</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
+      <div id="menu-presensiGuruStaf" class="menu-section">
+  <div class="page-header">
+    <h2>Rekap Presensi Guru & Staf</h2>
+    <button onclick="bukaFormPresensiStaf()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Catat Presensi</button>
+  </div>
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+    <input type="date" id="filterDariPresensiStaf" onchange="muatPresensiStaf()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+    <input type="date" id="filterSampaiPresensiStaf" onchange="muatPresensiStaf()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama</th><th style="padding:10px 8px;">Jabatan</th>
+        <th style="padding:10px 8px;">Status</th><th style="padding:10px 8px;">Keterangan</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelPresensiStaf"></tbody>
+  </table>
+</div>
+
+<div id="menu-inventaris" class="menu-section">
+  <div class="page-header">
+    <h2>Data Inventaris</h2>
+    <button onclick="bukaFormInventaris()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Barang Baru</button>
+  </div>
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+    <input type="text" id="filterKategoriInventaris" placeholder="Filter kategori" onchange="muatInventaris()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+    <select id="filterKondisiInventaris" onchange="muatInventaris()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+      <option value="">Semua Kondisi</option>
+      <option value="Baik">Baik</option>
+      <option value="Rusak Ringan">Rusak Ringan</option>
+      <option value="Rusak Berat">Rusak Berat</option>
+    </select>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Nama Barang</th><th style="padding:10px 8px;">Kategori</th><th style="padding:10px 8px;">Jumlah</th>
+        <th style="padding:10px 8px;">Kondisi</th><th style="padding:10px 8px;">Lokasi</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelInventaris"></tbody>
+  </table>
+</div>
+
+<div id="menu-bukuTamu" class="menu-section">
+  <div class="page-header">
+    <h2>Buku Tamu</h2>
+    <button onclick="bukaFormBukuTamu()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Tamu Baru</button>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Tamu</th><th style="padding:10px 8px;">Instansi</th>
+        <th style="padding:10px 8px;">Keperluan</th><th style="padding:10px 8px;">Jam Masuk</th><th style="padding:10px 8px;">Jam Keluar</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelBukuTamu"></tbody>
+  </table>
+</div>
       <div id="menu-skSuratKeputusan" class="menu-section"><div class="page-header"><h2>SK & Surat Keputusan</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-mutasiSiswa" class="menu-section"><div class="page-header"><h2>Rekap Mutasi Siswa</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-legalisir" class="menu-section"><div class="page-header"><h2>Legalisir Dokumen</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
@@ -522,6 +579,90 @@
       <textarea id="sksKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
       <div style="display:flex; gap:10px; margin-top:16px;">
         <button type="button" onclick="tutupModal('modalSuratKetSiswa')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Presensi Staf -->
+<div id="modalPresensiStaf" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalPresensiStaf" style="margin-bottom:16px; color:var(--navy);">Catat Presensi</h3>
+    <form id="formPresensiStaf" onsubmit="simpanPresensiStaf(event)">
+      <input type="hidden" id="psId">
+      <label>Tanggal</label>
+      <input type="date" id="psTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Nama Staf</label>
+      <input type="text" id="psNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jabatan</label>
+      <input type="text" id="psJabatan" placeholder="cth. Guru, Tendik, Satpam" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Status</label>
+      <select id="psStatus" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option>Hadir</option><option>Sakit</option><option>Izin</option><option>Alpa</option>
+      </select>
+      <label>Keterangan</label>
+      <textarea id="psKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalPresensiStaf')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Inventaris -->
+<div id="modalInventaris" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalInventaris" style="margin-bottom:16px; color:var(--navy);">Barang Baru</h3>
+    <form id="formInventaris" onsubmit="simpanInventaris(event)">
+      <input type="hidden" id="invId">
+      <label>Nama Barang</label>
+      <input type="text" id="invNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Kategori</label>
+      <input type="text" id="invKategori" placeholder="cth. Elektronik, Furnitur, ATK" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jumlah</label>
+      <input type="number" id="invJumlah" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Kondisi</label>
+      <select id="invKondisi" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option>Baik</option><option>Rusak Ringan</option><option>Rusak Berat</option>
+      </select>
+      <label>Lokasi</label>
+      <input type="text" id="invLokasi" placeholder="cth. Ruang Guru, Lab Komputer" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tanggal Catat</label>
+      <input type="date" id="invTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keterangan</label>
+      <textarea id="invKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalInventaris')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Buku Tamu -->
+<div id="modalBukuTamu" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalBukuTamu" style="margin-bottom:16px; color:var(--navy);">Tamu Baru</h3>
+    <form id="formBukuTamu" onsubmit="simpanBukuTamu(event)">
+      <input type="hidden" id="btId">
+      <label>Tanggal</label>
+      <input type="date" id="btTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Nama Tamu</label>
+      <input type="text" id="btNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Instansi</label>
+      <input type="text" id="btInstansi" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keperluan</label>
+      <input type="text" id="btKeperluan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jam Masuk</label>
+      <input type="time" id="btJamMasuk" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jam Keluar</label>
+      <input type="time" id="btJamKeluar" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keterangan</label>
+      <textarea id="btKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalBukuTamu')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
         <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
       </div>
     </form>
@@ -939,6 +1080,183 @@ function hapusSuratKetSiswa(id) {
   jsonpCall('suratketsiswa_hapus', { id: id }).then(function() { muatSuratKetSiswa(); });
 }
 
+// ===== REKAP PRESENSI GURU & STAF =====
+function muatPresensiStaf() {
+  jsonpCall('presensistaf_list', {
+    dari: document.getElementById('filterDariPresensiStaf').value,
+    sampai: document.getElementById('filterSampaiPresensiStaf').value
+  }).then(function(res) {
+    var tbody = document.getElementById('tabelPresensiStaf');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada data.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + formatTgl(row.Tanggal) + '</td>' +
+        '<td style="padding:8px;">' + row.NamaStaf + '</td>' +
+        '<td style="padding:8px;">' + row.Jabatan + '</td>' +
+        '<td style="padding:8px;">' + row.Status + '</td>' +
+        '<td style="padding:8px;">' + (row.Keterangan || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editPresensiStaf(\'' + row.ID + '\')">Edit</button> <button onclick="hapusPresensiStaf(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormPresensiStaf() {
+  document.getElementById('formPresensiStaf').reset();
+  document.getElementById('psId').value = '';
+  document.getElementById('judulModalPresensiStaf').innerText = 'Catat Presensi';
+  document.getElementById('modalPresensiStaf').style.display = 'flex';
+}
+function simpanPresensiStaf(event) {
+  event.preventDefault();
+  jsonpCall('presensistaf_simpan', {
+    id: document.getElementById('psId').value,
+    tanggal: document.getElementById('psTanggal').value,
+    namaStaf: document.getElementById('psNama').value,
+    jabatan: document.getElementById('psJabatan').value,
+    status: document.getElementById('psStatus').value,
+    keterangan: document.getElementById('psKeterangan').value
+  }).then(function() { tutupModal('modalPresensiStaf'); muatPresensiStaf(); });
+}
+function editPresensiStaf(id) {
+  jsonpCall('presensistaf_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('psId').value = row.ID;
+    document.getElementById('psTanggal').value = row.Tanggal;
+    document.getElementById('psNama').value = row.NamaStaf;
+    document.getElementById('psJabatan').value = row.Jabatan;
+    document.getElementById('psStatus').value = row.Status;
+    document.getElementById('psKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalPresensiStaf').innerText = 'Edit Presensi';
+    document.getElementById('modalPresensiStaf').style.display = 'flex';
+  });
+}
+function hapusPresensiStaf(id) {
+  if (!confirm('Yakin hapus data presensi ini?')) return;
+  jsonpCall('presensistaf_hapus', { id: id }).then(function() { muatPresensiStaf(); });
+}
+
+// ===== DATA INVENTARIS =====
+function muatInventaris() {
+  jsonpCall('inventaris_list', {
+    kategori: document.getElementById('filterKategoriInventaris').value,
+    kondisi: document.getElementById('filterKondisiInventaris').value
+  }).then(function(res) {
+    var tbody = document.getElementById('tabelInventaris');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada barang.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.NamaBarang + '</td>' +
+        '<td style="padding:8px;">' + row.Kategori + '</td>' +
+        '<td style="padding:8px;">' + row.Jumlah + '</td>' +
+        '<td style="padding:8px;">' + row.Kondisi + '</td>' +
+        '<td style="padding:8px;">' + row.Lokasi + '</td>' +
+        '<td style="padding:8px;"><button onclick="editInventaris(\'' + row.ID + '\')">Edit</button> <button onclick="hapusInventaris(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormInventaris() {
+  document.getElementById('formInventaris').reset();
+  document.getElementById('invId').value = '';
+  document.getElementById('judulModalInventaris').innerText = 'Barang Baru';
+  document.getElementById('modalInventaris').style.display = 'flex';
+}
+function simpanInventaris(event) {
+  event.preventDefault();
+  jsonpCall('inventaris_simpan', {
+    id: document.getElementById('invId').value,
+    namaBarang: document.getElementById('invNama').value,
+    kategori: document.getElementById('invKategori').value,
+    jumlah: document.getElementById('invJumlah').value,
+    kondisi: document.getElementById('invKondisi').value,
+    lokasi: document.getElementById('invLokasi').value,
+    tanggalCatat: document.getElementById('invTanggal').value,
+    keterangan: document.getElementById('invKeterangan').value
+  }).then(function() { tutupModal('modalInventaris'); muatInventaris(); });
+}
+function editInventaris(id) {
+  jsonpCall('inventaris_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('invId').value = row.ID;
+    document.getElementById('invNama').value = row.NamaBarang;
+    document.getElementById('invKategori').value = row.Kategori;
+    document.getElementById('invJumlah').value = row.Jumlah;
+    document.getElementById('invKondisi').value = row.Kondisi;
+    document.getElementById('invLokasi').value = row.Lokasi;
+    document.getElementById('invTanggal').value = row.TanggalCatat;
+    document.getElementById('invKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalInventaris').innerText = 'Edit Barang';
+    document.getElementById('modalInventaris').style.display = 'flex';
+  });
+}
+function hapusInventaris(id) {
+  if (!confirm('Yakin hapus barang ini?')) return;
+  jsonpCall('inventaris_hapus', { id: id }).then(function() { muatInventaris(); });
+}
+
+// ===== BUKU TAMU =====
+function muatBukuTamu() {
+  jsonpCall('bukutamu_list', {}).then(function(res) {
+    var tbody = document.getElementById('tabelBukuTamu');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="7" style="padding:12px; color:var(--text-muted);">Belum ada tamu.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + formatTgl(row.Tanggal) + '</td>' +
+        '<td style="padding:8px;">' + row.NamaTamu + '</td>' +
+        '<td style="padding:8px;">' + (row.Instansi || '-') + '</td>' +
+        '<td style="padding:8px;">' + row.Keperluan + '</td>' +
+        '<td style="padding:8px;">' + row.JamMasuk + '</td>' +
+        '<td style="padding:8px;">' + (row.JamKeluar || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editBukuTamu(\'' + row.ID + '\')">Edit</button> <button onclick="hapusBukuTamu(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormBukuTamu() {
+  document.getElementById('formBukuTamu').reset();
+  document.getElementById('btId').value = '';
+  document.getElementById('judulModalBukuTamu').innerText = 'Tamu Baru';
+  document.getElementById('modalBukuTamu').style.display = 'flex';
+}
+function simpanBukuTamu(event) {
+  event.preventDefault();
+  jsonpCall('bukutamu_simpan', {
+    id: document.getElementById('btId').value,
+    tanggal: document.getElementById('btTanggal').value,
+    namaTamu: document.getElementById('btNama').value,
+    instansi: document.getElementById('btInstansi').value,
+    keperluan: document.getElementById('btKeperluan').value,
+    jamMasuk: document.getElementById('btJamMasuk').value,
+    jamKeluar: document.getElementById('btJamKeluar').value,
+    keterangan: document.getElementById('btKeterangan').value
+  }).then(function() { tutupModal('modalBukuTamu'); muatBukuTamu(); });
+}
+function editBukuTamu(id) {
+  jsonpCall('bukutamu_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('btId').value = row.ID;
+    document.getElementById('btTanggal').value = row.Tanggal;
+    document.getElementById('btNama').value = row.NamaTamu;
+    document.getElementById('btInstansi').value = row.Instansi;
+    document.getElementById('btKeperluan').value = row.Keperluan;
+    document.getElementById('btJamMasuk').value = row.JamMasuk;
+    document.getElementById('btJamKeluar').value = row.JamKeluar;
+    document.getElementById('btKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalBukuTamu').innerText = 'Edit Tamu';
+    document.getElementById('modalBukuTamu').style.display = 'flex';
+  });
+}
+function hapusBukuTamu(id) {
+  if (!confirm('Yakin hapus data tamu ini?')) return;
+  jsonpCall('bukutamu_hapus', { id: id }).then(function() { muatBukuTamu(); });
+}
+
 // ===== NAVIGASI MENU (SPA placeholder) =====
 const judulMenu = {
   beranda: 'Beranda',
@@ -965,6 +1283,9 @@ function tampilkanMenu(menu) {
   if (menu === 'agendaSurat') muatAgendaSurat();
   if (menu === 'arsipSurat') muatArsipSurat();
   if (menu === 'suratKetSiswa') muatSuratKetSiswa();
+  if (menu === 'presensiGuruStaf') muatPresensiStaf();
+  if (menu === 'inventaris') muatInventaris();
+  if (menu === 'bukuTamu') muatBukuTamu();
 
   if (isMobileView()) {
     sidebarEl.classList.remove('mobile-open');
