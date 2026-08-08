@@ -361,9 +361,64 @@
       <!-- ========== END MENU: BERANDA ========== -->
 
       <!-- ========== 20 MENU PLACEHOLDER (belum dibangun) ========== -->
-      <div id="menu-agendaSurat" class="menu-section"><div class="page-header"><h2>Agenda Surat Masuk/Keluar</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-arsipSurat" class="menu-section"><div class="page-header"><h2>Arsip Surat</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-suratKetSiswa" class="menu-section"><div class="page-header"><h2>Surat Keterangan Siswa</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
+      <div id="menu-agendaSurat" class="menu-section">
+  <div class="page-header">
+    <h2>Agenda Surat Masuk/Keluar</h2>
+    <button onclick="bukaFormAgendaSurat()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Surat Baru</button>
+  </div>
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+    <select id="filterJenisAgendaSurat" onchange="muatAgendaSurat()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+      <option value="">Semua Jenis</option>
+      <option value="Masuk">Surat Masuk</option>
+      <option value="Keluar">Surat Keluar</option>
+    </select>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Jenis</th><th style="padding:10px 8px;">No. Surat</th>
+        <th style="padding:10px 8px;">Perihal</th><th style="padding:10px 8px;">Asal/Tujuan</th><th style="padding:10px 8px;">Sifat</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelAgendaSurat"></tbody>
+  </table>
+</div>
+
+<div id="menu-arsipSurat" class="menu-section">
+  <div class="page-header">
+    <h2>Arsip Surat</h2>
+    <button onclick="bukaFormArsipSurat()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Arsip Baru</button>
+  </div>
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+    <input type="text" id="filterKategoriArsip" placeholder="Filter kategori" onchange="muatArsipSurat()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+    <input type="text" id="filterTahunArsip" placeholder="Filter tahun" onchange="muatArsipSurat()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Kategori</th><th style="padding:10px 8px;">Judul</th><th style="padding:10px 8px;">Tahun</th>
+        <th style="padding:10px 8px;">Dokumen</th><th style="padding:10px 8px;">Keterangan</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelArsipSurat"></tbody>
+  </table>
+</div>
+
+<div id="menu-suratKetSiswa" class="menu-section">
+  <div class="page-header">
+    <h2>Surat Keterangan Siswa</h2>
+    <button onclick="bukaFormSuratKetSiswa()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Surat Baru</button>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Tanggal Terbit</th><th style="padding:10px 8px;">Nama Siswa</th><th style="padding:10px 8px;">Kelas</th>
+        <th style="padding:10px 8px;">Jenis Surat</th><th style="padding:10px 8px;">Keperluan</th><th style="padding:10px 8px;">No. Surat</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelSuratKetSiswa"></tbody>
+  </table>
+</div>
       <div id="menu-presensiGuruStaf" class="menu-section"><div class="page-header"><h2>Rekap Presensi Guru & Staf</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-inventaris" class="menu-section"><div class="page-header"><h2>Data Inventaris</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-bukuTamu" class="menu-section"><div class="page-header"><h2>Buku Tamu</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
@@ -381,7 +436,99 @@
       <div id="menu-bukuRusak" class="menu-section"><div class="page-header"><h2>Buku Rusak/Hilang</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-kategoriRak" class="menu-section"><div class="page-header"><h2>Kategori & Rak Buku</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-statistikBaca" class="menu-section"><div class="page-header"><h2>Statistik Minat Baca</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <!-- ========== END PLACEHOLDER ========== -->
+
+      <!-- Modal Agenda Surat -->
+<div id="modalAgendaSurat" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalAgendaSurat" style="margin-bottom:16px; color:var(--navy);">Surat Baru</h3>
+    <form id="formAgendaSurat" onsubmit="simpanAgendaSurat(event)">
+      <input type="hidden" id="agendaSuratId">
+      <label>Tanggal</label>
+      <input type="date" id="agendaSuratTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jenis</label>
+      <select id="agendaSuratJenis" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option value="Masuk">Surat Masuk</option>
+        <option value="Keluar">Surat Keluar</option>
+      </select>
+      <label>Nomor Surat</label>
+      <input type="text" id="agendaSuratNomor" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Perihal</label>
+      <input type="text" id="agendaSuratPerihal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Asal/Tujuan Surat</label>
+      <input type="text" id="agendaSuratAsalTujuan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Sifat</label>
+      <select id="agendaSuratSifat" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option value="Biasa">Biasa</option>
+        <option value="Penting">Penting</option>
+        <option value="Segera">Segera</option>
+      </select>
+      <label>Keterangan</label>
+      <textarea id="agendaSuratKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <label>PIC</label>
+      <input type="text" id="agendaSuratPic" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalAgendaSurat')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Arsip Surat -->
+<div id="modalArsipSurat" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalArsipSurat" style="margin-bottom:16px; color:var(--navy);">Arsip Baru</h3>
+    <form id="formArsipSurat" onsubmit="simpanArsipSurat(event)">
+      <input type="hidden" id="arsipSuratId">
+      <label>Kategori</label>
+      <input type="text" id="arsipSuratKategori" placeholder="cth. SK, Surat Edaran, Kerjasama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Judul</label>
+      <input type="text" id="arsipSuratJudul" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tahun Arsip</label>
+      <input type="text" id="arsipSuratTahun" placeholder="2026" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Link Dokumen (Google Drive)</label>
+      <input type="url" id="arsipSuratLink" placeholder="https://drive.google.com/..." style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keterangan</label>
+      <textarea id="arsipSuratKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalArsipSurat')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Surat Keterangan Siswa -->
+<div id="modalSuratKetSiswa" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalSuratKetSiswa" style="margin-bottom:16px; color:var(--navy);">Surat Keterangan Baru</h3>
+    <form id="formSuratKetSiswa" onsubmit="simpanSuratKetSiswa(event)">
+      <input type="hidden" id="sksId">
+      <label>NISN</label>
+      <input type="text" id="sksNisn" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Nama Siswa</label>
+      <input type="text" id="sksNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Kelas</label>
+      <input type="text" id="sksKelas" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jenis Surat</label>
+      <input type="text" id="sksJenis" placeholder="cth. Surat Keterangan Aktif, Pindah Sekolah" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keperluan</label>
+      <input type="text" id="sksKeperluan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tanggal Terbit</label>
+      <input type="date" id="sksTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Nomor Surat</label>
+      <input type="text" id="sksNomor" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keterangan</label>
+      <textarea id="sksKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalSuratKetSiswa')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ========== END PLACEHOLDER ========== -->
 
     </main>
   </div>
@@ -602,6 +749,196 @@ async function muatPengumumanTendik() {
   } catch (e) { console.error(e); }
 }
 
+function tutupModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
+function formatTgl(v) {
+  if (!v) return '-';
+  var d = new Date(v);
+  if (isNaN(d.getTime())) return v;
+  return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+}
+
+// ===== AGENDA SURAT MASUK/KELUAR =====
+function muatAgendaSurat() {
+  var jenis = document.getElementById('filterJenisAgendaSurat').value;
+  jsonpCall('agendasurat_list', jenis ? { jenis: jenis } : {}).then(function(res) {
+    var tbody = document.getElementById('tabelAgendaSurat');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="7" style="padding:12px; color:var(--text-muted);">Belum ada data.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + formatTgl(row.Tanggal) + '</td>' +
+        '<td style="padding:8px;">' + row.Jenis + '</td>' +
+        '<td style="padding:8px;">' + row.NomorSurat + '</td>' +
+        '<td style="padding:8px;">' + row.Perihal + '</td>' +
+        '<td style="padding:8px;">' + row.AsalTujuan + '</td>' +
+        '<td style="padding:8px;">' + row.Sifat + '</td>' +
+        '<td style="padding:8px;"><button onclick="editAgendaSurat(\'' + row.ID + '\')">Edit</button> <button onclick="hapusAgendaSurat(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormAgendaSurat() {
+  document.getElementById('formAgendaSurat').reset();
+  document.getElementById('agendaSuratId').value = '';
+  document.getElementById('judulModalAgendaSurat').innerText = 'Surat Baru';
+  document.getElementById('modalAgendaSurat').style.display = 'flex';
+}
+function simpanAgendaSurat(event) {
+  event.preventDefault();
+  jsonpCall('agendasurat_simpan', {
+    id: document.getElementById('agendaSuratId').value,
+    tanggal: document.getElementById('agendaSuratTanggal').value,
+    jenis: document.getElementById('agendaSuratJenis').value,
+    nomorSurat: document.getElementById('agendaSuratNomor').value,
+    perihal: document.getElementById('agendaSuratPerihal').value,
+    asalTujuan: document.getElementById('agendaSuratAsalTujuan').value,
+    sifat: document.getElementById('agendaSuratSifat').value,
+    keterangan: document.getElementById('agendaSuratKeterangan').value,
+    pic: document.getElementById('agendaSuratPic').value
+  }).then(function() { tutupModal('modalAgendaSurat'); muatAgendaSurat(); });
+}
+function editAgendaSurat(id) {
+  jsonpCall('agendasurat_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('agendaSuratId').value = row.ID;
+    document.getElementById('agendaSuratTanggal').value = row.Tanggal;
+    document.getElementById('agendaSuratJenis').value = row.Jenis;
+    document.getElementById('agendaSuratNomor').value = row.NomorSurat;
+    document.getElementById('agendaSuratPerihal').value = row.Perihal;
+    document.getElementById('agendaSuratAsalTujuan').value = row.AsalTujuan;
+    document.getElementById('agendaSuratSifat').value = row.Sifat;
+    document.getElementById('agendaSuratKeterangan').value = row.Keterangan;
+    document.getElementById('agendaSuratPic').value = row.PIC;
+    document.getElementById('judulModalAgendaSurat').innerText = 'Edit Surat';
+    document.getElementById('modalAgendaSurat').style.display = 'flex';
+  });
+}
+function hapusAgendaSurat(id) {
+  if (!confirm('Yakin hapus data ini?')) return;
+  jsonpCall('agendasurat_hapus', { id: id }).then(function() { muatAgendaSurat(); });
+}
+
+// ===== ARSIP SURAT =====
+function muatArsipSurat() {
+  jsonpCall('arsipsurat_list', {
+    kategori: document.getElementById('filterKategoriArsip').value,
+    tahun: document.getElementById('filterTahunArsip').value
+  }).then(function(res) {
+    var tbody = document.getElementById('tabelArsipSurat');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada arsip.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.Kategori + '</td>' +
+        '<td style="padding:8px;">' + row.Judul + '</td>' +
+        '<td style="padding:8px;">' + row.TahunArsip + '</td>' +
+        '<td style="padding:8px;">' + (row.Link ? '<a href="' + row.Link + '" target="_blank">Buka</a>' : '-') + '</td>' +
+        '<td style="padding:8px;">' + (row.Keterangan || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editArsipSurat(\'' + row.ID + '\')">Edit</button> <button onclick="hapusArsipSurat(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormArsipSurat() {
+  document.getElementById('formArsipSurat').reset();
+  document.getElementById('arsipSuratId').value = '';
+  document.getElementById('judulModalArsipSurat').innerText = 'Arsip Baru';
+  document.getElementById('modalArsipSurat').style.display = 'flex';
+}
+function simpanArsipSurat(event) {
+  event.preventDefault();
+  jsonpCall('arsipsurat_simpan', {
+    id: document.getElementById('arsipSuratId').value,
+    kategori: document.getElementById('arsipSuratKategori').value,
+    judul: document.getElementById('arsipSuratJudul').value,
+    tahunArsip: document.getElementById('arsipSuratTahun').value,
+    link: document.getElementById('arsipSuratLink').value,
+    keterangan: document.getElementById('arsipSuratKeterangan').value
+  }).then(function() { tutupModal('modalArsipSurat'); muatArsipSurat(); });
+}
+function editArsipSurat(id) {
+  jsonpCall('arsipsurat_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('arsipSuratId').value = row.ID;
+    document.getElementById('arsipSuratKategori').value = row.Kategori;
+    document.getElementById('arsipSuratJudul').value = row.Judul;
+    document.getElementById('arsipSuratTahun').value = row.TahunArsip;
+    document.getElementById('arsipSuratLink').value = row.Link;
+    document.getElementById('arsipSuratKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalArsipSurat').innerText = 'Edit Arsip';
+    document.getElementById('modalArsipSurat').style.display = 'flex';
+  });
+}
+function hapusArsipSurat(id) {
+  if (!confirm('Yakin hapus arsip ini?')) return;
+  jsonpCall('arsipsurat_hapus', { id: id }).then(function() { muatArsipSurat(); });
+}
+
+// ===== SURAT KETERANGAN SISWA =====
+function muatSuratKetSiswa() {
+  jsonpCall('suratketsiswa_list', {}).then(function(res) {
+    var tbody = document.getElementById('tabelSuratKetSiswa');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="7" style="padding:12px; color:var(--text-muted);">Belum ada data.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + formatTgl(row.TanggalTerbit) + '</td>' +
+        '<td style="padding:8px;">' + row.NamaSiswa + '</td>' +
+        '<td style="padding:8px;">' + row.Kelas + '</td>' +
+        '<td style="padding:8px;">' + row.JenisSurat + '</td>' +
+        '<td style="padding:8px;">' + row.Keperluan + '</td>' +
+        '<td style="padding:8px;">' + (row.NomorSurat || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editSuratKetSiswa(\'' + row.ID + '\')">Edit</button> <button onclick="hapusSuratKetSiswa(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormSuratKetSiswa() {
+  document.getElementById('formSuratKetSiswa').reset();
+  document.getElementById('sksId').value = '';
+  document.getElementById('judulModalSuratKetSiswa').innerText = 'Surat Keterangan Baru';
+  document.getElementById('modalSuratKetSiswa').style.display = 'flex';
+}
+function simpanSuratKetSiswa(event) {
+  event.preventDefault();
+  jsonpCall('suratketsiswa_simpan', {
+    id: document.getElementById('sksId').value,
+    nisn: document.getElementById('sksNisn').value,
+    namaSiswa: document.getElementById('sksNama').value,
+    kelas: document.getElementById('sksKelas').value,
+    jenisSurat: document.getElementById('sksJenis').value,
+    keperluan: document.getElementById('sksKeperluan').value,
+    tanggalTerbit: document.getElementById('sksTanggal').value,
+    nomorSurat: document.getElementById('sksNomor').value,
+    keterangan: document.getElementById('sksKeterangan').value
+  }).then(function() { tutupModal('modalSuratKetSiswa'); muatSuratKetSiswa(); });
+}
+function editSuratKetSiswa(id) {
+  jsonpCall('suratketsiswa_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('sksId').value = row.ID;
+    document.getElementById('sksNisn').value = row.NISN;
+    document.getElementById('sksNama').value = row.NamaSiswa;
+    document.getElementById('sksKelas').value = row.Kelas;
+    document.getElementById('sksJenis').value = row.JenisSurat;
+    document.getElementById('sksKeperluan').value = row.Keperluan;
+    document.getElementById('sksTanggal').value = row.TanggalTerbit;
+    document.getElementById('sksNomor').value = row.NomorSurat;
+    document.getElementById('sksKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalSuratKetSiswa').innerText = 'Edit Surat Keterangan';
+    document.getElementById('modalSuratKetSiswa').style.display = 'flex';
+  });
+}
+function hapusSuratKetSiswa(id) {
+  if (!confirm('Yakin hapus surat ini?')) return;
+  jsonpCall('suratketsiswa_hapus', { id: id }).then(function() { muatSuratKetSiswa(); });
+}
+
 // ===== NAVIGASI MENU (SPA placeholder) =====
 const judulMenu = {
   beranda: 'Beranda',
@@ -624,6 +961,10 @@ function tampilkanMenu(menu) {
   if (navTarget) navTarget.classList.add('active');
 
   document.getElementById('pageTitle').textContent = judulMenu[menu] || 'Beranda';
+
+  if (menu === 'agendaSurat') muatAgendaSurat();
+  if (menu === 'arsipSurat') muatArsipSurat();
+  if (menu === 'suratKetSiswa') muatSuratKetSiswa();
 
   if (isMobileView()) {
     sidebarEl.classList.remove('mobile-open');
