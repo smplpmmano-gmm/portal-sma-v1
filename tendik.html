@@ -663,11 +663,100 @@
     <tbody id="tabelKunjunganPerpus"></tbody>
   </table>
 </div>
-      <div id="menu-laporanPerpus" class="menu-section"><div class="page-header"><h2>Laporan Perpustakaan</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-usulanBuku" class="menu-section"><div class="page-header"><h2>Usulan Pengadaan Buku</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-bukuRusak" class="menu-section"><div class="page-header"><h2>Buku Rusak/Hilang</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-kategoriRak" class="menu-section"><div class="page-header"><h2>Kategori & Rak Buku</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-statistikBaca" class="menu-section"><div class="page-header"><h2>Statistik Minat Baca</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
+      <div id="menu-laporanPerpus" class="menu-section">
+  <div class="page-header"><h2>Laporan Perpustakaan</h2></div>
+
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:20px;">
+    <input type="date" id="lapDari" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+    <input type="date" id="lapSampai" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+    <button onclick="muatLaporanPerpus()" style="background:var(--mustard); color:var(--navy); border:none; padding:8px 18px; border-radius:10px; font-weight:600; cursor:pointer;">Tampilkan</button>
+  </div>
+
+  <div class="stat-grid" id="lapStatGrid" style="grid-template-columns:repeat(4,1fr);"></div>
+
+  <div class="panel" style="margin-top:20px;">
+    <h3>5 Buku Paling Sering Dipinjam</h3>
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+          <th style="padding:10px 8px;">Judul Buku</th><th style="padding:10px 8px;">Jumlah Dipinjam</th>
+        </tr>
+      </thead>
+      <tbody id="tabelLapTerpopuler"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="menu-usulanBuku" class="menu-section">
+  <div class="page-header">
+    <h2>Usulan Pengadaan Buku</h2>
+    <button onclick="bukaFormUsulanBuku()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Usulan Baru</button>
+  </div>
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+    <select id="filterStatusUsulan" onchange="muatUsulanBuku()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+      <option value="">Semua Status</option>
+      <option value="Diajukan">Diajukan</option>
+      <option value="Disetujui">Disetujui</option>
+      <option value="Dibeli">Dibeli</option>
+      <option value="Ditolak">Ditolak</option>
+    </select>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Judul Diusulkan</th><th style="padding:10px 8px;">Pengusul</th>
+        <th style="padding:10px 8px;">Alasan</th><th style="padding:10px 8px;">Status</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelUsulanBuku"></tbody>
+  </table>
+</div>
+
+<div id="menu-bukuRusak" class="menu-section">
+  <div class="page-header">
+    <h2>Buku Rusak/Hilang</h2>
+    <button onclick="bukaFormBukuRusak()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Catat Baru</button>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Judul Buku</th><th style="padding:10px 8px;">Tanggal Catat</th><th style="padding:10px 8px;">Kondisi</th>
+        <th style="padding:10px 8px;">Penyebab</th><th style="padding:10px 8px;">Tindak Lanjut</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelBukuRusak"></tbody>
+  </table>
+</div>
+      <div id="menu-kategoriRak" class="menu-section">
+  <div class="page-header"><h2>Kategori & Rak Buku</h2></div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Kategori</th><th style="padding:10px 8px;">Jumlah Judul</th>
+        <th style="padding:10px 8px;">Total Eksemplar</th><th style="padding:10px 8px;">Tersedia</th>
+      </tr>
+    </thead>
+    <tbody id="tabelKategoriBuku"></tbody>
+  </table>
+</div>
+
+<div id="menu-statistikBaca" class="menu-section">
+  <div class="page-header"><h2>Statistik Minat Baca</h2></div>
+
+  <div class="stat-grid" id="statBacaGrid" style="grid-template-columns:repeat(4,1fr);"></div>
+
+  <div class="panel" style="margin-top:20px;">
+    <h3>Kategori Buku Terfavorit (berdasarkan jumlah dipinjam)</h3>
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+          <th style="padding:10px 8px;">Kategori</th><th style="padding:10px 8px;">Jumlah Dipinjam</th>
+        </tr>
+      </thead>
+      <tbody id="tabelStatBacaKategori"></tbody>
+    </table>
+  </div>
+</div>
 
       <!-- Modal Agenda Surat -->
 <div id="modalAgendaSurat" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
@@ -1107,6 +1196,67 @@
       <textarea id="kjgKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
       <div style="display:flex; gap:10px; margin-top:16px;">
         <button type="button" onclick="tutupModal('modalKunjunganPerpus')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Usulan Buku -->
+<div id="modalUsulanBuku" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalUsulanBuku" style="margin-bottom:16px; color:var(--navy);">Usulan Baru</h3>
+    <form id="formUsulanBuku" onsubmit="simpanUsulanBuku(event)">
+      <input type="hidden" id="usbId">
+      <label>Tanggal Usulan</label>
+      <input type="date" id="usbTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Judul Diusulkan</label>
+      <input type="text" id="usbJudul" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Pengusul</label>
+      <input type="text" id="usbPengusul" placeholder="cth. Guru Bahasa Indonesia, Siswa Kelas X" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Alasan</label>
+      <textarea id="usbAlasan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <label>Status</label>
+      <select id="usbStatus" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option value="Diajukan">Diajukan</option>
+        <option value="Disetujui">Disetujui</option>
+        <option value="Dibeli">Dibeli</option>
+        <option value="Ditolak">Ditolak</option>
+      </select>
+      <label>Keterangan</label>
+      <textarea id="usbKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalUsulanBuku')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Buku Rusak/Hilang -->
+<div id="modalBukuRusak" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalBukuRusak" style="margin-bottom:16px; color:var(--navy);">Catat Baru</h3>
+    <form id="formBukuRusak" onsubmit="simpanBukuRusak(event)">
+      <input type="hidden" id="rskId">
+      <label>Judul Buku</label>
+      <input type="text" id="rskJudul" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tanggal Catat</label>
+      <input type="date" id="rskTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Kondisi</label>
+      <select id="rskKondisi" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option value="Rusak Ringan">Rusak Ringan</option>
+        <option value="Rusak Berat">Rusak Berat</option>
+        <option value="Hilang">Hilang</option>
+      </select>
+      <label>Penyebab</label>
+      <input type="text" id="rskPenyebab" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tindak Lanjut</label>
+      <input type="text" id="rskTindakLanjut" placeholder="cth. Diperbaiki, Diganti Siswa, Dihapus dari stok" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keterangan</label>
+      <textarea id="rskKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalBukuRusak')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
         <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
       </div>
     </form>
@@ -2230,6 +2380,176 @@ function hapusKunjunganPerpus(id) {
   jsonpCall('kunjunganperpus_hapus', { id: id }).then(function() { muatKunjunganPerpus(); });
 }
 
+// ===== LAPORAN PERPUSTAKAAN =====
+function muatLaporanPerpus() {
+  jsonpCall('laporanperpus_ringkasan', {
+    dari: document.getElementById('lapDari').value,
+    sampai: document.getElementById('lapSampai').value
+  }).then(function(res) {
+    var r = res.data;
+    document.getElementById('lapStatGrid').innerHTML =
+      '<div class="stat-card navy"><div><div class="stat-num">' + r.totalJudul + '</div><div class="stat-sub">Total Judul Buku</div></div></div>' +
+      '<div class="stat-card"><div><div class="stat-num">' + r.totalTersedia + ' / ' + r.totalEksemplar + '</div><div class="stat-sub">Eksemplar Tersedia / Total</div></div></div>' +
+      '<div class="stat-card"><div><div class="stat-num">' + r.sedangDipinjam + '</div><div class="stat-sub">Sedang Dipinjam</div></div></div>' +
+      '<div class="stat-card mustard"><div><div class="stat-num">' + r.kunjunganPeriode + '</div><div class="stat-sub">Kunjungan (periode dipilih)</div></div></div>';
+
+    var tbody = document.getElementById('tabelLapTerpopuler');
+    tbody.innerHTML = '';
+    if (!r.bukuTerpopuler.length) { tbody.innerHTML = '<tr><td colspan="2" style="padding:12px; color:var(--text-muted);">Belum ada transaksi peminjaman.</td></tr>'; return; }
+    r.bukuTerpopuler.forEach(function(row) {
+      tbody.innerHTML += '<tr><td style="padding:8px;">' + row.judul + '</td><td style="padding:8px;">' + row.jumlahDipinjam + 'x</td></tr>';
+    });
+  });
+}
+
+// ===== USULAN PENGADAAN BUKU =====
+function muatUsulanBuku() {
+  jsonpCall('usulanbuku_list', { status: document.getElementById('filterStatusUsulan').value }).then(function(res) {
+    var tbody = document.getElementById('tabelUsulanBuku');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada usulan.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + formatTgl(row.TanggalUsulan) + '</td>' +
+        '<td style="padding:8px;">' + row.JudulDiusulkan + '</td>' +
+        '<td style="padding:8px;">' + (row.Pengusul || '-') + '</td>' +
+        '<td style="padding:8px;">' + (row.Alasan || '-') + '</td>' +
+        '<td style="padding:8px;">' + row.Status + '</td>' +
+        '<td style="padding:8px;"><button onclick="editUsulanBuku(\'' + row.ID + '\')">Edit</button> <button onclick="hapusUsulanBuku(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormUsulanBuku() {
+  document.getElementById('formUsulanBuku').reset();
+  document.getElementById('usbId').value = '';
+  document.getElementById('judulModalUsulanBuku').innerText = 'Usulan Baru';
+  document.getElementById('modalUsulanBuku').style.display = 'flex';
+}
+function simpanUsulanBuku(event) {
+  event.preventDefault();
+  jsonpCall('usulanbuku_simpan', {
+    id: document.getElementById('usbId').value,
+    tanggalUsulan: document.getElementById('usbTanggal').value,
+    judulDiusulkan: document.getElementById('usbJudul').value,
+    pengusul: document.getElementById('usbPengusul').value,
+    alasan: document.getElementById('usbAlasan').value,
+    status: document.getElementById('usbStatus').value,
+    keterangan: document.getElementById('usbKeterangan').value
+  }).then(function() { tutupModal('modalUsulanBuku'); muatUsulanBuku(); });
+}
+function editUsulanBuku(id) {
+  jsonpCall('usulanbuku_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('usbId').value = row.ID;
+    document.getElementById('usbTanggal').value = row.TanggalUsulan;
+    document.getElementById('usbJudul').value = row.JudulDiusulkan;
+    document.getElementById('usbPengusul').value = row.Pengusul;
+    document.getElementById('usbAlasan').value = row.Alasan;
+    document.getElementById('usbStatus').value = row.Status;
+    document.getElementById('usbKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalUsulanBuku').innerText = 'Edit Usulan';
+    document.getElementById('modalUsulanBuku').style.display = 'flex';
+  });
+}
+function hapusUsulanBuku(id) {
+  if (!confirm('Yakin hapus usulan ini?')) return;
+  jsonpCall('usulanbuku_hapus', { id: id }).then(function() { muatUsulanBuku(); });
+}
+
+// ===== BUKU RUSAK/HILANG =====
+function muatBukuRusak() {
+  jsonpCall('bukurusak_list', {}).then(function(res) {
+    var tbody = document.getElementById('tabelBukuRusak');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada catatan.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.JudulBuku + '</td>' +
+        '<td style="padding:8px;">' + formatTgl(row.TanggalCatat) + '</td>' +
+        '<td style="padding:8px;">' + row.Kondisi + '</td>' +
+        '<td style="padding:8px;">' + (row.Penyebab || '-') + '</td>' +
+        '<td style="padding:8px;">' + (row.TindakLanjut || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editBukuRusak(\'' + row.ID + '\')">Edit</button> <button onclick="hapusBukuRusak(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormBukuRusak() {
+  document.getElementById('formBukuRusak').reset();
+  document.getElementById('rskId').value = '';
+  document.getElementById('judulModalBukuRusak').innerText = 'Catat Baru';
+  document.getElementById('modalBukuRusak').style.display = 'flex';
+}
+function simpanBukuRusak(event) {
+  event.preventDefault();
+  jsonpCall('bukurusak_simpan', {
+    id: document.getElementById('rskId').value,
+    judulBuku: document.getElementById('rskJudul').value,
+    tanggalCatat: document.getElementById('rskTanggal').value,
+    kondisi: document.getElementById('rskKondisi').value,
+    penyebab: document.getElementById('rskPenyebab').value,
+    tindakLanjut: document.getElementById('rskTindakLanjut').value,
+    keterangan: document.getElementById('rskKeterangan').value
+  }).then(function() { tutupModal('modalBukuRusak'); muatBukuRusak(); });
+}
+function editBukuRusak(id) {
+  jsonpCall('bukurusak_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('rskId').value = row.ID;
+    document.getElementById('rskJudul').value = row.JudulBuku;
+    document.getElementById('rskTanggal').value = row.TanggalCatat;
+    document.getElementById('rskKondisi').value = row.Kondisi;
+    document.getElementById('rskPenyebab').value = row.Penyebab;
+    document.getElementById('rskTindakLanjut').value = row.TindakLanjut;
+    document.getElementById('rskKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalBukuRusak').innerText = 'Edit Catatan';
+    document.getElementById('modalBukuRusak').style.display = 'flex';
+  });
+}
+function hapusBukuRusak(id) {
+  if (!confirm('Yakin hapus catatan ini?')) return;
+  jsonpCall('bukurusak_hapus', { id: id }).then(function() { muatBukuRusak(); });
+}
+
+// ===== KATEGORI & RAK BUKU =====
+function muatKategoriBuku() {
+  jsonpCall('kategoribuku_list', {}).then(function(res) {
+    var tbody = document.getElementById('tabelKategoriBuku');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="4" style="padding:12px; color:var(--text-muted);">Belum ada buku.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.kategori + '</td>' +
+        '<td style="padding:8px;">' + row.jumlahJudul + '</td>' +
+        '<td style="padding:8px;">' + row.totalEksemplar + '</td>' +
+        '<td style="padding:8px;">' + row.totalTersedia + '</td>' +
+        '</tr>';
+    });
+  });
+}
+
+// ===== STATISTIK MINAT BACA =====
+function muatStatistikMinatBaca() {
+  jsonpCall('statistikminatbaca_ringkasan', {}).then(function(res) {
+    var r = res.data;
+    document.getElementById('statBacaGrid').innerHTML =
+      '<div class="stat-card navy"><div><div class="stat-num">' + r.totalPeminjaman + '</div><div class="stat-sub">Total Transaksi Peminjaman</div></div></div>' +
+      '<div class="stat-card"><div><div class="stat-num">' + r.peminjamanSiswa + '</div><div class="stat-sub">Peminjaman oleh Siswa</div></div></div>' +
+      '<div class="stat-card"><div><div class="stat-num">' + r.peminjamanGuruStaf + '</div><div class="stat-sub">Peminjaman oleh Guru/Staf</div></div></div>' +
+      '<div class="stat-card mustard"><div><div class="stat-num">' + r.totalKunjungan + '</div><div class="stat-sub">Total Kunjungan Perpus</div></div></div>';
+
+    var tbody = document.getElementById('tabelStatBacaKategori');
+    tbody.innerHTML = '';
+    if (!r.kategoriTerfavorit.length) { tbody.innerHTML = '<tr><td colspan="2" style="padding:12px; color:var(--text-muted);">Belum ada data peminjaman.</td></tr>'; return; }
+    r.kategoriTerfavorit.forEach(function(row) {
+      tbody.innerHTML += '<tr><td style="padding:8px;">' + row.kategori + '</td><td style="padding:8px;">' + row.jumlahDipinjam + 'x</td></tr>';
+    });
+  });
+}
+
 // ===== NAVIGASI MENU (SPA placeholder) =====
 const judulMenu = {
   beranda: 'Beranda',
@@ -2268,6 +2588,11 @@ function tampilkanMenu(menu) {
   if (menu === 'dataBuku') muatBukuPerpus();
   if (menu === 'peminjaman') muatPeminjaman();
   if (menu === 'kunjunganPerpus') muatKunjunganPerpus();
+  if (menu === 'laporanPerpus') muatLaporanPerpus();
+  if (menu === 'usulanBuku') muatUsulanBuku();
+  if (menu === 'bukuRusak') muatBukuRusak();
+  if (menu === 'kategoriRak') muatKategoriBuku();
+  if (menu === 'statistikBaca') muatStatistikMinatBaca();
 
   if (isMobileView()) {
     sidebarEl.classList.remove('mobile-open');
