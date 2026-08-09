@@ -2691,10 +2691,10 @@ function soRenderPreviewSKS(p) {
   var tglSurat = soFormatTanggalIndoJS(p.tanggalSurat);
 
   var kop = '' +
-    '<table style="width:180mm; border:none; border-collapse:collapse; margin:0 0 5mm 0;">' +
+    '<table style="width:170mm; border:none; border-collapse:collapse; margin:0 0 5mm 0;">' +
     '<tr>' +
       '<td style="width:20mm; border:none; vertical-align:middle; text-align:left;"><img src="' + LOGO_PEMPROV + '" style="width:18mm;"></td>' +
-      '<td style="width:140mm; border:none; text-align:center; vertical-align:middle; font-family:Arial, sans-serif;">' +
+      '<td style="width:130mm; border:none; text-align:center; vertical-align:middle; font-family:Arial, sans-serif;">' +
         '<p style="font-size:14pt; font-weight:bold; margin:0; line-height:1;">PEMERINTAH PROVINSI MALUKU UTARA</p>' +
         '<p style="font-size:14pt; font-weight:bold; margin:0; line-height:1;">DINAS PENDIDIKAN DAN KEBUDAYAAN</p>' +
         '<p style="font-size:14pt; font-weight:bold; margin:0; line-height:1;">SMA NEGERI 30 HALMAHERA SELATAN</p>' +
@@ -2704,6 +2704,7 @@ function soRenderPreviewSKS(p) {
     '</tr>' +
     '<tr><td colspan="3" style="border:none; border-top:4pt solid #000; padding-top:1mm;"></td></tr>' +
     '</table>';
+
   var body = '' +
     kop +
     '<p style="text-align:center; font-weight:bold; font-size:12pt; text-decoration:underline; margin:0;">SURAT KETERANGAN SISWA AKTIF</p>' +
@@ -2726,8 +2727,8 @@ function soRenderPreviewSKS(p) {
     '<p style="text-align:justify; margin:0 0 3mm;">Adalah benar terdaftar dan masih aktif sebagai peserta didik SMA Negeri 30 Halmahera Selatan pada tahun pelajaran tersebut di atas.</p>' +
     '<p style="text-align:justify; margin:0 0 3mm;">Surat keterangan ini dibuat untuk keperluan: ' + (p.keperluan || '') + '</p>' +
     '<p style="text-align:justify; margin:0 0 8mm;">Demikian surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>' +
-    '<table style="width:180mm; border:none; border-collapse:collapse;"><tr>' +
-      '<td style="width:115mm; border:none;">&nbsp;</td>' +
+    '<table style="width:170mm; border:none; border-collapse:collapse;"><tr>' +
+      '<td style="width:105mm; border:none;">&nbsp;</td>' +
       '<td style="width:65mm; border:none; vertical-align:top;">' +
         'Mano, ' + tglSurat + '<br>' +
         'Kepala Sekolah<br><br><br><br>' +
@@ -2736,7 +2737,7 @@ function soRenderPreviewSKS(p) {
       '</td>' +
     '</tr></table>';
 
-  return '<html><head><meta charset="utf-8"></head><body style="font-family:Arial, sans-serif; font-size:12pt; color:#000; margin:0; padding:0;">' + body + '</body></html>';
+  return '<html><head><meta charset="utf-8"></head><body style="font-family:Arial, sans-serif; font-size:12pt; color:#000; margin:0; padding:20mm; box-sizing:border-box;">' + body + '</body></html>';
 }
 
 function soUpdatePreviewLive() {
