@@ -242,6 +242,10 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
           <span class="nav-label">Statistik Minat Baca</span>
         </a>
+        <a class="nav-item" href="#" data-menu="suratOtomatis" onclick="tampilkanMenu('suratOtomatis'); return false;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><path d="M12 12v6M9 15h6"/></svg>
+          <span class="nav-label">Surat Otomatis</span>
+        </a>
       </nav>
 
       <div class="sidebar-footer">
@@ -740,23 +744,78 @@
   </table>
 </div>
 
-<div id="menu-statistikBaca" class="menu-section">
-  <div class="page-header"><h2>Statistik Minat Baca</h2></div>
+<div id="menu-statistikBaca" class="menu-section"><div class="page-header"><h2>Statistik Minat Baca</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
 
-  <div class="stat-grid" id="statBacaGrid" style="grid-template-columns:repeat(4,1fr);"></div>
+      <div id="menu-suratOtomatis" class="menu-section">
+        <div class="page-header"><h2>Surat Otomatis</h2></div>
 
-  <div class="panel" style="margin-top:20px;">
-    <h3>Kategori Buku Terfavorit (berdasarkan jumlah dipinjam)</h3>
-    <table style="width:100%; border-collapse:collapse;">
-      <thead>
-        <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
-          <th style="padding:10px 8px;">Kategori</th><th style="padding:10px 8px;">Jumlah Dipinjam</th>
-        </tr>
-      </thead>
-      <tbody id="tabelStatBacaKategori"></tbody>
-    </table>
-  </div>
-</div>
+        <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:20px;">
+          <select id="soJenisSurat" onchange="soGantiJenisSurat()" style="padding:10px 14px; border-radius:10px; border:1px solid var(--border); font-weight:600;">
+            <option value="SKS">Surat Keterangan Siswa Aktif (SKS)</option>
+            <option value="SPS" disabled>Surat Keterangan Pindah Sekolah (segera)</option>
+            <option value="MUTASI_TERIMA" disabled>Surat Keterangan Mutasi Terima (segera)</option>
+            <option value="LAINNYA" disabled>Surat Keterangan Lainnya (segera)</option>
+          </select>
+        </div>
+
+        <!-- FORM: SKS -->
+        <div id="soForm-SKS" class="so-form">
+          <div class="panel" style="margin-bottom:20px;">
+            <h3>Isi Data Surat</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nomor Surat</label>
+                <input type="text" id="soSksNomor" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Tanggal Surat</label>
+                <input type="date" id="soSksTanggalSurat" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nama Siswa</label>
+                <input type="text" id="soSksNama" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">NISN</label>
+                <input type="text" id="soSksNisn" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Tempat, Tanggal Lahir</label>
+                <input type="text" id="soSksTtl" placeholder="cth. Mano, 10 Januari 2010" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Kelas</label>
+                <input type="text" id="soSksKelas" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Tahun Pelajaran</label>
+                <input type="text" id="soSksTahunPelajaran" placeholder="2026/2027" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nama Orang Tua/Wali</label>
+                <input type="text" id="soSksOrtu" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div style="grid-column:1 / -1;">
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Keperluan</label>
+                <input type="text" id="soSksKeperluan" placeholder="cth. pengurusan beasiswa" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:18px;">
+              <button onclick="soLihatPratinjau()" style="background:#fff; color:var(--navy); border:1px solid var(--navy); padding:10px 20px; border-radius:10px; font-weight:600; cursor:pointer;">Lihat Pratinjau</button>
+              <button onclick="soBuatSurat()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 20px; border-radius:10px; font-weight:600; cursor:pointer;">Buat & Unduh Surat</button>
+            </div>
+            <div id="soMsg" style="margin-top:10px; font-size:12.5px;"></div>
+          </div>
+        </div>
+
+        <!-- PRATINJAU -->
+        <div class="panel">
+          <h3>Pratinjau Surat</h3>
+          <div style="background:#e5e7eb; border-radius:12px; padding:20px; overflow-x:auto;">
+            <iframe id="soPreviewFrame" style="width:210mm; min-height:297mm; background:#fff; border:none; box-shadow:0 4px 12px rgba(0,0,0,.15); display:block; margin:0 auto;"></iframe>
+          </div>
+        </div>
+      </div>
 
       <!-- Modal Agenda Surat -->
 <div id="modalAgendaSurat" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
@@ -2550,6 +2609,58 @@ function muatStatistikMinatBaca() {
   });
 }
 
+// ===== SURAT OTOMATIS =====
+function soGantiJenisSurat() {
+  var jenis = document.getElementById('soJenisSurat').value;
+  document.querySelectorAll('.so-form').forEach(function(f) { f.style.display = 'none'; });
+  var target = document.getElementById('soForm-' + jenis);
+  if (target) target.style.display = 'block';
+  soAmbilNomorOtomatis(jenis);
+}
+
+function soAmbilNomorOtomatis(jenis) {
+  jsonpCall('surat_nomor_otomatis', { jenis: jenis }).then(function(res) {
+    if (jenis === 'SKS') document.getElementById('soSksNomor').value = res.nomor;
+  });
+}
+
+function soAmbilDataSKS() {
+  return {
+    nomorSurat: document.getElementById('soSksNomor').value,
+    tanggalSurat: document.getElementById('soSksTanggalSurat').value,
+    namaSiswa: document.getElementById('soSksNama').value,
+    nisn: document.getElementById('soSksNisn').value,
+    ttl: document.getElementById('soSksTtl').value,
+    kelas: document.getElementById('soSksKelas').value,
+    tahunPelajaran: document.getElementById('soSksTahunPelajaran').value,
+    namaOrtu: document.getElementById('soSksOrtu').value,
+    keperluan: document.getElementById('soSksKeperluan').value,
+    dibuatOleh: sesiAktif.namaLengkap
+  };
+}
+
+function soLihatPratinjau() {
+  var jenis = document.getElementById('soJenisSurat').value;
+  var data = jenis === 'SKS' ? soAmbilDataSKS() : {};
+  jsonpCall('surat_preview_' + jenis.toLowerCase(), data).then(function(res) {
+    if (!res.success) { alert('Gagal memuat pratinjau'); return; }
+    var frame = document.getElementById('soPreviewFrame');
+    frame.srcdoc = res.html;
+  });
+}
+
+function soBuatSurat() {
+  var jenis = document.getElementById('soJenisSurat').value;
+  var data = jenis === 'SKS' ? soAmbilDataSKS() : {};
+  if (!data.namaSiswa) { alert('Isi data surat dulu, minimal Nama Siswa'); return; }
+  document.getElementById('soMsg').textContent = 'Sedang membuat dokumen...';
+  jsonpCall('surat_generate_' + jenis.toLowerCase(), data).then(function(res) {
+    if (!res.success) { document.getElementById('soMsg').textContent = res.error || 'Gagal membuat surat'; return; }
+    document.getElementById('soMsg').innerHTML = 'Surat berhasil dibuat: <a href="' + res.link + '" target="_blank">Buka Dokumen</a>';
+    window.open(res.link, '_blank');
+  });
+}
+
 // ===== NAVIGASI MENU (SPA placeholder) =====
 const judulMenu = {
   beranda: 'Beranda',
@@ -2593,6 +2704,8 @@ function tampilkanMenu(menu) {
   if (menu === 'bukuRusak') muatBukuRusak();
   if (menu === 'kategoriRak') muatKategoriBuku();
   if (menu === 'statistikBaca') muatStatistikMinatBaca();
+  if (menu === 'suratOtomatis') soGantiJenisSurat();
+
 
   if (isMobileView()) {
     sidebarEl.classList.remove('mobile-open');
