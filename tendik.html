@@ -123,6 +123,17 @@
   .menu-section.active{ display:block; }
   .page-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
   .page-header h2{ font-size:20px; color:var(--navy); }
+  .so-autocomplete-wrap{ position:relative; }
+  .so-autocomplete-list{
+    display:none; position:absolute; top:100%; left:0; right:0; background:#fff;
+    border:1px solid var(--border); border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,.12);
+    z-index:50; max-height:180px; overflow-y:auto; margin-top:2px;
+  }
+  .so-autocomplete-list.show{ display:block; }
+  .so-autocomplete-item{ padding:8px 10px; font-size:12.5px; cursor:pointer; border-bottom:1px solid #f1f5f9; }
+  .so-autocomplete-item:last-child{ border-bottom:none; }
+  .so-autocomplete-item:hover{ background:var(--cream); }
+  .so-autocomplete-item small{ color:var(--text-muted); }
   .placeholder-box{
     border:2px dashed var(--border); border-radius:16px; padding:48px 24px;
     text-align:center; color:var(--text-muted); font-size:13.5px;
@@ -800,9 +811,10 @@
                 <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Tanggal Surat</label>
                 <input type="date" id="soSpsTanggalSurat" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
               </div>
-              <div>
+              <div class="so-autocomplete-wrap">
                 <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nama Siswa</label>
-                <input type="text" id="soSpsNama" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+                <input type="text" id="soSpsNama" autocomplete="off" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+                <div class="so-autocomplete-list" id="soSpsNamaList"></div>
               </div>
               <div>
                 <label style="font-size:12.5px; font-weight:600; color:var(--navy);">NISN</label>
@@ -892,8 +904,10 @@
                 <input type="date" id="soLnTanggalSurat" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;"></div>
               <div style="grid-column:1 / -1;"><label style="font-size:12.5px; font-weight:600; color:var(--navy);">Judul Surat (setelah "SURAT KETERANGAN")</label>
                 <input type="text" id="soLnJudul" placeholder="cth. KEPEMILIKAN NISN" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;"></div>
-              <div><label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nama Siswa/Alumni</label>
-                <input type="text" id="soLnNama" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;"></div>
+              <div class="so-autocomplete-wrap"><label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nama Siswa/Alumni</label>
+                <input type="text" id="soLnNama" autocomplete="off" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+                <div class="so-autocomplete-list" id="soLnNamaList"></div>
+              </div>
               <div><label style="font-size:12.5px; font-weight:600; color:var(--navy);">Tempat, Tanggal Lahir</label>
                 <input type="text" id="soLnTtl" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;"></div>
               <div style="grid-column:1 / -1;"><label style="font-size:12.5px; font-weight:600; color:var(--navy);">Field Tambahan (satu baris = satu field, format "Label : Isi")</label>
@@ -921,9 +935,10 @@
                 <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Tanggal Surat</label>
                 <input type="date" id="soSksTanggalSurat" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
               </div>
-              <div>
+              <div class="so-autocomplete-wrap">
                 <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nama Siswa</label>
-                <input type="text" id="soSksNama" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+                <input type="text" id="soSksNama" autocomplete="off" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+                <div class="so-autocomplete-list" id="soSksNamaList"></div>
               </div>
               <div>
                 <label style="font-size:12.5px; font-weight:600; color:var(--navy);">NISN</label>
@@ -3120,6 +3135,50 @@ function soBuatSurat() {
     window.open(res.linkWord, '_blank');
   });
 }
+
+// ===== AUTOCOMPLETE NAMA SISWA =====
+var soAutocompleteTimer = null;
+function soAktifkanAutocomplete(inputId, listId, targetFields) {
+  var input = document.getElementById(inputId);
+  var list = document.getElementById(listId);
+  if (!input || !list) return;
+
+  input.addEventListener('input', function() {
+    var q = input.value.trim();
+    clearTimeout(soAutocompleteTimer);
+    if (q.length < 2) { list.classList.remove('show'); return; }
+    soAutocompleteTimer = setTimeout(function() {
+      jsonpCall('siswa_cari_surat', { q: q }).then(function(res) {
+        if (!res.success || !res.data.length) { list.classList.remove('show'); return; }
+        list.innerHTML = res.data.map(function(s) {
+          return '<div class="so-autocomplete-item" data-nisn="' + s.nisn + '" data-nama="' + s.nama + '" data-kelas="' + s.kelas + '" data-ttl="' + (s.ttl || '') + '" data-ortu="' + (s.namaOrtu || '') + '">' +
+            s.nama + ' <small>(' + s.kelas + ')</small></div>';
+        }).join('');
+        list.classList.add('show');
+      });
+    }, 300);
+  });
+
+  list.addEventListener('click', function(e) {
+    var item = e.target.closest('.so-autocomplete-item');
+    if (!item) return;
+    input.value = item.getAttribute('data-nama');
+    if (targetFields.nisn) document.getElementById(targetFields.nisn).value = item.getAttribute('data-nisn') || '';
+    if (targetFields.kelas) document.getElementById(targetFields.kelas).value = item.getAttribute('data-kelas') || '';
+    if (targetFields.ttl && item.getAttribute('data-ttl')) document.getElementById(targetFields.ttl).value = item.getAttribute('data-ttl');
+    if (targetFields.ortu && item.getAttribute('data-ortu')) document.getElementById(targetFields.ortu).value = item.getAttribute('data-ortu');
+    list.classList.remove('show');
+    soUpdatePreviewLive();
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target !== input) list.classList.remove('show');
+  });
+}
+
+soAktifkanAutocomplete('soSksNama', 'soSksNamaList', { nisn: 'soSksNisn', kelas: 'soSksKelas', ttl: 'soSksTtl', ortu: 'soSksOrtu' });
+soAktifkanAutocomplete('soSpsNama', 'soSpsNamaList', { nisn: 'soSpsNisn', kelas: 'soSpsKelasSemester', ttl: 'soSpsTtl', ortu: 'soSpsOrtu' });
+soAktifkanAutocomplete('soLnNama', 'soLnNamaList', { ttl: 'soLnTtl' });
 
 document.querySelectorAll('#soForm-SKS input, #soForm-SPS input, #soForm-MUTASI_TERIMA input, #soForm-LAINNYA input, #soForm-LAINNYA textarea').forEach(function(el) {
   el.addEventListener('input', soUpdatePreviewLive);
