@@ -542,9 +542,70 @@
     <tbody id="tabelLegalisirDokumen"></tbody>
   </table>
 </div>
-      <div id="menu-dataKepegawaian" class="menu-section"><div class="page-header"><h2>Data Kepegawaian Ringkas</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-agendaKegiatan" class="menu-section"><div class="page-header"><h2>Agenda Kegiatan Sekolah</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
-      <div id="menu-pengajuanAtk" class="menu-section"><div class="page-header"><h2>Pengajuan ATK/Sarana</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
+      <div id="menu-dataKepegawaian" class="menu-section">
+  <div class="page-header">
+    <h2>Data Kepegawaian Ringkas</h2>
+    <button onclick="bukaFormKepegawaianRingkas()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Data Baru</button>
+  </div>
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+    <select id="filterStatusKepegawaian" onchange="muatKepegawaianRingkas()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+      <option value="">Semua Status</option>
+      <option value="PNS">PNS</option>
+      <option value="PPPK">PPPK</option>
+      <option value="Honorer">Honorer</option>
+    </select>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Nama Lengkap</th><th style="padding:10px 8px;">Jabatan</th><th style="padding:10px 8px;">Status</th>
+        <th style="padding:10px 8px;">Pendidikan</th><th style="padding:10px 8px;">No. HP</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelKepegawaianRingkas"></tbody>
+  </table>
+</div>
+
+<div id="menu-agendaKegiatan" class="menu-section">
+  <div class="page-header">
+    <h2>Agenda Kegiatan Sekolah</h2>
+    <button onclick="bukaFormAgendaKegiatan()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Kegiatan Baru</button>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Nama Kegiatan</th><th style="padding:10px 8px;">Mulai</th><th style="padding:10px 8px;">Selesai</th>
+        <th style="padding:10px 8px;">Lokasi</th><th style="padding:10px 8px;">Penanggungjawab</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelAgendaKegiatan"></tbody>
+  </table>
+</div>
+
+<div id="menu-pengajuanAtk" class="menu-section">
+  <div class="page-header">
+    <h2>Pengajuan ATK/Sarana</h2>
+    <button onclick="bukaFormPengajuanAtk()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 18px; border-radius:10px; font-weight:600; cursor:pointer;">+ Pengajuan Baru</button>
+  </div>
+  <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:16px;">
+    <select id="filterStatusAtk" onchange="muatPengajuanAtk()" style="padding:8px 12px; border-radius:10px; border:1px solid var(--border);">
+      <option value="">Semua Status</option>
+      <option value="Diajukan">Diajukan</option>
+      <option value="Disetujui">Disetujui</option>
+      <option value="Selesai">Selesai</option>
+      <option value="Ditolak">Ditolak</option>
+    </select>
+  </div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Tanggal</th><th style="padding:10px 8px;">Nama Barang</th><th style="padding:10px 8px;">Jumlah</th>
+        <th style="padding:10px 8px;">Pemohon</th><th style="padding:10px 8px;">Status</th><th style="padding:10px 8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="tabelPengajuanAtk"></tbody>
+  </table>
+</div>
       <div id="menu-dataBuku" class="menu-section"><div class="page-header"><h2>Data Buku</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-peminjaman" class="menu-section"><div class="page-header"><h2>Peminjaman & Pengembalian Buku</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
       <div id="menu-kunjunganPerpus" class="menu-section"><div class="page-header"><h2>Kunjungan Perpustakaan</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
@@ -817,6 +878,95 @@
       <textarea id="legKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
       <div style="display:flex; gap:10px; margin-top:16px;">
         <button type="button" onclick="tutupModal('modalLegalisirDokumen')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Kepegawaian Ringkas -->
+<div id="modalKepegawaianRingkas" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalKepegawaianRingkas" style="margin-bottom:16px; color:var(--navy);">Data Baru</h3>
+    <form id="formKepegawaianRingkas" onsubmit="simpanKepegawaianRingkas(event)">
+      <input type="hidden" id="kepId">
+      <label>Nama Lengkap</label>
+      <input type="text" id="kepNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jabatan</label>
+      <input type="text" id="kepJabatan" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Status Kepegawaian</label>
+      <select id="kepStatus" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option>PNS</option><option>PPPK</option><option>Honorer</option>
+      </select>
+      <label>Pendidikan Terakhir</label>
+      <input type="text" id="kepPendidikan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Nomor HP</label>
+      <input type="text" id="kepHp" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tanggal Mulai Tugas</label>
+      <input type="date" id="kepTanggal" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keterangan</label>
+      <textarea id="kepKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalKepegawaianRingkas')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Agenda Kegiatan -->
+<div id="modalAgendaKegiatan" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalAgendaKegiatan" style="margin-bottom:16px; color:var(--navy);">Kegiatan Baru</h3>
+    <form id="formAgendaKegiatan" onsubmit="simpanAgendaKegiatan(event)">
+      <input type="hidden" id="agkId">
+      <label>Nama Kegiatan</label>
+      <input type="text" id="agkNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tanggal Mulai</label>
+      <input type="date" id="agkMulai" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Tanggal Selesai</label>
+      <input type="date" id="agkSelesai" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Lokasi</label>
+      <input type="text" id="agkLokasi" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Penanggungjawab</label>
+      <input type="text" id="agkPenanggungjawab" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Keterangan</label>
+      <textarea id="agkKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalAgendaKegiatan')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
+        <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Pengajuan ATK -->
+<div id="modalPengajuanAtk" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:70; align-items:center; justify-content:center;">
+  <div class="modal-content" style="background:#fff; border-radius:16px; padding:24px; width:420px; max-height:85vh; overflow-y:auto;">
+    <h3 id="judulModalPengajuanAtk" style="margin-bottom:16px; color:var(--navy);">Pengajuan Baru</h3>
+    <form id="formPengajuanAtk" onsubmit="simpanPengajuanAtk(event)">
+      <input type="hidden" id="atkId">
+      <label>Tanggal Pengajuan</label>
+      <input type="date" id="atkTanggal" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Nama Barang</label>
+      <input type="text" id="atkNama" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Jumlah</label>
+      <input type="number" id="atkJumlah" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Satuan</label>
+      <input type="text" id="atkSatuan" placeholder="cth. buah, rim, box" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Pemohon</label>
+      <input type="text" id="atkPemohon" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+      <label>Status</label>
+      <select id="atkStatus" required style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;">
+        <option value="Diajukan">Diajukan</option>
+        <option value="Disetujui">Disetujui</option>
+        <option value="Selesai">Selesai</option>
+        <option value="Ditolak">Ditolak</option>
+      </select>
+      <label>Keterangan</label>
+      <textarea id="atkKeterangan" style="width:100%; padding:8px; margin:4px 0 10px; border:1px solid var(--border); border-radius:8px;"></textarea>
+      <div style="display:flex; gap:10px; margin-top:16px;">
+        <button type="button" onclick="tutupModal('modalPengajuanAtk')" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:#fff; cursor:pointer;">Batal</button>
         <button type="submit" style="flex:1; padding:10px; border-radius:10px; border:none; background:var(--mustard); color:var(--navy); font-weight:600; cursor:pointer;">Simpan</button>
       </div>
     </form>
@@ -1587,6 +1737,178 @@ function hapusLegalisirDokumen(id) {
   jsonpCall('legalisirdokumen_hapus', { id: id }).then(function() { muatLegalisirDokumen(); });
 }
 
+// ===== DATA KEPEGAWAIAN RINGKAS =====
+function muatKepegawaianRingkas() {
+  jsonpCall('kepegawaianringkas_list', { status: document.getElementById('filterStatusKepegawaian').value }).then(function(res) {
+    var tbody = document.getElementById('tabelKepegawaianRingkas');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada data.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.NamaLengkap + '</td>' +
+        '<td style="padding:8px;">' + row.Jabatan + '</td>' +
+        '<td style="padding:8px;">' + row.StatusKepegawaian + '</td>' +
+        '<td style="padding:8px;">' + (row.Pendidikan || '-') + '</td>' +
+        '<td style="padding:8px;">' + (row.NomorHP || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editKepegawaianRingkas(\'' + row.ID + '\')">Edit</button> <button onclick="hapusKepegawaianRingkas(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormKepegawaianRingkas() {
+  document.getElementById('formKepegawaianRingkas').reset();
+  document.getElementById('kepId').value = '';
+  document.getElementById('judulModalKepegawaianRingkas').innerText = 'Data Baru';
+  document.getElementById('modalKepegawaianRingkas').style.display = 'flex';
+}
+function simpanKepegawaianRingkas(event) {
+  event.preventDefault();
+  jsonpCall('kepegawaianringkas_simpan', {
+    id: document.getElementById('kepId').value,
+    namaLengkap: document.getElementById('kepNama').value,
+    jabatan: document.getElementById('kepJabatan').value,
+    statusKepegawaian: document.getElementById('kepStatus').value,
+    pendidikan: document.getElementById('kepPendidikan').value,
+    nomorHp: document.getElementById('kepHp').value,
+    tanggalMulaiTugas: document.getElementById('kepTanggal').value,
+    keterangan: document.getElementById('kepKeterangan').value
+  }).then(function() { tutupModal('modalKepegawaianRingkas'); muatKepegawaianRingkas(); });
+}
+function editKepegawaianRingkas(id) {
+  jsonpCall('kepegawaianringkas_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('kepId').value = row.ID;
+    document.getElementById('kepNama').value = row.NamaLengkap;
+    document.getElementById('kepJabatan').value = row.Jabatan;
+    document.getElementById('kepStatus').value = row.StatusKepegawaian;
+    document.getElementById('kepPendidikan').value = row.Pendidikan;
+    document.getElementById('kepHp').value = row.NomorHP;
+    document.getElementById('kepTanggal').value = row.TanggalMulaiTugas;
+    document.getElementById('kepKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalKepegawaianRingkas').innerText = 'Edit Data';
+    document.getElementById('modalKepegawaianRingkas').style.display = 'flex';
+  });
+}
+function hapusKepegawaianRingkas(id) {
+  if (!confirm('Yakin hapus data ini?')) return;
+  jsonpCall('kepegawaianringkas_hapus', { id: id }).then(function() { muatKepegawaianRingkas(); });
+}
+
+// ===== AGENDA KEGIATAN SEKOLAH =====
+function muatAgendaKegiatan() {
+  jsonpCall('agendakegiatan_list', {}).then(function(res) {
+    var tbody = document.getElementById('tabelAgendaKegiatan');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada agenda.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + row.NamaKegiatan + '</td>' +
+        '<td style="padding:8px;">' + formatTgl(row.TanggalMulai) + '</td>' +
+        '<td style="padding:8px;">' + formatTgl(row.TanggalSelesai) + '</td>' +
+        '<td style="padding:8px;">' + (row.Lokasi || '-') + '</td>' +
+        '<td style="padding:8px;">' + (row.Penanggungjawab || '-') + '</td>' +
+        '<td style="padding:8px;"><button onclick="editAgendaKegiatan(\'' + row.ID + '\')">Edit</button> <button onclick="hapusAgendaKegiatan(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormAgendaKegiatan() {
+  document.getElementById('formAgendaKegiatan').reset();
+  document.getElementById('agkId').value = '';
+  document.getElementById('judulModalAgendaKegiatan').innerText = 'Kegiatan Baru';
+  document.getElementById('modalAgendaKegiatan').style.display = 'flex';
+}
+function simpanAgendaKegiatan(event) {
+  event.preventDefault();
+  jsonpCall('agendakegiatan_simpan', {
+    id: document.getElementById('agkId').value,
+    namaKegiatan: document.getElementById('agkNama').value,
+    tanggalMulai: document.getElementById('agkMulai').value,
+    tanggalSelesai: document.getElementById('agkSelesai').value,
+    lokasi: document.getElementById('agkLokasi').value,
+    penanggungjawab: document.getElementById('agkPenanggungjawab').value,
+    keterangan: document.getElementById('agkKeterangan').value
+  }).then(function() { tutupModal('modalAgendaKegiatan'); muatAgendaKegiatan(); });
+}
+function editAgendaKegiatan(id) {
+  jsonpCall('agendakegiatan_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('agkId').value = row.ID;
+    document.getElementById('agkNama').value = row.NamaKegiatan;
+    document.getElementById('agkMulai').value = row.TanggalMulai;
+    document.getElementById('agkSelesai').value = row.TanggalSelesai;
+    document.getElementById('agkLokasi').value = row.Lokasi;
+    document.getElementById('agkPenanggungjawab').value = row.Penanggungjawab;
+    document.getElementById('agkKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalAgendaKegiatan').innerText = 'Edit Kegiatan';
+    document.getElementById('modalAgendaKegiatan').style.display = 'flex';
+  });
+}
+function hapusAgendaKegiatan(id) {
+  if (!confirm('Yakin hapus kegiatan ini?')) return;
+  jsonpCall('agendakegiatan_hapus', { id: id }).then(function() { muatAgendaKegiatan(); });
+}
+
+// ===== PENGAJUAN ATK/SARANA =====
+function muatPengajuanAtk() {
+  jsonpCall('pengajuanatk_list', { status: document.getElementById('filterStatusAtk').value }).then(function(res) {
+    var tbody = document.getElementById('tabelPengajuanAtk');
+    tbody.innerHTML = '';
+    if (!res.data.length) { tbody.innerHTML = '<tr><td colspan="6" style="padding:12px; color:var(--text-muted);">Belum ada pengajuan.</td></tr>'; return; }
+    res.data.forEach(function(row) {
+      tbody.innerHTML += '<tr>' +
+        '<td style="padding:8px;">' + formatTgl(row.TanggalPengajuan) + '</td>' +
+        '<td style="padding:8px;">' + row.NamaBarang + '</td>' +
+        '<td style="padding:8px;">' + row.Jumlah + ' ' + (row.Satuan || '') + '</td>' +
+        '<td style="padding:8px;">' + (row.Pemohon || '-') + '</td>' +
+        '<td style="padding:8px;">' + row.Status + '</td>' +
+        '<td style="padding:8px;"><button onclick="editPengajuanAtk(\'' + row.ID + '\')">Edit</button> <button onclick="hapusPengajuanAtk(\'' + row.ID + '\')">Hapus</button></td>' +
+        '</tr>';
+    });
+  });
+}
+function bukaFormPengajuanAtk() {
+  document.getElementById('formPengajuanAtk').reset();
+  document.getElementById('atkId').value = '';
+  document.getElementById('judulModalPengajuanAtk').innerText = 'Pengajuan Baru';
+  document.getElementById('modalPengajuanAtk').style.display = 'flex';
+}
+function simpanPengajuanAtk(event) {
+  event.preventDefault();
+  jsonpCall('pengajuanatk_simpan', {
+    id: document.getElementById('atkId').value,
+    tanggalPengajuan: document.getElementById('atkTanggal').value,
+    namaBarang: document.getElementById('atkNama').value,
+    jumlah: document.getElementById('atkJumlah').value,
+    satuan: document.getElementById('atkSatuan').value,
+    pemohon: document.getElementById('atkPemohon').value,
+    status: document.getElementById('atkStatus').value,
+    keterangan: document.getElementById('atkKeterangan').value
+  }).then(function() { tutupModal('modalPengajuanAtk'); muatPengajuanAtk(); });
+}
+function editPengajuanAtk(id) {
+  jsonpCall('pengajuanatk_list', {}).then(function(res) {
+    var row = res.data.find(function(r) { return r.ID == id; });
+    if (!row) return;
+    document.getElementById('atkId').value = row.ID;
+    document.getElementById('atkTanggal').value = row.TanggalPengajuan;
+    document.getElementById('atkNama').value = row.NamaBarang;
+    document.getElementById('atkJumlah').value = row.Jumlah;
+    document.getElementById('atkSatuan').value = row.Satuan;
+    document.getElementById('atkPemohon').value = row.Pemohon;
+    document.getElementById('atkStatus').value = row.Status;
+    document.getElementById('atkKeterangan').value = row.Keterangan;
+    document.getElementById('judulModalPengajuanAtk').innerText = 'Edit Pengajuan';
+    document.getElementById('modalPengajuanAtk').style.display = 'flex';
+  });
+}
+function hapusPengajuanAtk(id) {
+  if (!confirm('Yakin hapus pengajuan ini?')) return;
+  jsonpCall('pengajuanatk_hapus', { id: id }).then(function() { muatPengajuanAtk(); });
+}
+
 // ===== NAVIGASI MENU (SPA placeholder) =====
 const judulMenu = {
   beranda: 'Beranda',
@@ -1619,6 +1941,9 @@ function tampilkanMenu(menu) {
   if (menu === 'skSuratKeputusan') muatSKSuratKeputusan();
   if (menu === 'mutasiSiswa') muatMutasiSiswa();
   if (menu === 'legalisir') muatLegalisirDokumen();
+  if (menu === 'dataKepegawaian') muatKepegawaianRingkas();
+  if (menu === 'agendaKegiatan') muatAgendaKegiatan();
+  if (menu === 'pengajuanAtk') muatPengajuanAtk();
 
   if (isMobileView()) {
     sidebarEl.classList.remove('mobile-open');
