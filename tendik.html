@@ -744,9 +744,38 @@
   </table>
 </div>
 
-<div id="menu-statistikBaca" class="menu-section"><div class="page-header"><h2>Statistik Minat Baca</h2></div><div class="placeholder-box">Menu ini belum dibangun.</div></div>
+<div id="menu-kategoriRak" class="menu-section">
+  <div class="page-header"><h2>Kategori & Rak Buku</h2></div>
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+        <th style="padding:10px 8px;">Kategori</th><th style="padding:10px 8px;">Jumlah Judul</th>
+        <th style="padding:10px 8px;">Total Eksemplar</th><th style="padding:10px 8px;">Tersedia</th>
+      </tr>
+    </thead>
+    <tbody id="tabelKategoriBuku"></tbody>
+  </table>
+</div>
 
-      <div id="menu-suratOtomatis" class="menu-section">
+<div id="menu-statistikBaca" class="menu-section">
+  <div class="page-header"><h2>Statistik Minat Baca</h2></div>
+
+  <div class="stat-grid" id="statBacaGrid" style="grid-template-columns:repeat(4,1fr);"></div>
+
+  <div class="panel" style="margin-top:20px;">
+    <h3>Kategori Buku Terfavorit (berdasarkan jumlah dipinjam)</h3>
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="text-align:left; border-bottom:2px solid var(--border); font-size:12.5px; color:var(--text-muted);">
+          <th style="padding:10px 8px;">Kategori</th><th style="padding:10px 8px;">Jumlah Dipinjam</th>
+        </tr>
+      </thead>
+      <tbody id="tabelStatBacaKategori"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="menu-suratOtomatis" class="menu-section">
         <div class="page-header"><h2>Surat Otomatis</h2></div>
 
         <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:20px;">
@@ -801,7 +830,6 @@
               </div>
             </div>
             <div style="display:flex; gap:10px; margin-top:18px;">
-              <button onclick="soLihatPratinjau()" style="background:#fff; color:var(--navy); border:1px solid var(--navy); padding:10px 20px; border-radius:10px; font-weight:600; cursor:pointer;">Lihat Pratinjau</button>
               <button onclick="soBuatSurat()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 20px; border-radius:10px; font-weight:600; cursor:pointer;">Buat & Unduh Surat</button>
             </div>
             <div id="soMsg" style="margin-top:10px; font-size:12.5px;"></div>
@@ -2616,11 +2644,18 @@ function soGantiJenisSurat() {
   var target = document.getElementById('soForm-' + jenis);
   if (target) target.style.display = 'block';
   soAmbilNomorOtomatis(jenis);
+  if (jenis === 'SKS' && !document.getElementById('soSksTanggalSurat').value) {
+    document.getElementById('soSksTanggalSurat').value = new Date().toISOString().split('T')[0];
+  }
+  soUpdatePreviewLive();
 }
 
 function soAmbilNomorOtomatis(jenis) {
   jsonpCall('surat_nomor_otomatis', { jenis: jenis }).then(function(res) {
-    if (jenis === 'SKS') document.getElementById('soSksNomor').value = res.nomor;
+    if (jenis === 'SKS') {
+      document.getElementById('soSksNomor').value = res.nomor;
+      soUpdatePreviewLive();
+    }
   });
 }
 
@@ -2639,14 +2674,73 @@ function soAmbilDataSKS() {
   };
 }
 
-function soLihatPratinjau() {
+// ===== RENDER PREVIEW REAL-TIME (JS, mirror persis dari suratBuildHtmlSKS di Code.gs) =====
+function soFormatTanggalIndoJS(tglStr) {
+  if (!tglStr) return '...';
+  var d = new Date(tglStr);
+  if (isNaN(d.getTime())) return tglStr;
+  var bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  return d.getDate() + ' ' + bulan[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function soRenderPreviewSKS(p) {
+  var LOGO_PEMPROV = 'https://raw.githubusercontent.com/smplpmmano-gmm/portal-sma-v1/main/logo-pemprov-malut.png';
+  var LOGO_SEKOLAH = 'https://raw.githubusercontent.com/smplpmmano-gmm/portal-sma-v1/main/logo-sekolah-badge.png';
+  var KEPSEK_NAMA = 'Drs. La Besa La Taher';
+  var KEPSEK_NIP = '19680827 199601 1 001';
+  var tglSurat = soFormatTanggalIndoJS(p.tanggalSurat);
+
+  var kop = '' +
+    '<table style="width:100%; border-collapse:collapse; margin-bottom:2mm;"><tr>' +
+      '<td style="width:20mm; vertical-align:middle;"><img src="' + LOGO_PEMPROV + '" style="width:18mm;"></td>' +
+      '<td style="text-align:center; vertical-align:middle; font-family:Arial, sans-serif;">' +
+        '<div style="font-size:14pt; font-weight:bold; line-height:1.2;">PEMERINTAH PROVINSI MALUKU UTARA</div>' +
+        '<div style="font-size:14pt; font-weight:bold; line-height:1.2;">DINAS PENDIDIKAN DAN KEBUDAYAAN</div>' +
+        '<div style="font-size:14pt; font-weight:bold; line-height:1.2;">SMA NEGERI 30 HALMAHERA SELATAN</div>' +
+        '<div style="font-size:9pt; font-weight:bold; margin-top:1mm;">Jln. Tuanane Desa Mano Kec. Obi Selatan Kode Pos 97792</div>' +
+      '</td>' +
+      '<td style="width:20mm; vertical-align:middle; text-align:right;"><img src="' + LOGO_SEKOLAH + '" style="width:18mm;"></td>' +
+    '</tr></table>' +
+    '<div style="border-bottom:3px solid #000; margin-bottom:5mm;"></div>';
+
+  var body = '' +
+    kop +
+    '<div style="text-align:center; font-weight:bold; font-size:12pt; text-decoration:underline;">SURAT KETERANGAN SISWA AKTIF</div>' +
+    '<div style="text-align:center; font-size:12pt; margin-bottom:5mm;">No. ' + (p.nomorSurat || '...') + '</div>' +
+    '<p style="text-align:justify; margin:0 0 3mm;">Yang bertanda tangan di bawah ini Kepala SMA Negeri 30 Halmahera Selatan:</p>' +
+    '<table style="margin:0 0 3mm 8mm; border-collapse:collapse;">' +
+      '<tr><td style="width:170px; white-space:nowrap; vertical-align:top;">Nama</td><td style="width:10px; vertical-align:top;">:</td><td style="vertical-align:top;">' + KEPSEK_NAMA + '</td></tr>' +
+      '<tr><td style="white-space:nowrap; vertical-align:top;">NIP</td><td style="vertical-align:top;">:</td><td style="vertical-align:top;">' + KEPSEK_NIP + '</td></tr>' +
+      '<tr><td style="white-space:nowrap; vertical-align:top;">Jabatan</td><td style="vertical-align:top;">:</td><td style="vertical-align:top;">Kepala SMA Negeri 30 Halmahera Selatan</td></tr>' +
+    '</table>' +
+    '<p style="text-align:justify; margin:0 0 3mm;">Dengan ini menerangkan bahwa:</p>' +
+    '<table style="margin:0 0 3mm 8mm; border-collapse:collapse;">' +
+      '<tr><td style="width:190px; white-space:nowrap; vertical-align:top;">Nama</td><td style="width:10px; vertical-align:top;">:</td><td style="vertical-align:top;">' + (p.namaSiswa || '') + '</td></tr>' +
+      '<tr><td style="white-space:nowrap; vertical-align:top;">NISN</td><td style="vertical-align:top;">:</td><td style="vertical-align:top;">' + (p.nisn || '') + '</td></tr>' +
+      '<tr><td style="white-space:nowrap; vertical-align:top;">Tempat, Tanggal Lahir</td><td style="vertical-align:top;">:</td><td style="vertical-align:top;">' + (p.ttl || '') + '</td></tr>' +
+      '<tr><td style="white-space:nowrap; vertical-align:top;">Kelas</td><td style="vertical-align:top;">:</td><td style="vertical-align:top;">' + (p.kelas || '') + '</td></tr>' +
+      '<tr><td style="white-space:nowrap; vertical-align:top;">Tahun Pelajaran</td><td style="vertical-align:top;">:</td><td style="vertical-align:top;">' + (p.tahunPelajaran || '') + '</td></tr>' +
+      '<tr><td style="white-space:nowrap; vertical-align:top;">Nama Orang Tua/Wali</td><td style="vertical-align:top;">:</td><td style="vertical-align:top;">' + (p.namaOrtu || '') + '</td></tr>' +
+    '</table>' +
+    '<p style="text-align:justify; margin:0 0 3mm;">Adalah benar terdaftar dan masih aktif sebagai peserta didik SMA Negeri 30 Halmahera Selatan pada tahun pelajaran tersebut di atas.</p>' +
+    '<p style="text-align:justify; margin:0 0 3mm;">Surat keterangan ini dibuat untuk keperluan: ' + (p.keperluan || '') + '</p>' +
+    '<p style="text-align:justify; margin:0 0 8mm;">Demikian surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>' +
+    '<table style="margin-left:auto; margin-right:0; width:60mm; border-collapse:collapse;">' +
+      '<tr><td>Mano, ' + tglSurat + '</td></tr>' +
+      '<tr><td>Kepala Sekolah</td></tr>' +
+      '<tr><td style="height:18mm;">&nbsp;</td></tr>' +
+      '<tr><td style="font-weight:bold; text-decoration:underline;">' + KEPSEK_NAMA + '</td></tr>' +
+      '<tr><td>NIP. ' + KEPSEK_NIP.replace(/ /g, '') + '</td></tr>' +
+    '</table>';
+
+  return '<html><head><meta charset="utf-8"></head><body style="font-family:Arial, sans-serif; font-size:12pt; color:#000; margin:0; padding:0;">' + body + '</body></html>';
+}
+
+function soUpdatePreviewLive() {
   var jenis = document.getElementById('soJenisSurat').value;
-  var data = jenis === 'SKS' ? soAmbilDataSKS() : {};
-  jsonpCall('surat_preview_' + jenis.toLowerCase(), data).then(function(res) {
-    if (!res.success) { alert('Gagal memuat pratinjau'); return; }
-    var frame = document.getElementById('soPreviewFrame');
-    frame.srcdoc = res.html;
-  });
+  var html = '';
+  if (jenis === 'SKS') html = soRenderPreviewSKS(soAmbilDataSKS());
+  document.getElementById('soPreviewFrame').srcdoc = html;
 }
 
 function soBuatSurat() {
@@ -2660,6 +2754,11 @@ function soBuatSurat() {
     window.open(res.link, '_blank');
   });
 }
+
+document.querySelectorAll('#soForm-SKS input').forEach(function(el) {
+  el.addEventListener('input', soUpdatePreviewLive);
+  el.addEventListener('change', soUpdatePreviewLive);
+});
 
 // ===== NAVIGASI MENU (SPA placeholder) =====
 const judulMenu = {
