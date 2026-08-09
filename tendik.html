@@ -781,10 +781,71 @@
         <div class="filter-bar" style="display:flex; gap:10px; margin-bottom:20px;">
           <select id="soJenisSurat" onchange="soGantiJenisSurat()" style="padding:10px 14px; border-radius:10px; border:1px solid var(--border); font-weight:600;">
             <option value="SKS">Surat Keterangan Siswa Aktif (SKS)</option>
-            <option value="SPS" disabled>Surat Keterangan Pindah Sekolah (segera)</option>
+            <option value="SPS">Surat Keterangan Pindah Sekolah (SPS)</option>
             <option value="MUTASI_TERIMA" disabled>Surat Keterangan Mutasi Terima (segera)</option>
             <option value="LAINNYA" disabled>Surat Keterangan Lainnya (segera)</option>
           </select>
+        </div>
+
+        <!-- FORM: SPS -->
+        <div id="soForm-SPS" class="so-form" style="display:none;">
+          <div class="panel" style="margin-bottom:20px;">
+            <h3>Isi Data Surat</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nomor Surat</label>
+                <input type="text" id="soSpsNomor" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Tanggal Surat</label>
+                <input type="date" id="soSpsTanggalSurat" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nama Siswa</label>
+                <input type="text" id="soSpsNama" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">NISN</label>
+                <input type="text" id="soSpsNisn" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Tempat, Tanggal Lahir</label>
+                <input type="text" id="soSpsTtl" placeholder="cth. Mano, 10 Januari 2010" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Kelas/Semester</label>
+                <input type="text" id="soSpsKelasSemester" placeholder="cth. X-1/Genap" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Nama Orang Tua/Wali</label>
+                <input type="text" id="soSpsOrtu" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Alamat</label>
+                <input type="text" id="soSpsAlamat" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Tahun Pelajaran</label>
+                <input type="text" id="soSpsTahunPelajaran" placeholder="2026/2027" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Alasan Pindah</label>
+                <input type="text" id="soSpsAlasan" placeholder="cth. keinginan orang tua" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div>
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Sekolah Tujuan</label>
+                <input type="text" id="soSpsSekolahTujuan" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+              <div style="grid-column:1 / -1;">
+                <label style="font-size:12.5px; font-weight:600; color:var(--navy);">Alamat Sekolah Tujuan</label>
+                <input type="text" id="soSpsAlamatSekolahTujuan" style="width:100%; padding:8px; margin-top:4px; border:1px solid var(--border); border-radius:8px;">
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:18px;">
+              <button onclick="soBuatSurat()" style="background:var(--mustard); color:var(--navy); border:none; padding:10px 20px; border-radius:10px; font-weight:600; cursor:pointer;">Buat & Unduh Surat</button>
+            </div>
+            <div id="soMsg" style="margin-top:10px; font-size:12.5px;"></div>
+          </div>
         </div>
 
         <!-- FORM: SKS -->
@@ -2647,16 +2708,36 @@ function soGantiJenisSurat() {
   if (jenis === 'SKS' && !document.getElementById('soSksTanggalSurat').value) {
     document.getElementById('soSksTanggalSurat').value = new Date().toISOString().split('T')[0];
   }
+  if (jenis === 'SPS' && !document.getElementById('soSpsTanggalSurat').value) {
+    document.getElementById('soSpsTanggalSurat').value = new Date().toISOString().split('T')[0];
+  }
   soUpdatePreviewLive();
 }
 
 function soAmbilNomorOtomatis(jenis) {
   jsonpCall('surat_nomor_otomatis', { jenis: jenis }).then(function(res) {
-    if (jenis === 'SKS') {
-      document.getElementById('soSksNomor').value = res.nomor;
-      soUpdatePreviewLive();
-    }
+    if (jenis === 'SKS') document.getElementById('soSksNomor').value = res.nomor;
+    if (jenis === 'SPS') document.getElementById('soSpsNomor').value = res.nomor;
+    soUpdatePreviewLive();
   });
+}
+
+function soAmbilDataSPS() {
+  return {
+    nomorSurat: document.getElementById('soSpsNomor').value,
+    tanggalSurat: document.getElementById('soSpsTanggalSurat').value,
+    namaSiswa: document.getElementById('soSpsNama').value,
+    nisn: document.getElementById('soSpsNisn').value,
+    ttl: document.getElementById('soSpsTtl').value,
+    kelasSemester: document.getElementById('soSpsKelasSemester').value,
+    namaOrtu: document.getElementById('soSpsOrtu').value,
+    alamat: document.getElementById('soSpsAlamat').value,
+    tahunPelajaran: document.getElementById('soSpsTahunPelajaran').value,
+    alasanPindah: document.getElementById('soSpsAlasan').value,
+    sekolahTujuan: document.getElementById('soSpsSekolahTujuan').value,
+    alamatSekolahTujuan: document.getElementById('soSpsAlamatSekolahTujuan').value,
+    dibuatOleh: sesiAktif.namaLengkap
+  };
 }
 
 function soAmbilDataSKS() {
@@ -2740,16 +2821,80 @@ function soRenderPreviewSKS(p) {
   return '<html><head><meta charset="utf-8"></head><body style="font-family:Arial, sans-serif; font-size:12pt; color:#000; margin:0; padding:20mm; box-sizing:border-box;">' + body + '</body></html>';
 }
 
+function soRenderPreviewSPS(p) {
+  var LOGO_PEMPROV = 'https://raw.githubusercontent.com/smplpmmano-gmm/portal-sma-v1/main/logo-pemprov-malut.png';
+  var LOGO_SEKOLAH = 'https://raw.githubusercontent.com/smplpmmano-gmm/portal-sma-v1/main/logo-sekolah-badge.png';
+  var KEPSEK_NAMA = 'Drs. La Besa La Taher';
+  var KEPSEK_NIP = '19680827 199601 1 001';
+  var tglSurat = soFormatTanggalIndoJS(p.tanggalSurat);
+
+  var kop = '' +
+    '<table style="width:170mm; border:none; border-collapse:collapse; margin:0 0 5mm 0;">' +
+    '<tr>' +
+      '<td style="width:20mm; border:none; vertical-align:middle; text-align:left;"><img src="' + LOGO_PEMPROV + '" style="width:18mm;"></td>' +
+      '<td style="width:130mm; border:none; text-align:center; vertical-align:middle; font-family:Arial, sans-serif;">' +
+        '<p style="font-size:14pt; font-weight:bold; margin:0; line-height:1;">PEMERINTAH PROVINSI MALUKU UTARA</p>' +
+        '<p style="font-size:14pt; font-weight:bold; margin:0; line-height:1;">DINAS PENDIDIKAN DAN KEBUDAYAAN</p>' +
+        '<p style="font-size:14pt; font-weight:bold; margin:0; line-height:1;">SMA NEGERI 30 HALMAHERA SELATAN</p>' +
+        '<p style="font-size:9pt; font-weight:bold; margin:1mm 0 0 0; line-height:1;">Jln. Tuanane Desa Mano Kec. Obi Selatan Kode Pos 97792</p>' +
+      '</td>' +
+      '<td style="width:20mm; border:none; vertical-align:middle; text-align:right;"><img src="' + LOGO_SEKOLAH + '" style="width:18mm;"></td>' +
+    '</tr>' +
+    '<tr><td colspan="3" style="border:none; border-top:4pt solid #000; padding-top:1mm;"></td></tr>' +
+    '</table>';
+
+  var body = '' +
+    kop +
+    '<p style="text-align:center; font-weight:bold; font-size:12pt; text-decoration:underline; margin:0;">SURAT KETERANGAN PINDAH SEKOLAH</p>' +
+    '<p style="text-align:center; font-size:12pt; margin:0 0 5mm 0;">No. ' + (p.nomorSurat || '...') + '</p>' +
+    '<p style="text-align:justify; margin:0 0 3mm;">Yang bertanda tangan di bawah ini Kepala SMA Negeri 30 Halmahera Selatan Kecamatan Obi Selatan Kabupaten Halmahera Selatan:</p>' +
+    '<table style="border:none; border-collapse:collapse; margin:0 0 3mm 8mm;">' +
+      '<tr><td style="border:none; width:190px; white-space:nowrap; vertical-align:top;">Nama</td><td style="border:none; width:10px; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + KEPSEK_NAMA + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">NIP</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + KEPSEK_NIP + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">Jabatan</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">Kepala SMA Negeri 30 Halmahera Selatan</td></tr>' +
+    '</table>' +
+    '<p style="text-align:justify; margin:0 0 3mm;">Dengan ini menerangkan bahwa siswa yang beridentitas:</p>' +
+    '<table style="border:none; border-collapse:collapse; margin:0 0 3mm 8mm;">' +
+      '<tr><td style="border:none; width:190px; white-space:nowrap; vertical-align:top;">Nama</td><td style="border:none; width:10px; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.namaSiswa || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">NISN</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.nisn || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">Tempat, Tanggal Lahir</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.ttl || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">Kelas/Semester</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.kelasSemester || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">Nama Orang Tua/Wali</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.namaOrtu || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">Alamat</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.alamat || '') + '</td></tr>' +
+    '</table>' +
+    '<p style="text-align:justify; margin:0 0 3mm;">Bahwa siswa tersebut <b>benar terdaftar</b> sebagai peserta didik SMA Negeri 30 Halmahera Selatan pada Tahun Pelajaran <b>' + (p.tahunPelajaran || '') + '</b></p>' +
+    '<p style="text-align:justify; margin:0 0 3mm;">Sehubungan dengan <b>' + (p.alasanPindah || '') + '</b>, siswa yang bersangkutan <b>diberikan izin pindah</b> ke:</p>' +
+    '<table style="border:none; border-collapse:collapse; margin:0 0 3mm 8mm;">' +
+      '<tr><td style="border:none; width:190px; white-space:nowrap; vertical-align:top;">Sekolah Tujuan</td><td style="border:none; width:10px; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.sekolahTujuan || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">Alamat Sekolah</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.alamatSekolahTujuan || '') + '</td></tr>' +
+    '</table>' +
+    '<p style="text-align:justify; margin:0 0 8mm;">Demikian surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>' +
+    '<table style="width:170mm; border:none; border-collapse:collapse;"><tr>' +
+      '<td style="width:105mm; border:none;">&nbsp;</td>' +
+      '<td style="width:65mm; border:none; vertical-align:top;">' +
+        'Mano, ' + tglSurat + '<br>' +
+        'Kepala Sekolah<br><br><br><br>' +
+        '<span style="font-weight:bold; text-decoration:underline;">' + KEPSEK_NAMA + '</span><br>' +
+        'NIP. ' + KEPSEK_NIP.replace(/ /g, '') +
+      '</td>' +
+    '</tr></table>';
+
+  return '<html><head><meta charset="utf-8"></head><body style="font-family:Arial, sans-serif; font-size:12pt; color:#000; margin:0; padding:20mm; box-sizing:border-box;">' + body + '</body></html>';
+}
+
 function soUpdatePreviewLive() {
   var jenis = document.getElementById('soJenisSurat').value;
   var html = '';
   if (jenis === 'SKS') html = soRenderPreviewSKS(soAmbilDataSKS());
+  if (jenis === 'SPS') html = soRenderPreviewSPS(soAmbilDataSPS());
   document.getElementById('soPreviewFrame').srcdoc = html;
 }
 
 function soBuatSurat() {
   var jenis = document.getElementById('soJenisSurat').value;
-  var data = jenis === 'SKS' ? soAmbilDataSKS() : {};
+  var data = {};
+  if (jenis === 'SKS') data = soAmbilDataSKS();
+  if (jenis === 'SPS') data = soAmbilDataSPS();
   if (!data.namaSiswa) { alert('Isi data surat dulu, minimal Nama Siswa'); return; }
   document.getElementById('soMsg').textContent = 'Sedang membuat dokumen...';
   jsonpCall('surat_generate_' + jenis.toLowerCase(), data).then(function(res) {
@@ -2763,7 +2908,7 @@ function soBuatSurat() {
   });
 }
 
-document.querySelectorAll('#soForm-SKS input').forEach(function(el) {
+document.querySelectorAll('#soForm-SKS input, #soForm-SPS input').forEach(function(el) {
   el.addEventListener('input', soUpdatePreviewLive);
   el.addEventListener('change', soUpdatePreviewLive);
 });
