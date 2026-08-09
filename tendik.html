@@ -2691,25 +2691,26 @@ function soRenderPreviewSKS(p) {
   var tglSurat = soFormatTanggalIndoJS(p.tanggalSurat);
 
   var kop = '' +
-    '<table style="width:180mm; border:none; border-collapse:collapse; margin:0 0 2mm 0;"><tr>' +
-      '<td style="width:22mm; border:none; vertical-align:middle;"><img src="' + LOGO_PEMPROV + '" style="width:18mm;"></td>' +
-      '<td style="border:none; text-align:center; vertical-align:middle; font-family:Arial, sans-serif;">' +
+    '<table style="width:180mm; border:none; border-collapse:collapse; margin:0 0 5mm 0;">' +
+    '<tr>' +
+      '<td style="width:20mm; border:none; vertical-align:middle; text-align:left;"><img src="' + LOGO_PEMPROV + '" style="width:18mm;"></td>' +
+      '<td style="width:140mm; border:none; text-align:center; vertical-align:middle; font-family:Arial, sans-serif;">' +
         '<p style="font-size:14pt; font-weight:bold; margin:0; line-height:1;">PEMERINTAH PROVINSI MALUKU UTARA</p>' +
         '<p style="font-size:14pt; font-weight:bold; margin:0; line-height:1;">DINAS PENDIDIKAN DAN KEBUDAYAAN</p>' +
         '<p style="font-size:14pt; font-weight:bold; margin:0; line-height:1;">SMA NEGERI 30 HALMAHERA SELATAN</p>' +
         '<p style="font-size:9pt; font-weight:bold; margin:1mm 0 0 0; line-height:1;">Jln. Tuanane Desa Mano Kec. Obi Selatan Kode Pos 97792</p>' +
       '</td>' +
-      '<td style="width:22mm; border:none; vertical-align:middle; text-align:right;"><img src="' + LOGO_SEKOLAH + '" style="width:18mm;"></td>' +
-    '</tr></table>' +
-    '<hr style="border:none; border-top:3px solid #000; margin:0 0 5mm 0;">';
-
+      '<td style="width:20mm; border:none; vertical-align:middle; text-align:right;"><img src="' + LOGO_SEKOLAH + '" style="width:18mm;"></td>' +
+    '</tr>' +
+    '<tr><td colspan="3" style="border:none; border-top:4pt solid #000; padding-top:1mm;"></td></tr>' +
+    '</table>';
   var body = '' +
     kop +
     '<p style="text-align:center; font-weight:bold; font-size:12pt; text-decoration:underline; margin:0;">SURAT KETERANGAN SISWA AKTIF</p>' +
     '<p style="text-align:center; font-size:12pt; margin:0 0 5mm 0;">No. ' + (p.nomorSurat || '...') + '</p>' +
     '<p style="text-align:justify; margin:0 0 3mm;">Yang bertanda tangan di bawah ini Kepala SMA Negeri 30 Halmahera Selatan:</p>' +
     '<table style="border:none; border-collapse:collapse; margin:0 0 3mm 8mm;">' +
-      '<tr><td style="border:none; width:170px; white-space:nowrap; vertical-align:top;">Nama</td><td style="border:none; width:10px; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + KEPSEK_NAMA + '</td></tr>' +
+      '<tr><td style="border:none; width:190px; white-space:nowrap; vertical-align:top;">Nama</td><td style="border:none; width:10px; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + KEPSEK_NAMA + '</td></tr>' +
       '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">NIP</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + KEPSEK_NIP + '</td></tr>' +
       '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">Jabatan</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">Kepala SMA Negeri 30 Halmahera Selatan</td></tr>' +
     '</table>' +
@@ -2726,8 +2727,8 @@ function soRenderPreviewSKS(p) {
     '<p style="text-align:justify; margin:0 0 3mm;">Surat keterangan ini dibuat untuk keperluan: ' + (p.keperluan || '') + '</p>' +
     '<p style="text-align:justify; margin:0 0 8mm;">Demikian surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>' +
     '<table style="width:180mm; border:none; border-collapse:collapse;"><tr>' +
-      '<td style="width:100mm; border:none;">&nbsp;</td>' +
-      '<td style="width:80mm; border:none; vertical-align:top;">' +
+      '<td style="width:115mm; border:none;">&nbsp;</td>' +
+      '<td style="width:65mm; border:none; vertical-align:top;">' +
         'Mano, ' + tglSurat + '<br>' +
         'Kepala Sekolah<br><br><br><br>' +
         '<span style="font-weight:bold; text-decoration:underline;">' + KEPSEK_NAMA + '</span><br>' +
