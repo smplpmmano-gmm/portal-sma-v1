@@ -3001,15 +3001,17 @@ function soRenderPreviewMutasiTerima(p) {
     '<p style="text-align:center; font-weight:bold; font-size:12pt; text-decoration:underline; margin:0;">SURAT KETERANGAN PENERIMAAN PESERTA DIDIK</p>' +
     '<p style="text-align:center; font-size:12pt; margin:0 0 5mm 0;">NOMOR : ' + (p.nomorSurat || '...') + '</p>' +
     '<p style="text-align:justify; margin:0 0 3mm;">Yang bertanda tangan di bawah ini Kepala Sekolah SMA Negeri 30 Halmahera Selatan Desa Mano, Kecamatan Obi Selatan, Kabupaten Halmahera Selatan menerangkan bahwa :</p>' +
-    '<p style="margin:0 0 1mm 8mm;">1. Nama Peserta Didik : ' + (p.namaSiswa || '') + '</p>' +
-    '<p style="margin:0 0 1mm 8mm;">2. Tempat/Tanggal Lahir : ' + (p.ttl || '') + '</p>' +
-    '<p style="margin:0 0 1mm 8mm;">3. Nomor Induk Siswa Nasional (NISN) : ' + (p.nisn || '') + '</p>' +
-    '<p style="margin:0 0 1mm 8mm;">4. Sekolah Asal : ' + (p.sekolahAsal || '') + '</p>' +
-    '<p style="margin:0 0 1mm 8mm;">5. Kelas/Rombel Saat ini : ' + (p.kelasRombel || '') + '</p>' +
-    '<p style="margin:0 0 1mm 8mm;">6. Anak Dari kedua orang tua :</p>' +
-    '<p style="margin:0 0 1mm 16mm;">a. Ayah : ' + (p.namaAyah || '') + '</p>' +
-    '<p style="margin:0 0 1mm 16mm;">b. Ibu : ' + (p.namaIbu || '') + '</p>' +
-    '<p style="margin:0 0 3mm 16mm;">c. Alamat : ' + (p.alamat || '') + '</p>' +
+    '<table style="border:none; border-collapse:collapse; margin:0 0 3mm 8mm;">' +
+      '<tr><td style="border:none; width:230px; white-space:nowrap; vertical-align:top;">1. Nama Peserta Didik</td><td style="border:none; width:10px; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.namaSiswa || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">2. Tempat/Tanggal Lahir</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.ttl || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">3. Nomor Induk Siswa Nasional (NISN)</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.nisn || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">4. Sekolah Asal</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.sekolahAsal || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">5. Kelas/Rombel Saat ini</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.kelasRombel || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">6. Anak Dari kedua orang tua</td><td style="border:none; vertical-align:top;"></td><td style="border:none; vertical-align:top;"></td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">&nbsp;&nbsp;&nbsp;&nbsp;a. Ayah</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.namaAyah || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">&nbsp;&nbsp;&nbsp;&nbsp;b. Ibu</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.namaIbu || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">&nbsp;&nbsp;&nbsp;&nbsp;c. Alamat</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.alamat || '') + '</td></tr>' +
+    '</table>' +
     '<p style="text-align:justify; margin:0 0 3mm;">Bersedia menerima peserta didik tersebut di SMA Negeri 30 Halmahera Selatan, Desa Mano Kec. Obi Selatan, Kab. Halmahera Selatan Prov. Maluku Utara, apabila memenuhi syarat sebagai berikut :</p>' +
     '<p style="margin:0 0 1mm 8mm;">1. Membawa surat keterangan Pindah dari sekolah asal.</p>' +
     '<p style="margin:0 0 1mm 8mm;">2. Menyerahkan fotocopy Ijazah SMP/MTs (2 lembar).</p>' +
@@ -3039,8 +3041,13 @@ function soRenderPreviewLainnya(p) {
   var KEPSEK_NIP = '19680827 199601 1 001';
   var tglSurat = soFormatTanggalIndoJS(p.tanggalSurat);
   var judul = (p.judulSurat || '').toUpperCase();
-  var baris = (p.fieldTambahan || '').split('\n').filter(function(b) { return b.trim() !== ''; })
-    .map(function(b) { return '<p style="margin:0 0 1mm 8mm;">' + b + '</p>'; }).join('');
+  var barisTambahan = (p.fieldTambahan || '').split('\n').filter(function(b) { return b.trim() !== ''; })
+    .map(function(b) {
+      var parts = b.split(':');
+      var label = parts.shift().trim();
+      var isi = parts.join(':').trim();
+      return '<tr><td style="border:none; width:190px; white-space:nowrap; vertical-align:top;">' + label + '</td><td style="border:none; width:10px; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + isi + '</td></tr>';
+    }).join('');
 
   var kop = '' +
     '<table style="width:170mm; border:none; border-collapse:collapse; margin:0 0 5mm 0;"><tr>' +
@@ -3064,9 +3071,11 @@ function soRenderPreviewLainnya(p) {
       '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">Jabatan</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">Kepala SMA Negeri 30 Halmahera Selatan</td></tr>' +
     '</table>' +
     '<p style="text-align:justify; margin:0 0 3mm;">Dengan ini menerangkan bahwa siswa/alumni yang beridentitas:</p>' +
-    '<p style="margin:0 0 1mm 8mm;">Nama : ' + (p.namaSiswa || '') + '</p>' +
-    '<p style="margin:0 0 1mm 8mm;">Tempat, Tanggal Lahir : ' + (p.ttl || '') + '</p>' +
-    baris +
+    '<table style="border:none; border-collapse:collapse; margin:0 0 3mm 8mm;">' +
+      '<tr><td style="border:none; width:190px; white-space:nowrap; vertical-align:top;">Nama</td><td style="border:none; width:10px; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.namaSiswa || '') + '</td></tr>' +
+      '<tr><td style="border:none; white-space:nowrap; vertical-align:top;">Tempat, Tanggal Lahir</td><td style="border:none; vertical-align:top;">:</td><td style="border:none; vertical-align:top;">' + (p.ttl || '') + '</td></tr>' +
+      barisTambahan +
+    '</table>' +
     '<p style="text-align:justify; margin:5mm 0 3mm;">' + (p.isiParagraf || '') + '</p>' +
     '<p style="text-align:justify; margin:0 0 8mm;">Demikian surat keterangan ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>' +
     '<table style="width:170mm; border:none; border-collapse:collapse;"><tr>' +
