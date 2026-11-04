@@ -1,387 +1,670 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SMA Portal - SMA Negeri 30 Halmahera Selatan</title>
-  <link rel="icon" type="image/png" href="logo.png">
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome CDN for Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts (Inter & Poppins) -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f6f3e7;
-    }
-    .bg-navy {
-      background-color: #031b3e;
-    }
-    .text-navy {
-      color: #031b3e;
-    }
-    .text-gold {
-      color: #f39c12;
-    }
-    .bg-gold {
-      background-color: #f39c12;
-    }
-    .role-tab.active {
-      color: #031b3e;
-    }
-    .text-pop {
-      text-shadow: 0 1px 2px rgba(0,0,0,0.55), 0 0 10px rgba(0,0,0,0.25);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal SMA — Dashboard Siswa</title>
+<style>
+  :root{
+    --navy:#1B2A4A;
+    --mustard:#F0A93A;
+    --mustard-soft:#FCE4B8;
+    --cream:#F5EFE4;
+    --text-muted:#94a3b8;
+    --border:#f1f5f9;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family:'Segoe UI', system-ui, sans-serif;
+    background:var(--cream);
+    min-height:100vh;
+  }
+  .page-wrap{ max-width:1400px; margin:0 auto; padding:24px; }
+  .shell{
+    display:flex;
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:0 25px 50px -12px rgba(27,42,74,0.25);
+    background:#fff;
+    min-height:860px;
+    position:relative;
+  }
+
+  /* SIDEBAR */
+  .sidebar{ width:230px; flex-shrink:0; background:var(--navy); padding:28px 16px; display:flex; flex-direction:column; transition:width .2s ease, padding .2s ease; overflow:hidden; }
+  .sidebar.collapsed{ width:76px; padding:28px 10px; }
+  .sidebar.collapsed .brand-title, .sidebar.collapsed .brand-sub, .sidebar.collapsed .role-tag,
+  .sidebar.collapsed .nav-item span, .sidebar.collapsed .user-card{ display:none; }
+  .sidebar.collapsed .nav-item{ justify-content:center; }
+  .sidebar.collapsed .brand{ justify-content:center; }
+
+  .brand{ display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:20px; }
+  .brand-badge{ width:36px; height:36px; border-radius:12px; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; flex-shrink:0; overflow:hidden; }
+  .brand-badge img{ width:100%; height:100%; object-fit:cover; border-radius:12px; }
+  .brand-title{ color:#fff; font-weight:700; font-size:15px; line-height:1.2; }
+  .brand-sub{ color:var(--mustard); font-size:11px; }
+
+  .sidebar-toggle{
+    background:rgba(255,255,255,0.08); border:none; color:#fff; width:28px; height:28px;
+    border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    margin:0 8px 18px; align-self:flex-start;
+  }
+  .sidebar-toggle:hover{ background:rgba(255,255,255,0.15); }
+
+  .role-tag{
+    display:inline-block; align-self:flex-start;
+    background:rgba(240,169,58,0.15); color:var(--mustard);
+    font-size:10.5px; font-weight:700; letter-spacing:.06em;
+    padding:4px 10px; border-radius:20px; margin:0 8px 18px;
+  }
+
+  nav{ display:flex; flex-direction:column; gap:4px; font-size:14px; }
+  .nav-item{
+    display:flex; align-items:center; gap:12px;
+    padding:10px 12px; border-radius:12px;
+    color:rgba(255,255,255,0.8); text-decoration:none;
+    transition:background .15s ease; cursor:pointer;
+  }
+  .nav-item:hover{ background:rgba(255,255,255,0.08); }
+  .nav-item.active{ background:var(--mustard); color:var(--navy); font-weight:600; }
+  .nav-item svg{ flex-shrink:0; }
+  .nav-item.pulse{ animation:pulseClick .3s ease; }
+  @keyframes pulseClick{ 0%{transform:scale(1);} 50%{transform:scale(0.96);} 100%{transform:scale(1);} }
+
+  .sidebar-footer{ margin-top:auto; padding:0 8px; }
+  .user-card{ background:rgba(255,255,255,0.06); border-radius:12px; padding:12px; color:rgba(255,255,255,0.7); font-size:12px; }
+  .user-card strong{ display:block; color:#fff; font-size:13px; margin-top:2px; }
+
+  /* MOBILE OVERLAY */
+  .sidebar-backdrop{ display:none; position:fixed; inset:0; background:rgba(27,42,74,0.5); z-index:40; }
+  .sidebar-backdrop.show{ display:block; }
+
+  /* MAIN */
+  main{ flex:1; padding:32px; overflow-y:auto; min-width:0; }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; gap:12px; }
+  .topbar-left{ display:flex; align-items:center; gap:12px; }
+  .mobile-menu-btn{ display:none; background:var(--navy); color:#fff; border:none; width:38px; height:38px; border-radius:10px; align-items:center; justify-content:center; cursor:pointer; }
+  .topbar h1{ font-size:22px; color:var(--navy); }
+  .topbar p{ font-size:13px; color:var(--text-muted); margin-top:2px; }
+  .topbar-actions{ display:flex; align-items:center; gap:12px; position:relative; }
+  .dropdown-wrap{ position:relative; }
+  .icon-btn{ width:40px; height:40px; border-radius:50%; background:var(--mustard-soft); display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; position:relative; }
+  .badge-count{ position:absolute; top:-2px; right:-2px; background:#e74c3c; color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+  .avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; }
+
+  .dropdown-panel{
+    position:absolute; top:48px; right:0; width:300px; background:#fff; border-radius:16px;
+    box-shadow:0 20px 40px -10px rgba(27,42,74,0.25); border:1px solid var(--border);
+    padding:14px; display:none; z-index:50; max-height:360px; overflow-y:auto;
+  }
+  .dropdown-panel.open{ display:block; }
+  .dropdown-panel h4{ font-size:13px; color:var(--navy); margin-bottom:10px; }
+  .dp-item{ padding:10px; border-radius:10px; background:var(--cream); margin-bottom:8px; }
+  .dp-item:last-child{ margin-bottom:0; }
+  .dp-title{ font-size:12.5px; font-weight:600; color:var(--navy); }
+  .dp-sub{ font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .dp-empty{ font-size:12.5px; color:var(--text-muted); text-align:center; padding:12px 0; }
+  .profile-card{ text-align:center; padding:8px 0; }
+  .profile-avatar{ width:56px; height:56px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; }
+  .profile-name{ font-size:14px; font-weight:700; color:var(--navy); }
+  .profile-role{ font-size:11.5px; color:var(--text-muted); margin-top:2px; }
+  .profile-logout{ margin-top:14px; width:100%; background:var(--navy); color:#fff; border:none; padding:9px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; }
+
+  .section-label{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-bottom:12px; }
+
+  .quick-grid{ display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; margin-bottom:32px; }
+  .quick-item{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    padding:16px 8px; border-radius:16px; border:1px solid var(--border);
+    background:#fff; cursor:pointer; transition:all .18s ease; text-align:center;
+  }
+  .quick-item:hover{ transform:translateY(-4px); box-shadow:0 10px 20px rgba(27,42,74,0.12); border-color:var(--mustard); }
+  .quick-item span{ font-size:11.5px; font-weight:600; color:#475569; line-height:1.25; }
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:32px; }
+  .stat-card{ border-radius:16px; padding:20px; display:flex; align-items:center; gap:12px; border:1px solid var(--border); background:#fff; }
+  .stat-card.navy{ background:var(--navy); border:none; }
+  .stat-card.mustard{ background:var(--mustard); border:none; }
+  .stat-icon{ width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .stat-num{ font-size:24px; font-weight:700; line-height:1; color:var(--navy); }
+  .stat-card.navy .stat-num{ color:#fff; }
+  .stat-sub{ font-size:12px; margin-top:4px; color:var(--text-muted); }
+  .stat-card.navy .stat-sub{ color:var(--mustard-soft); }
+  .stat-card.mustard .stat-sub{ color:var(--navy); font-weight:500; }
+
+  .bottom-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .panel{ border-radius:16px; border:1px solid var(--border); padding:20px; }
+  .panel h3{ font-size:15px; font-weight:700; color:var(--navy); margin-bottom:16px; }
+  .cal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+  .cal-nav{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-muted); }
+  .cal-nav strong{ color:var(--navy); }
+  .cal-grid{ display:grid; grid-template-columns:repeat(7, 1fr); row-gap:8px; text-align:center; font-size:12px; }
+  .cal-grid .dow{ color:var(--text-muted); font-weight:600; }
+  .cal-grid .day{ padding:4px 0; }
+  .cal-grid .day.dim{ color:#cbd5e1; }
+  .cal-grid .day.today{ background:var(--navy); color:#fff; border-radius:50%; font-weight:700; }
+  .cal-grid .day.event{ background:var(--mustard-soft); color:var(--navy); border-radius:50%; font-weight:700; }
+  .legend{ display:flex; align-items:center; gap:8px; margin-top:16px; font-size:12px; color:#64748b; }
+  .dot{ width:10px; height:10px; border-radius:50%; background:var(--mustard); display:inline-block; }
+
+  .notice-item{ display:flex; align-items:center; gap:12px; border-radius:12px; padding:12px; background:var(--cream); }
+  .notice-item + .notice-item{ margin-top:12px; }
+  .notice-icon{ width:48px; height:48px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .notice-title{ font-size:13.5px; font-weight:600; color:var(--navy); }
+  .notice-date{ font-size:11.5px; color:var(--text-muted); }
+
+  .menu-view{ display:none; }
+  .menu-view.active{ display:block; }
+  .placeholder-box{
+    border:2px dashed var(--border); border-radius:16px; padding:48px 24px; text-align:center; color:var(--text-muted);
+  }
+  .placeholder-box svg{ margin-bottom:12px; opacity:.5; }
+  .placeholder-box h4{ color:var(--navy); font-size:15px; margin-bottom:6px; }
+  .placeholder-box p{ font-size:13px; max-width:360px; margin:0 auto; }
+
+  .announce-list .notice-item{ cursor:default; }
+
+  @media (max-width: 900px){
+    .page-wrap{ padding:0; }
+    .shell{ border-radius:0; min-height:100vh; }
+    .sidebar{ position:fixed; left:-260px; top:0; bottom:0; width:230px; z-index:50; transition:left .2s ease; }
+    .sidebar.mobile-open{ left:0; }
+    .sidebar.collapsed{ width:230px; padding:28px 16px; }
+    .sidebar.collapsed .brand-title, .sidebar.collapsed .brand-sub, .sidebar.collapsed .role-tag,
+    .sidebar.collapsed .nav-item span, .sidebar.collapsed .user-card{ display:block; }
+    .sidebar.collapsed .nav-item{ justify-content:flex-start; }
+    .sidebar.collapsed .brand{ justify-content:flex-start; }
+    .sidebar-toggle{ display:none; }
+    .mobile-menu-btn{ display:flex; }
+    .quick-grid{ grid-template-columns:repeat(3,1fr); }
+    .stat-grid{ grid-template-columns:repeat(2,1fr); }
+    .bottom-grid{ grid-template-columns:1fr; }
+    .dropdown-panel{ width:260px; right:-10px; }
+  }
+</style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-4 md:p-8">
+<body>
 
-  <!-- Container Utama -->
-  <div class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center flex-grow">
-    
-    <!-- SISI KIRI: Banner & Ilustrasi -->
-    <div class="lg:col-span-7 bg-navy text-white rounded-3xl p-8 lg:p-12 relative overflow-hidden flex flex-col justify-between min-h-[650px] shadow-xl">
-      
-      <!-- Hiasan Lengkungan Kuning (Seni Latar Belakang) -->
-      <div class="absolute -top-16 -left-16 w-64 h-64 border-[30px] border-amber-400 rounded-full opacity-30 pointer-events-none"></div>
-      <div class="absolute top-0 right-0 w-80 h-80 bg-amber-400 rounded-bl-full opacity-90 -z-0"></div>
+<div class="page-wrap">
+  <div class="shell">
 
-      <div class="relative z-10">
-        <!-- Logo & Header -->
-        <div class="flex items-center gap-4 mb-10">
-          <div class="w-14 h-14 bg-amber-400 rounded-full flex items-center justify-center p-1 border-2 border-white shadow">
-            <!-- Placeholder Logo Sekolah -->
-            <img src="logo.png" alt="Logo Sekolah" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='block';">
-            <i class="fa-solid fa-school text-navy text-2xl" id="logoFallback" style="display:none;"></i>
-          </div>
-          <div>
-            <h1 class="text-2xl font-bold tracking-wide"><span class="text-amber-400 text-pop">Portal</span></h1>
-            <p class="text-xs text-gray-300">SMA Negeri 30 Halmahera Selatan</p>
-          </div>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="tutupSidebarMobile()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-badge" id="brandBadge">
+          <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
         </div>
-
-        <!-- Judul Utama -->
-        <div class="max-w-md my-6">
-          <h2 class="text-4xl lg:text-5xl font-extrabold leading-tight mb-4">
-            Satu Portal,<br>
-            Untuk <span class="text-amber-400 text-pop">Semua.</span>
-          </h2>
-          <p class="text-gray-300 text-sm font-normal leading-relaxed">
-            Akses informasi dan layanan sekolah dalam satu genggaman.
-          </p>
+        <div>
+          <div class="brand-title">SMA Portal</div>
+          <div class="brand-sub">Halmahera Selatan</div>
         </div>
       </div>
 
-      <!-- Area Ilustrasi (Visual Karakter) -->
-      <div class="relative z-10 my-4 flex justify-center items-center">
-        <!-- Pengganti Gambar Ilustrasi -->
-        <div class="w-full max-w-md h-48 bg-navy/50 backdrop-blur-sm rounded-2xl border border-white/10 flex items-center justify-center gap-6 p-4">
-          <i class="fa-solid fa-user-graduate text-6xl text-amber-400"></i>
-          <i class="fa-solid fa-chalkboard-user text-6xl text-white"></i>
-          <i class="fa-solid fa-laptop-code text-6xl text-amber-400"></i>
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Ciutkan/Lebarkan">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+
+      <div class="role-tag">SISWA</div>
+
+      <nav id="navMenu">
+        <a class="nav-item active" data-view="beranda" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span>Beranda</span>
+        </a>
+        <a class="nav-item" data-view="nilai" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          <span>Lihat Nilai</span>
+        </a>
+        <a class="nav-item" data-view="jadwal" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span>Lihat Jadwal</span>
+        </a>
+        <a class="nav-item" data-view="presensi" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Lihat Presensi</span>
+        </a>
+        <a class="nav-item" data-view="angket" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 5c-1.5 0-3 .5-4 1.5A5.5 5.5 0 0 0 11 9c-1-1.5-2.5-2-4-2C4.5 7 3 8.5 3 11c0 4 6 8 8 9 2-1 8-5 8-9 0-2.5-1.5-4-3.5-4Z"/></svg>
+          <span>Angket AKPD/Minat Bakat</span>
+        </a>
+        <a class="nav-item" data-view="pengumuman" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span>Pengumuman</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          Masuk sebagai
+          <strong id="userCardName">Siswa</strong>
+          <a href="#" onclick="logout(); return false;" style="color:var(--mustard); font-size:11px; display:inline-block; margin-top:6px;">Keluar</a>
         </div>
       </div>
+    </aside>
 
-      <!-- Fitur Utama (3 Kolom Bawah) -->
-      <div class="relative z-10 grid grid-cols-3 gap-4 border-t border-white/10 pt-6 mt-4">
-        <!-- Fitur 1 -->
-        <div class="flex flex-col items-start gap-2">
-          <div class="w-8 h-8 rounded-full bg-amber-400/20 text-amber-400 flex items-center justify-center">
-            <i class="fa-solid fa-shield-halved text-sm"></i>
-          </div>
-          <h4 class="font-semibold text-xs text-white">Aman & Terpercaya</h4>
-          <p class="text-[10px] text-gray-300 leading-tight">Data Anda terlindungi dengan sistem keamanan berlapis.</p>
-        </div>
-
-        <!-- Fitur 2 -->
-        <div class="flex flex-col items-start gap-2">
-          <div class="w-8 h-8 rounded-full bg-amber-400/20 text-amber-400 flex items-center justify-center">
-            <i class="fa-solid fa-users text-sm"></i>
-          </div>
-          <h4 class="font-semibold text-xs text-white">Untuk Semua</h4>
-          <p class="text-[10px] text-gray-300 leading-tight">Admin, Guru, BK, Tendik, Siswa, dan Orang Tua.</p>
-        </div>
-
-        <!-- Fitur 3 -->
-        <div class="flex flex-col items-start gap-2">
-          <div class="w-8 h-8 rounded-full bg-amber-400/20 text-amber-400 flex items-center justify-center">
-            <i class="fa-solid fa-clock-rotate-left text-sm"></i>
-          </div>
-          <h4 class="font-semibold text-xs text-white">Akses Kapan Saja</h4>
-          <p class="text-[10px] text-gray-300 leading-tight">Informasi dan layanan sekolah tersedia 24/7.</p>
-        </div>
-      </div>
-
-    </div>
-
-
-    <!-- SISI KANAN: Form Login Card -->
-    <div class="lg:col-span-5 flex justify-center">
-      <div class="bg-white rounded-3xl p-8 lg:p-10 shadow-2xl w-full max-w-md border border-gray-100">
-        
-        <!-- Header Form -->
-        <div class="text-center mb-6">
-          <h3 class="text-2xl font-bold text-navy mb-1">Masuk Sebagai</h3>
-        </div>
-
-        <!-- Tab Peran + Garis Penanda -->
-        <div class="mb-7">
-          <div class="relative" id="roleTabWrap">
-            <div class="grid grid-cols-6 gap-1" id="roleTabs">
-              <button type="button" class="role-tab flex flex-col items-center gap-1 py-1.5 text-gray-400 transition" data-role="Admin">
-                <i class="fa-solid fa-user-shield text-base"></i>
-                <span class="text-[9px] font-semibold leading-none">Admin</span>
-              </button>
-              <button type="button" class="role-tab flex flex-col items-center gap-1 py-1.5 text-gray-400 transition" data-role="Guru">
-                <i class="fa-solid fa-chalkboard-user text-base"></i>
-                <span class="text-[9px] font-semibold leading-none">Guru</span>
-              </button>
-              <button type="button" class="role-tab flex flex-col items-center gap-1 py-1.5 text-gray-400 transition" data-role="BK">
-                <i class="fa-solid fa-comments text-base"></i>
-                <span class="text-[9px] font-semibold leading-none">BK</span>
-              </button>
-              <button type="button" class="role-tab flex flex-col items-center gap-1 py-1.5 text-gray-400 transition" data-role="Tendik">
-                <i class="fa-solid fa-briefcase text-base"></i>
-                <span class="text-[9px] font-semibold leading-none">Tendik</span>
-              </button>
-              <button type="button" class="role-tab flex flex-col items-center gap-1 py-1.5 text-gray-400 transition" data-role="Siswa">
-                <i class="fa-solid fa-user-graduate text-base"></i>
-                <span class="text-[9px] font-semibold leading-none">Siswa</span>
-              </button>
-              <button type="button" class="role-tab flex flex-col items-center gap-1 py-1.5 text-gray-400 transition" data-role="OrangTua">
-                <i class="fa-solid fa-people-roof text-base"></i>
-                <span class="text-[9px] font-semibold leading-none">Ortu</span>
-              </button>
-            </div>
-            <div class="absolute left-0 -bottom-0.5 h-[3px] bg-amber-400 rounded-full transition-all duration-300 ease-out" id="roleUnderline" style="width:0"></div>
-          </div>
-        </div>
-
-        <input type="hidden" id="selectedRole" value="Admin">
-
-        <!-- Form Input -->
-        <form class="space-y-5" id="formLogin" onsubmit="event.preventDefault(); prosesLogin();">
-          
-          <!-- Input Username -->
-          <div>
-            <label class="block text-xs font-semibold text-navy mb-2">Username</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                <i class="fa-regular fa-user text-sm"></i>
-              </span>
-              <input type="text" id="usernameInput" placeholder="Masukkan username" 
-                class="w-full pl-10 pr-4 py-3 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-navy transition">
-            </div>
-          </div>
-
-          <!-- Input Password -->
-          <div>
-            <label class="block text-xs font-semibold text-navy mb-2">Password</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-gray-400">
-                <i class="fa-solid fa-lock text-sm"></i>
-              </span>
-              <input type="password" id="passwordInput" placeholder="Masukkan password" 
-                class="w-full pl-10 pr-10 py-3 text-sm bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-navy transition">
-              <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-gray-400 hover:text-gray-600">
-                <i class="fa-regular fa-eye text-sm" id="eyeIcon"></i>
-              </button>
-            </div>
-            <!-- Lupa Password Link -->
-            <div class="text-right mt-2">
-              <a href="#" class="text-xs font-medium text-blue-600 hover:underline">Lupa Password?</a>
-            </div>
-          </div>
-
-          <!-- Tombol Login -->
-          <button type="submit" id="btnLogin" class="w-full bg-navy hover:bg-slate-900 text-white font-semibold py-3.5 rounded-xl transition shadow-md flex items-center justify-center gap-2 mt-4">
-            <i class="fa-solid fa-right-to-bracket text-sm" id="btnIcon"></i>
-            <span id="btnText">Login</span>
+    <!-- MAIN -->
+    <main>
+      <div class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" onclick="bukaSidebarMobile()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
           </button>
-          <p class="text-center text-xs text-red-500 mt-3" id="loginMsg"></p>
-        </form>
+          <div>
+            <h1 id="viewTitle">Dashboard</h1>
+            <p id="viewSubtitle">Selamat datang kembali</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="dropdown-wrap">
+            <button class="icon-btn" onclick="toggleDropdown('notifPanel')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="badge-count" id="notifBadge" style="display:none">0</span>
+            </button>
+            <div class="dropdown-panel" id="notifPanel">
+              <h4>Notifikasi Pengumuman</h4>
+              <div id="notifList"><div class="dp-empty">Memuat...</div></div>
+            </div>
+          </div>
+          <div class="dropdown-wrap">
+            <button class="avatar" id="userAvatar" onclick="toggleDropdown('profilePanel')">SW</button>
+            <div class="dropdown-panel" id="profilePanel">
+              <div class="profile-card">
+                <div class="profile-avatar" id="profileAvatarBig">SW</div>
+                <div class="profile-name" id="profileName">-</div>
+                <div class="profile-role" id="profileRole">Siswa</div>
+                <button class="profile-logout" onclick="logout()">Keluar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <!-- Divider Atau -->
-        <div class="relative my-6 text-center">
-          <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
-          <span class="relative bg-white px-3 text-xs text-gray-400">atau</span>
+      <!-- VIEW: BERANDA -->
+      <div class="menu-view active" id="view-beranda">
+        <div class="section-label">Aksi Cepat</div>
+        <div class="quick-grid">
+          <div class="quick-item" onclick="pindahMenu('nilai')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+            <span>Lihat Nilai</span>
+          </div>
+          <div class="quick-item" onclick="pindahMenu('jadwal')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span>Lihat Jadwal</span>
+          </div>
+          <div class="quick-item" onclick="pindahMenu('presensi')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span>Lihat Presensi</span>
+          </div>
+          <div class="quick-item" onclick="pindahMenu('angket')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M19 5c-1.5 0-3 .5-4 1.5A5.5 5.5 0 0 0 11 9c-1-1.5-2.5-2-4-2C4.5 7 3 8.5 3 11c0 4 6 8 8 9 2-1 8-5 8-9 0-2.5-1.5-4-3.5-4Z"/></svg>
+            <span>Angket AKPD/Minat Bakat</span>
+          </div>
+          <div class="quick-item" onclick="pindahMenu('pengumuman')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span>Pengumuman</span>
+          </div>
         </div>
 
-        <!-- Link Kunjungi Website Utama -->
-        <div class="flex items-center justify-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs">
-          <i class="fa-solid fa-globe text-navy text-lg"></i>
-          <div>
-            <span class="text-gray-600">Kunjungi </span>
-            <a href="https://www.sman30halsel.sch.id" target="_blank" class="text-blue-600 font-semibold hover:underline">
-              website utama sekolah
-            </a>
-            <div class="text-[11px] text-gray-400 flex items-center gap-1">
-              www.sman30halsel.sch.id 
-              <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+        <div class="stat-grid">
+          <div class="stat-card navy">
+            <div class="stat-icon" style="background:var(--mustard)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statNilai">-</div>
+              <div class="stat-sub">Rata-rata Nilai</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statPresensi">-</div>
+              <div class="stat-sub">Kehadiran Semester Ini</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statKelas">-</div>
+              <div class="stat-sub">Kelas</div>
+            </div>
+          </div>
+          <div class="stat-card mustard">
+            <div class="stat-icon" style="background:var(--navy)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statPengumuman">0</div>
+              <div class="stat-sub">Pengumuman</div>
             </div>
           </div>
         </div>
 
+        <div class="bottom-grid">
+          <div class="panel">
+            <div class="cal-head">
+              <h3 style="margin:0">Kalender</h3>
+              <div class="cal-nav" id="calLabel">&lt; <strong>-</strong> &gt;</div>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div class="legend"><span class="dot"></span> Ada pengumuman di tanggal ini</div>
+          </div>
+
+          <div class="panel">
+            <h3>Papan Pengumuman</h3>
+            <div id="papanPengumuman"><div class="dp-empty">Memuat...</div></div>
+          </div>
+        </div>
       </div>
-    </div>
 
+      <!-- VIEW: NILAI -->
+      <div class="menu-view" id="view-nilai">
+        <div class="placeholder-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          <h4>Lihat Nilai</h4>
+          <p>Menu ini belum tersambung ke data nilai. Menunggu konfirmasi parameter fungsi nilaiRekap di Code.gs.</p>
+        </div>
+      </div>
+
+      <!-- VIEW: JADWAL -->
+      <div class="menu-view" id="view-jadwal">
+        <div class="placeholder-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <h4>Lihat Jadwal</h4>
+          <p>Menu ini belum tersambung ke data jadwal pelajaran. Menunggu konfirmasi fungsi jadwal yang dipakai.</p>
+        </div>
+      </div>
+
+      <!-- VIEW: PRESENSI -->
+      <div class="menu-view" id="view-presensi">
+        <div class="placeholder-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <h4>Lihat Presensi</h4>
+          <p>Menu ini belum tersambung ke data presensi. Menunggu konfirmasi parameter fungsi absensiRekap di Code.gs.</p>
+        </div>
+      </div>
+
+      <!-- VIEW: ANGKET -->
+      <div class="menu-view" id="view-angket">
+        <div class="placeholder-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M19 5c-1.5 0-3 .5-4 1.5A5.5 5.5 0 0 0 11 9c-1-1.5-2.5-2-4-2C4.5 7 3 8.5 3 11c0 4 6 8 8 9 2-1 8-5 8-9 0-2.5-1.5-4-3.5-4Z"/></svg>
+          <h4>Angket AKPD/Minat Bakat</h4>
+          <p>Menu ini akan dibangun berikutnya memakai fungsi angketSesi_list, angketButirSoal, angketRespon_simpan, dan angketSudahIsi yang sudah ada di Code.gs.</p>
+        </div>
+      </div>
+
+      <!-- VIEW: PENGUMUMAN -->
+      <div class="menu-view" id="view-pengumuman">
+        <div class="panel">
+          <h3>Semua Pengumuman</h3>
+          <div id="daftarPengumumanPenuh" class="announce-list"><div class="dp-empty">Memuat...</div></div>
+        </div>
+      </div>
+
+    </main>
   </div>
+</div>
 
-  <!-- Footer -->
-  <footer class="text-center text-xs text-gray-500 py-4 mt-6">
-    © 2026 SMA Negeri 30 Halmahera Selatan. All rights reserved.
-  </footer>
+<script>
+const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLW8XdWVgQb3CMR1xz1V8CEDMm3e4ZhaGDZCNGZsiqvnGrhLfxSfeKtND-mKhyd-pS/exec';
+let sesi = null;
+let pengumumanSiswa = [];
 
-  <!-- Script Toggle Password -->
-  <script>
-    function togglePassword() {
-      const passwordInput = document.getElementById('passwordInput');
-      const eyeIcon = document.getElementById('eyeIcon');
-      
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.classList.remove('fa-eye');
-        eyeIcon.classList.add('fa-eye-slash');
-      } else {
-        passwordInput.type = 'password';
-        eyeIcon.classList.remove('fa-eye-slash');
-        eyeIcon.classList.add('fa-eye');
-      }
-    }
-  </script>
-
-  <!-- Script Tab Peran + Garis Penanda -->
-  <script>
-    function pindahUnderline(btn) {
-      const wrap = document.getElementById('roleTabWrap');
-      const underline = document.getElementById('roleUnderline');
-      const rectBtn = btn.getBoundingClientRect();
-      const rectWrap = wrap.getBoundingClientRect();
-      underline.style.width = rectBtn.width + 'px';
-      underline.style.transform = `translateX(${rectBtn.left - rectWrap.left}px)`;
-    }
-
-    const roleTabs = document.querySelectorAll('.role-tab');
-    roleTabs.forEach(btn => {
-      btn.addEventListener('click', () => {
-        roleTabs.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('selectedRole').value = btn.dataset.role;
-        pindahUnderline(btn);
-      });
-    });
-
-    // Set posisi awal garis ke tab pertama (Admin) saat halaman dimuat
-    window.addEventListener('load', () => {
-      const tabPertama = roleTabs[0];
-      tabPertama.classList.add('active');
-      pindahUnderline(tabPertama);
-    });
-  </script>
-
-  <!-- Script Login (JSONP ke Code.gs) -->
-  <script>
-    const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLW8XdWVgQb3CMR1xz1V8CEDMm3e4ZhaGDZCNGZsiqvnGrhLfxSfeKtND-mKhyd-pS/exec';
-
-    const DASHBOARD_BY_ROLE = {
-      'Admin': 'admin.html',
-      'Guru': 'guru.html',
-      'BK': 'bk.html',
-      'Tendik': 'tendik.html',
-      'Siswa': 'siswa.html',
-      'OrangTua': 'ortu.html'
+function jsonpCall(action, params) {
+  return new Promise((resolve, reject) => {
+    const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+    const script = document.createElement('script');
+    window[callbackName] = (result) => {
+      resolve(result);
+      delete window[callbackName];
+      script.remove();
     };
+    const query = new URLSearchParams({ action, callback: callbackName, ...(params||{}) }).toString();
+    script.src = EXEC_URL + '?' + query;
+    script.onerror = () => reject(new Error('Gagal terhubung ke server'));
+    document.body.appendChild(script);
+  });
+}
 
-    // Kalau sudah login sebelumnya, langsung lempar ke dashboard-nya
-    (function cekSesiSebelumnya() {
-      const sesi = localStorage.getItem('portalSmaSesi');
-      if (sesi) {
-        const data = JSON.parse(sesi);
-        const tujuan = DASHBOARD_BY_ROLE[data.role];
-        if (tujuan) window.location.href = tujuan;
-      }
-    })();
+/* ===== SESI ===== */
+(function cekSesi() {
+  sesi = JSON.parse(localStorage.getItem('portalSmaSesi') || 'null');
+  if (!sesi || sesi.role !== 'Siswa') {
+    window.location.href = 'login.html';
+    return;
+  }
+  document.getElementById('userCardName').textContent = sesi.namaLengkap;
+  document.getElementById('profileName').textContent = sesi.namaLengkap;
+  const inisial = sesi.namaLengkap.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  document.getElementById('userAvatar').textContent = inisial;
+  document.getElementById('profileAvatarBig').textContent = inisial;
+  document.getElementById('statKelas').textContent = sesi.kelas || '-';
+  tampilkanSapaan();
+  renderKalender();
+  muatPengumuman();
+})();
 
-    function jsonpCall(action, params) {
-      return new Promise((resolve, reject) => {
-        const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-        const script = document.createElement('script');
-        window[callbackName] = (result) => {
-          resolve(result);
-          delete window[callbackName];
-          script.remove();
-        };
-        const query = new URLSearchParams({ action, callback: callbackName, ...params }).toString();
-        script.src = EXEC_URL + '?' + query;
-        script.onerror = () => reject(new Error('Gagal terhubung ke server'));
-        document.body.appendChild(script);
-      });
+function logout() {
+  localStorage.removeItem('portalSmaSesi');
+  window.location.href = 'login.html';
+}
+
+function tampilkanSapaan() {
+  const jam = new Date().getHours();
+  let sapa = 'Selamat malam';
+  if (jam >= 4 && jam < 11) sapa = 'Selamat pagi';
+  else if (jam >= 11 && jam < 15) sapa = 'Selamat siang';
+  else if (jam >= 15 && jam < 18) sapa = 'Selamat sore';
+  document.getElementById('viewSubtitle').textContent = sapa + ', ' + sesi.namaLengkap.split(' ')[0] + '!';
+}
+
+/* ===== SIDEBAR TOGGLE (desktop collapse + mobile overlay) ===== */
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.classList.toggle('collapsed');
+  localStorage.setItem('siswaSidebarCollapsed', sb.classList.contains('collapsed') ? '1' : '0');
+}
+(function initSidebarState() {
+  if (localStorage.getItem('siswaSidebarCollapsed') === '1') {
+    document.getElementById('sidebar').classList.add('collapsed');
+  }
+})();
+function bukaSidebarMobile() {
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('sidebarBackdrop').classList.add('show');
+}
+function tutupSidebarMobile() {
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebarBackdrop').classList.remove('show');
+}
+
+/* ===== DROPDOWNS ===== */
+function toggleDropdown(id) {
+  const panel = document.getElementById(id);
+  const sudahTerbuka = panel.classList.contains('open');
+  document.querySelectorAll('.dropdown-panel').forEach(p => p.classList.remove('open'));
+  if (!sudahTerbuka) {
+    panel.classList.add('open');
+    if (id === 'notifPanel') renderNotifList();
+  }
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.dropdown-wrap')) {
+    document.querySelectorAll('.dropdown-panel').forEach(p => p.classList.remove('open'));
+  }
+});
+
+/* ===== SPA MENU SWITCH ===== */
+const judulView = {
+  beranda: 'Dashboard',
+  nilai: 'Lihat Nilai',
+  jadwal: 'Lihat Jadwal',
+  presensi: 'Lihat Presensi',
+  angket: 'Angket AKPD/Minat Bakat',
+  pengumuman: 'Pengumuman'
+};
+document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+  item.addEventListener('click', function(e) {
+    e.preventDefault();
+    pindahMenu(this.dataset.view);
+    this.classList.add('pulse');
+    setTimeout(() => this.classList.remove('pulse'), 300);
+    tutupSidebarMobile();
+  });
+});
+
+function pindahMenu(target) {
+  document.querySelectorAll('.nav-item[data-view]').forEach(n => n.classList.remove('active'));
+  const navTarget = document.querySelector('.nav-item[data-view="' + target + '"]');
+  if (navTarget) navTarget.classList.add('active');
+
+  document.querySelectorAll('.menu-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + target).classList.add('active');
+
+  document.getElementById('viewTitle').textContent = judulView[target] || 'Dashboard';
+  if (target === 'beranda') {
+    tampilkanSapaan();
+  } else {
+    document.getElementById('viewSubtitle').textContent = '';
+  }
+
+  if (target === 'pengumuman') renderDaftarPengumumanPenuh();
+}
+
+/* ===== PENGUMUMAN ===== */
+async function muatPengumuman() {
+  try {
+    const hasil = await jsonpCall('pengumuman_list', { role: 'Siswa' });
+    if (hasil.success) {
+      pengumumanSiswa = hasil.data || [];
+      document.getElementById('statPengumuman').textContent = pengumumanSiswa.length;
+      renderPapanPengumuman();
+      renderKalender();
     }
+  } catch (e) {
+    console.error('Gagal muat pengumuman', e);
+    document.getElementById('papanPengumuman').innerHTML = '<div class="dp-empty">Gagal memuat pengumuman.</div>';
+  }
+}
 
-    async function prosesLogin() {
-      const username = document.getElementById('usernameInput').value.trim();
-      const password = document.getElementById('passwordInput').value;
-      const btn = document.getElementById('btnLogin');
-      const btnText = document.getElementById('btnText');
-      const btnIcon = document.getElementById('btnIcon');
-      const msg = document.getElementById('loginMsg');
+function iconPengumuman() {
+  return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8a2 2 0 1 1-3.2 2.4"/></svg>';
+}
 
-      msg.textContent = '';
-      btn.disabled = true;
-      btn.classList.add('opacity-70');
-      btnText.textContent = 'Memeriksa...';
-      btnIcon.className = 'fa-solid fa-spinner fa-spin text-sm';
+function renderPapanPengumuman() {
+  const target = document.getElementById('papanPengumuman');
+  if (!pengumumanSiswa.length) {
+    target.innerHTML = '<div class="dp-empty">Belum ada pengumuman.</div>';
+    return;
+  }
+  target.innerHTML = pengumumanSiswa.slice(0, 5).map(p => `
+    <div class="notice-item">
+      <div class="notice-icon" style="background:var(--mustard)">${iconPengumuman()}</div>
+      <div>
+        <div class="notice-title">${p.Judul || ''}</div>
+        <div class="notice-date">${p.TanggalDibuat || ''}</div>
+      </div>
+    </div>`).join('');
+}
 
-      try {
-        const hasil = await jsonpCall('login', { username, password });
+function renderDaftarPengumumanPenuh() {
+  const target = document.getElementById('daftarPengumumanPenuh');
+  if (!pengumumanSiswa.length) {
+    target.innerHTML = '<div class="dp-empty">Belum ada pengumuman.</div>';
+    return;
+  }
+  target.innerHTML = pengumumanSiswa.map(p => `
+    <div class="notice-item">
+      <div class="notice-icon" style="background:var(--mustard)">${iconPengumuman()}</div>
+      <div>
+        <div class="notice-title">${p.Judul || ''}</div>
+        <div class="notice-date">${p.TanggalDibuat || ''}${p.Isi ? ' — ' + p.Isi : ''}</div>
+      </div>
+    </div>`).join('');
+}
 
-        if (!hasil.success) {
-          msg.textContent = hasil.error || 'Login gagal';
-          btn.disabled = false;
-          btn.classList.remove('opacity-70');
-          btnText.textContent = 'Login';
-          btnIcon.className = 'fa-solid fa-right-to-bracket text-sm';
-          return;
-        }
+function renderNotifList() {
+  const target = document.getElementById('notifList');
+  const badge = document.getElementById('notifBadge');
+  const terakhirDibaca = localStorage.getItem('siswaPengumumanTerakhirDibaca') || '';
+  const belumDibaca = pengumumanSiswa.filter(p => (p.TanggalDibuat || '') > terakhirDibaca).length;
 
-        let dataTambahan = {};
-        if (hasil.role === 'Siswa') {
-          const profil = await jsonpCall('siswa_profil', { refID: hasil.refID });
-          if (profil.success) {
-            dataTambahan = { kelas: profil.kelas, jenisKelamin: profil.jenisKelamin };
-          }
-        }
-
-        localStorage.setItem('portalSmaSesi', JSON.stringify({
-          username,
-          role: hasil.role,
-          namaLengkap: hasil.namaLengkap,
-          refID: hasil.refID,
-          ...dataTambahan
-        }));
-
-        const tujuan = DASHBOARD_BY_ROLE[hasil.role];
-        if (!tujuan) {
-          msg.textContent = 'Role akun tidak dikenali: ' + hasil.role;
-          btn.disabled = false;
-          btn.classList.remove('opacity-70');
-          btnText.textContent = 'Login';
-          btnIcon.className = 'fa-solid fa-right-to-bracket text-sm';
-          return;
-        }
-
-        btnText.textContent = 'Berhasil, mengarahkan...';
-        window.location.href = tujuan;
-      } catch (err) {
-        msg.textContent = 'Tidak bisa terhubung ke server. Cek koneksi internet.';
-        btn.disabled = false;
-        btn.classList.remove('opacity-70');
-        btnText.textContent = 'Login';
-        btnIcon.className = 'fa-solid fa-right-to-bracket text-sm';
-      }
+  if (!pengumumanSiswa.length) {
+    target.innerHTML = '<div class="dp-empty">Belum ada notifikasi.</div>';
+  } else {
+    target.innerHTML = pengumumanSiswa.slice(0, 5).map(p => `
+      <div class="dp-item">
+        <div class="dp-title">${p.Judul || ''}</div>
+        <div class="dp-sub">${p.TanggalDibuat || ''}</div>
+      </div>`).join('');
+    if (pengumumanSiswa[0] && pengumumanSiswa[0].TanggalDibuat) {
+      localStorage.setItem('siswaPengumumanTerakhirDibaca', pengumumanSiswa[0].TanggalDibuat);
     }
-  </script>
+  }
+  badge.style.display = 'none';
+}
+(function cekBadgeAwal() {
+  // badge dihitung ulang tiap muatPengumuman() lewat renderBadge di bawah
+})();
+function renderBadge() {
+  const badge = document.getElementById('notifBadge');
+  const terakhirDibaca = localStorage.getItem('siswaPengumumanTerakhirDibaca') || '';
+  const belum = pengumumanSiswa.filter(p => (p.TanggalDibuat || '') > terakhirDibaca).length;
+  if (belum > 0) { badge.style.display = 'flex'; badge.textContent = belum; }
+  else { badge.style.display = 'none'; }
+}
+
+/* ===== KALENDER (dinamis, Senin di kolom pertama) ===== */
+function renderKalender() {
+  const now = new Date();
+  const tahun = now.getFullYear();
+  const bulan = now.getMonth();
+  const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  document.getElementById('calLabel').innerHTML = '&lt; <strong>' + namaBulan[bulan] + ' ' + tahun + '</strong> &gt;';
+
+  const tanggalBerpengumuman = new Set(
+    pengumumanSiswa.map(p => (p.TanggalDibuat || '').slice(0, 10))
+  );
+
+  const firstDay = new Date(tahun, bulan, 1);
+  let startOffset = firstDay.getDay() - 1; // Senin = 0
+  if (startOffset < 0) startOffset = 6;
+
+  const jumlahHari = new Date(tahun, bulan + 1, 0).getDate();
+  const hariSebelumnya = new Date(tahun, bulan, 0).getDate();
+
+  let html = '<span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>';
+
+  for (let i = startOffset; i > 0; i--) {
+    html += '<span class="day dim">' + (hariSebelumnya - i + 1) + '</span>';
+  }
+  const hariIni = now.getDate();
+  for (let d = 1; d <= jumlahHari; d++) {
+    const tgl = tahun + '-' + String(bulan+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    let kelas = 'day';
+    if (d === hariIni) kelas += ' today';
+    else if (tanggalBerpengumuman.has(tgl)) kelas += ' event';
+    html += '<span class="' + kelas + '">' + d + '</span>';
+  }
+  const sisa = (7 - ((startOffset + jumlahHari) % 7)) % 7;
+  for (let i = 1; i <= sisa; i++) {
+    html += '<span class="day dim">' + i + '</span>';
+  }
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+/* override muatPengumuman untuk juga render badge */
+const _muatPengumumanAsli = muatPengumuman;
+muatPengumuman = async function() {
+  await _muatPengumumanAsli();
+  renderBadge();
+};
+</script>
 </body>
 </html>
