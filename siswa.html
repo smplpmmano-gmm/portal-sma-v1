@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal SMA — Dashboard</title>
+<title>Portal SMA — Dashboard Siswa</title>
 <style>
   :root{
     --navy:#1B2A4A;
@@ -27,14 +27,30 @@
     box-shadow:0 25px 50px -12px rgba(27,42,74,0.25);
     background:#fff;
     min-height:860px;
+    position:relative;
   }
 
   /* SIDEBAR */
-  .sidebar{ width:230px; flex-shrink:0; background:var(--navy); padding:28px 16px; display:flex; flex-direction:column; }
-  .brand{ display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:32px; }
-  .brand-badge{ width:36px; height:36px; border-radius:12px; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; }
+  .sidebar{ width:230px; flex-shrink:0; background:var(--navy); padding:28px 16px; display:flex; flex-direction:column; transition:width .2s ease, padding .2s ease; overflow:hidden; }
+  .sidebar.collapsed{ width:76px; padding:28px 10px; }
+  .sidebar.collapsed .brand-title, .sidebar.collapsed .brand-sub, .sidebar.collapsed .role-tag,
+  .sidebar.collapsed .nav-item span, .sidebar.collapsed .user-card{ display:none; }
+  .sidebar.collapsed .nav-item{ justify-content:center; }
+  .sidebar.collapsed .brand{ justify-content:center; }
+
+  .brand{ display:flex; align-items:center; gap:10px; padding:0 8px; margin-bottom:20px; }
+  .brand-badge{ width:36px; height:36px; border-radius:12px; background:var(--mustard); color:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; flex-shrink:0; overflow:hidden; }
+  .brand-badge img{ width:100%; height:100%; object-fit:cover; border-radius:12px; }
   .brand-title{ color:#fff; font-weight:700; font-size:15px; line-height:1.2; }
   .brand-sub{ color:var(--mustard); font-size:11px; }
+
+  .sidebar-toggle{
+    background:rgba(255,255,255,0.08); border:none; color:#fff; width:28px; height:28px;
+    border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    margin:0 8px 18px; align-self:flex-start;
+  }
+  .sidebar-toggle:hover{ background:rgba(255,255,255,0.15); }
+
   .role-tag{
     display:inline-block; align-self:flex-start;
     background:rgba(240,169,58,0.15); color:var(--mustard);
@@ -47,28 +63,56 @@
     display:flex; align-items:center; gap:12px;
     padding:10px 12px; border-radius:12px;
     color:rgba(255,255,255,0.8); text-decoration:none;
-    transition:background .15s ease;
+    transition:background .15s ease; cursor:pointer;
   }
   .nav-item:hover{ background:rgba(255,255,255,0.08); }
   .nav-item.active{ background:var(--mustard); color:var(--navy); font-weight:600; }
   .nav-item svg{ flex-shrink:0; }
+  .nav-item.pulse{ animation:pulseClick .3s ease; }
+  @keyframes pulseClick{ 0%{transform:scale(1);} 50%{transform:scale(0.96);} 100%{transform:scale(1);} }
 
   .sidebar-footer{ margin-top:auto; padding:0 8px; }
   .user-card{ background:rgba(255,255,255,0.06); border-radius:12px; padding:12px; color:rgba(255,255,255,0.7); font-size:12px; }
   .user-card strong{ display:block; color:#fff; font-size:13px; margin-top:2px; }
 
+  /* MOBILE OVERLAY */
+  .sidebar-backdrop{ display:none; position:fixed; inset:0; background:rgba(27,42,74,0.5); z-index:40; }
+  .sidebar-backdrop.show{ display:block; }
+
   /* MAIN */
-  main{ flex:1; padding:32px; overflow-y:auto; }
-  .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+  main{ flex:1; padding:32px; overflow-y:auto; min-width:0; }
+  .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; gap:12px; }
+  .topbar-left{ display:flex; align-items:center; gap:12px; }
+  .mobile-menu-btn{ display:none; background:var(--navy); color:#fff; border:none; width:38px; height:38px; border-radius:10px; align-items:center; justify-content:center; cursor:pointer; }
   .topbar h1{ font-size:22px; color:var(--navy); }
   .topbar p{ font-size:13px; color:var(--text-muted); margin-top:2px; }
-  .topbar-actions{ display:flex; align-items:center; gap:12px; }
-  .icon-btn{ width:40px; height:40px; border-radius:50%; background:var(--mustard-soft); display:flex; align-items:center; justify-content:center; }
-  .avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; }
+  .topbar-actions{ display:flex; align-items:center; gap:12px; position:relative; }
+  .dropdown-wrap{ position:relative; }
+  .icon-btn{ width:40px; height:40px; border-radius:50%; background:var(--mustard-soft); display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; position:relative; }
+  .badge-count{ position:absolute; top:-2px; right:-2px; background:#e74c3c; color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+  .avatar{ width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; }
+
+  .dropdown-panel{
+    position:absolute; top:48px; right:0; width:300px; background:#fff; border-radius:16px;
+    box-shadow:0 20px 40px -10px rgba(27,42,74,0.25); border:1px solid var(--border);
+    padding:14px; display:none; z-index:50; max-height:360px; overflow-y:auto;
+  }
+  .dropdown-panel.open{ display:block; }
+  .dropdown-panel h4{ font-size:13px; color:var(--navy); margin-bottom:10px; }
+  .dp-item{ padding:10px; border-radius:10px; background:var(--cream); margin-bottom:8px; }
+  .dp-item:last-child{ margin-bottom:0; }
+  .dp-title{ font-size:12.5px; font-weight:600; color:var(--navy); }
+  .dp-sub{ font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .dp-empty{ font-size:12.5px; color:var(--text-muted); text-align:center; padding:12px 0; }
+  .profile-card{ text-align:center; padding:8px 0; }
+  .profile-avatar{ width:56px; height:56px; border-radius:50%; background:var(--navy); color:#fff; font-weight:700; font-size:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; }
+  .profile-name{ font-size:14px; font-weight:700; color:var(--navy); }
+  .profile-role{ font-size:11.5px; color:var(--text-muted); margin-top:2px; }
+  .profile-logout{ margin-top:14px; width:100%; background:var(--navy); color:#fff; border:none; padding:9px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; }
 
   .section-label{ font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-bottom:12px; }
 
-  .quick-grid{ display:grid; grid-template-columns:repeat(6, 1fr); gap:12px; margin-bottom:32px; }
+  .quick-grid{ display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; margin-bottom:32px; }
   .quick-item{
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
     padding:16px 8px; border-radius:16px; border:1px solid var(--border);
@@ -109,13 +153,33 @@
   .notice-title{ font-size:13.5px; font-weight:600; color:var(--navy); }
   .notice-date{ font-size:11.5px; color:var(--text-muted); }
 
+  .menu-view{ display:none; }
+  .menu-view.active{ display:block; }
+  .placeholder-box{
+    border:2px dashed var(--border); border-radius:16px; padding:48px 24px; text-align:center; color:var(--text-muted);
+  }
+  .placeholder-box svg{ margin-bottom:12px; opacity:.5; }
+  .placeholder-box h4{ color:var(--navy); font-size:15px; margin-bottom:6px; }
+  .placeholder-box p{ font-size:13px; max-width:360px; margin:0 auto; }
+
+  .announce-list .notice-item{ cursor:default; }
+
   @media (max-width: 900px){
-    .shell{ flex-direction:column; }
-    .sidebar{ width:100%; flex-direction:row; overflow-x:auto; }
-    nav{ flex-direction:row; }
+    .page-wrap{ padding:0; }
+    .shell{ border-radius:0; min-height:100vh; }
+    .sidebar{ position:fixed; left:-260px; top:0; bottom:0; width:230px; z-index:50; transition:left .2s ease; }
+    .sidebar.mobile-open{ left:0; }
+    .sidebar.collapsed{ width:230px; padding:28px 16px; }
+    .sidebar.collapsed .brand-title, .sidebar.collapsed .brand-sub, .sidebar.collapsed .role-tag,
+    .sidebar.collapsed .nav-item span, .sidebar.collapsed .user-card{ display:block; }
+    .sidebar.collapsed .nav-item{ justify-content:flex-start; }
+    .sidebar.collapsed .brand{ justify-content:flex-start; }
+    .sidebar-toggle{ display:none; }
+    .mobile-menu-btn{ display:flex; }
     .quick-grid{ grid-template-columns:repeat(3,1fr); }
     .stat-grid{ grid-template-columns:repeat(2,1fr); }
     .bottom-grid{ grid-template-columns:1fr; }
+    .dropdown-panel{ width:260px; right:-10px; }
   }
 </style>
 </head>
@@ -124,42 +188,50 @@
 <div class="page-wrap">
   <div class="shell">
 
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="tutupSidebarMobile()"></div>
+
     <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-badge">S</div>
+        <div class="brand-badge" id="brandBadge">
+          <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+        </div>
         <div>
           <div class="brand-title">SMA Portal</div>
           <div class="brand-sub">Halmahera Selatan</div>
         </div>
       </div>
 
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Ciutkan/Lebarkan">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+
       <div class="role-tag">SISWA</div>
 
-      <nav>
-        <a class="nav-item active" href="#">
+      <nav id="navMenu">
+        <a class="nav-item active" data-view="beranda" href="#">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-          Beranda
+          <span>Beranda</span>
         </a>
-        <a class="nav-item" href="#">
+        <a class="nav-item" data-view="nilai" href="#">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-          Lihat Nilai
+          <span>Lihat Nilai</span>
         </a>
-        <a class="nav-item" href="#">
+        <a class="nav-item" data-view="jadwal" href="#">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          Lihat Jadwal
+          <span>Lihat Jadwal</span>
         </a>
-        <a class="nav-item" href="#">
+        <a class="nav-item" data-view="presensi" href="#">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          Lihat Presensi
+          <span>Lihat Presensi</span>
         </a>
-        <a class="nav-item" href="#">
+        <a class="nav-item" data-view="angket" href="#">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 5c-1.5 0-3 .5-4 1.5A5.5 5.5 0 0 0 11 9c-1-1.5-2.5-2-4-2C4.5 7 3 8.5 3 11c0 4 6 8 8 9 2-1 8-5 8-9 0-2.5-1.5-4-3.5-4Z"/></svg>
-          Angket AKPD/Minat Bakat
+          <span>Angket AKPD/Minat Bakat</span>
         </a>
-        <a class="nav-item" href="#">
+        <a class="nav-item" data-view="pengumuman" href="#">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          Pengumuman
+          <span>Pengumuman</span>
         </a>
       </nav>
 
@@ -175,122 +247,163 @@
     <!-- MAIN -->
     <main>
       <div class="topbar">
-        <div>
-          <h1>Dashboard</h1>
-          <p>Senin, 27 Juli 2026</p>
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" onclick="bukaSidebarMobile()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <h1 id="viewTitle">Dashboard</h1>
+            <p id="viewSubtitle">Selamat datang kembali</p>
+          </div>
         </div>
         <div class="topbar-actions">
-          <div class="icon-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="dropdown-wrap">
+            <button class="icon-btn" onclick="toggleDropdown('notifPanel')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="badge-count" id="notifBadge" style="display:none">0</span>
+            </button>
+            <div class="dropdown-panel" id="notifPanel">
+              <h4>Notifikasi Pengumuman</h4>
+              <div id="notifList"><div class="dp-empty">Memuat...</div></div>
+            </div>
           </div>
-          <div class="avatar" id="userAvatar">SW</div>
-        </div>
-      </div>
-
-      <div class="section-label">Aksi Cepat</div>
-      <div class="quick-grid">
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-          <span>Lihat Nilai</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          <span>Lihat Jadwal</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          <span>Lihat Presensi</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M19 5c-1.5 0-3 .5-4 1.5A5.5 5.5 0 0 0 11 9c-1-1.5-2.5-2-4-2C4.5 7 3 8.5 3 11c0 4 6 8 8 9 2-1 8-5 8-9 0-2.5-1.5-4-3.5-4Z"/></svg>
-          <span>Angket AKPD</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M19 5c-1.5 0-3 .5-4 1.5A5.5 5.5 0 0 0 11 9c-1-1.5-2.5-2-4-2C4.5 7 3 8.5 3 11c0 4 6 8 8 9 2-1 8-5 8-9 0-2.5-1.5-4-3.5-4Z"/></svg>
-          <span>Angket Minat Bakat</span>
-        </div>
-        <div class="quick-item">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <span>Pengumuman</span>
-        </div>
-      </div>
-
-      <div class="stat-grid">
-        <div class="stat-card navy">
-          <div class="stat-icon" style="background:var(--mustard)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
-          </div>
-          <div>
-            <div class="stat-num">88.4</div>
-            <div class="stat-sub">Rata-rata Nilai</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--mustard-soft)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          </div>
-          <div>
-            <div class="stat-num">96%</div>
-            <div class="stat-sub">Kehadiran Semester Ini</div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:var(--mustard-soft)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          </div>
-          <div>
-            <div class="stat-num">6</div>
-            <div class="stat-sub">Mapel Hari Ini</div>
-          </div>
-        </div>
-        <div class="stat-card mustard">
-          <div class="stat-icon" style="background:var(--navy)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          </div>
-          <div>
-            <div class="stat-num">2</div>
-            <div class="stat-sub">Pengumuman Baru</div>
+          <div class="dropdown-wrap">
+            <button class="avatar" id="userAvatar" onclick="toggleDropdown('profilePanel')">SW</button>
+            <div class="dropdown-panel" id="profilePanel">
+              <div class="profile-card">
+                <div class="profile-avatar" id="profileAvatarBig">SW</div>
+                <div class="profile-name" id="profileName">-</div>
+                <div class="profile-role" id="profileRole">Siswa</div>
+                <button class="profile-logout" onclick="logout()">Keluar</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="bottom-grid">
-        <div class="panel">
-          <div class="cal-head">
-            <h3 style="margin:0">Kalender</h3>
-            <div class="cal-nav">&lt; <strong>Juli 2026</strong> &gt;</div>
+      <!-- VIEW: BERANDA -->
+      <div class="menu-view active" id="view-beranda">
+        <div class="section-label">Aksi Cepat</div>
+        <div class="quick-grid">
+          <div class="quick-item" onclick="pindahMenu('nilai')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+            <span>Lihat Nilai</span>
           </div>
-          <div class="cal-grid">
-            <span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>
-            <span class="day dim">29</span><span class="day dim">30</span><span class="day">1</span><span class="day">2</span><span class="day">3</span><span class="day">4</span><span class="day">5</span>
-            <span class="day">6</span><span class="day">7</span><span class="day">8</span><span class="day">9</span><span class="day">10</span><span class="day">11</span><span class="day">12</span>
-            <span class="day">13</span><span class="day">14</span><span class="day">15</span><span class="day">16</span><span class="day">17</span><span class="day">18</span><span class="day">19</span>
-            <span class="day">20</span><span class="day">21</span><span class="day">22</span><span class="day">23</span><span class="day">24</span><span class="day">25</span><span class="day">26</span>
-            <span class="day today">27</span><span class="day event">28</span><span class="day">29</span><span class="day">30</span><span class="day">31</span>
+          <div class="quick-item" onclick="pindahMenu('jadwal')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span>Lihat Jadwal</span>
           </div>
-          <div class="legend"><span class="dot"></span> Ujian Semester</div>
+          <div class="quick-item" onclick="pindahMenu('presensi')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <span>Lihat Presensi</span>
+          </div>
+          <div class="quick-item" onclick="pindahMenu('angket')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M19 5c-1.5 0-3 .5-4 1.5A5.5 5.5 0 0 0 11 9c-1-1.5-2.5-2-4-2C4.5 7 3 8.5 3 11c0 4 6 8 8 9 2-1 8-5 8-9 0-2.5-1.5-4-3.5-4Z"/></svg>
+            <span>Angket AKPD/Minat Bakat</span>
+          </div>
+          <div class="quick-item" onclick="pindahMenu('pengumuman')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span>Pengumuman</span>
+          </div>
         </div>
 
-        <div class="panel">
-          <h3>Papan Pengumuman</h3>
-          <div class="notice-item">
-            <div class="notice-icon" style="background:var(--mustard)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8a2 2 0 1 1-3.2 2.4"/></svg>
+        <div class="stat-grid">
+          <div class="stat-card navy">
+            <div class="stat-icon" style="background:var(--mustard)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
             </div>
             <div>
-              <div class="notice-title">Libur Semester Ganjil</div>
-              <div class="notice-date">15 Desember 2026</div>
+              <div class="stat-num" id="statNilai">-</div>
+              <div class="stat-sub">Rata-rata Nilai</div>
             </div>
           </div>
-          <div class="notice-item">
-            <div class="notice-icon" style="background:var(--navy)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
             </div>
             <div>
-              <div class="notice-title">Pengumpulan Nilai Rapor</div>
-              <div class="notice-date">10 Desember 2026</div>
+              <div class="stat-num" id="statPresensi">-</div>
+              <div class="stat-sub">Kehadiran Semester Ini</div>
             </div>
           </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background:var(--mustard-soft)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statKelas">-</div>
+              <div class="stat-sub">Kelas</div>
+            </div>
+          </div>
+          <div class="stat-card mustard">
+            <div class="stat-icon" style="background:var(--navy)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--mustard)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div>
+              <div class="stat-num" id="statPengumuman">0</div>
+              <div class="stat-sub">Pengumuman</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-grid">
+          <div class="panel">
+            <div class="cal-head">
+              <h3 style="margin:0">Kalender</h3>
+              <div class="cal-nav" id="calLabel">&lt; <strong>-</strong> &gt;</div>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div class="legend"><span class="dot"></span> Ada pengumuman di tanggal ini</div>
+          </div>
+
+          <div class="panel">
+            <h3>Papan Pengumuman</h3>
+            <div id="papanPengumuman"><div class="dp-empty">Memuat...</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: NILAI -->
+      <div class="menu-view" id="view-nilai">
+        <div class="placeholder-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+          <h4>Lihat Nilai</h4>
+          <p>Menu ini belum tersambung ke data nilai. Menunggu konfirmasi parameter fungsi nilaiRekap di Code.gs.</p>
+        </div>
+      </div>
+
+      <!-- VIEW: JADWAL -->
+      <div class="menu-view" id="view-jadwal">
+        <div class="placeholder-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <h4>Lihat Jadwal</h4>
+          <p>Menu ini belum tersambung ke data jadwal pelajaran. Menunggu konfirmasi fungsi jadwal yang dipakai.</p>
+        </div>
+      </div>
+
+      <!-- VIEW: PRESENSI -->
+      <div class="menu-view" id="view-presensi">
+        <div class="placeholder-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <h4>Lihat Presensi</h4>
+          <p>Menu ini belum tersambung ke data presensi. Menunggu konfirmasi parameter fungsi absensiRekap di Code.gs.</p>
+        </div>
+      </div>
+
+      <!-- VIEW: ANGKET -->
+      <div class="menu-view" id="view-angket">
+        <div class="placeholder-box">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5"><path d="M19 5c-1.5 0-3 .5-4 1.5A5.5 5.5 0 0 0 11 9c-1-1.5-2.5-2-4-2C4.5 7 3 8.5 3 11c0 4 6 8 8 9 2-1 8-5 8-9 0-2.5-1.5-4-3.5-4Z"/></svg>
+          <h4>Angket AKPD/Minat Bakat</h4>
+          <p>Menu ini akan dibangun berikutnya memakai fungsi angketSesi_list, angketButirSoal, angketRespon_simpan, dan angketSudahIsi yang sudah ada di Code.gs.</p>
+        </div>
+      </div>
+
+      <!-- VIEW: PENGUMUMAN -->
+      <div class="menu-view" id="view-pengumuman">
+        <div class="panel">
+          <h3>Semua Pengumuman</h3>
+          <div id="daftarPengumumanPenuh" class="announce-list"><div class="dp-empty">Memuat...</div></div>
         </div>
       </div>
 
@@ -299,21 +412,259 @@
 </div>
 
 <script>
+const EXEC_URL = 'https://script.google.com/macros/s/AKfycbwLW8XdWVgQb3CMR1xz1V8CEDMm3e4ZhaGDZCNGZsiqvnGrhLfxSfeKtND-mKhyd-pS/exec';
+let sesi = null;
+let pengumumanSiswa = [];
+
+function jsonpCall(action, params) {
+  return new Promise((resolve, reject) => {
+    const callbackName = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+    const script = document.createElement('script');
+    window[callbackName] = (result) => {
+      resolve(result);
+      delete window[callbackName];
+      script.remove();
+    };
+    const query = new URLSearchParams({ action, callback: callbackName, ...(params||{}) }).toString();
+    script.src = EXEC_URL + '?' + query;
+    script.onerror = () => reject(new Error('Gagal terhubung ke server'));
+    document.body.appendChild(script);
+  });
+}
+
+/* ===== SESI ===== */
 (function cekSesi() {
-  const sesi = JSON.parse(localStorage.getItem('portalSmaSesi') || 'null');
+  sesi = JSON.parse(localStorage.getItem('portalSmaSesi') || 'null');
   if (!sesi || sesi.role !== 'Siswa') {
     window.location.href = 'login.html';
     return;
   }
   document.getElementById('userCardName').textContent = sesi.namaLengkap;
+  document.getElementById('profileName').textContent = sesi.namaLengkap;
   const inisial = sesi.namaLengkap.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
   document.getElementById('userAvatar').textContent = inisial;
+  document.getElementById('profileAvatarBig').textContent = inisial;
+  document.getElementById('statKelas').textContent = sesi.kelas || '-';
+  tampilkanSapaan();
+  renderKalender();
+  muatPengumuman();
 })();
 
 function logout() {
   localStorage.removeItem('portalSmaSesi');
   window.location.href = 'login.html';
 }
+
+function tampilkanSapaan() {
+  const jam = new Date().getHours();
+  let sapa = 'Selamat malam';
+  if (jam >= 4 && jam < 11) sapa = 'Selamat pagi';
+  else if (jam >= 11 && jam < 15) sapa = 'Selamat siang';
+  else if (jam >= 15 && jam < 18) sapa = 'Selamat sore';
+  document.getElementById('viewSubtitle').textContent = sapa + ', ' + sesi.namaLengkap.split(' ')[0] + '!';
+}
+
+/* ===== SIDEBAR TOGGLE (desktop collapse + mobile overlay) ===== */
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  sb.classList.toggle('collapsed');
+  localStorage.setItem('siswaSidebarCollapsed', sb.classList.contains('collapsed') ? '1' : '0');
+}
+(function initSidebarState() {
+  if (localStorage.getItem('siswaSidebarCollapsed') === '1') {
+    document.getElementById('sidebar').classList.add('collapsed');
+  }
+})();
+function bukaSidebarMobile() {
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('sidebarBackdrop').classList.add('show');
+}
+function tutupSidebarMobile() {
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebarBackdrop').classList.remove('show');
+}
+
+/* ===== DROPDOWNS ===== */
+function toggleDropdown(id) {
+  const panel = document.getElementById(id);
+  const sudahTerbuka = panel.classList.contains('open');
+  document.querySelectorAll('.dropdown-panel').forEach(p => p.classList.remove('open'));
+  if (!sudahTerbuka) {
+    panel.classList.add('open');
+    if (id === 'notifPanel') renderNotifList();
+  }
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.dropdown-wrap')) {
+    document.querySelectorAll('.dropdown-panel').forEach(p => p.classList.remove('open'));
+  }
+});
+
+/* ===== SPA MENU SWITCH ===== */
+const judulView = {
+  beranda: 'Dashboard',
+  nilai: 'Lihat Nilai',
+  jadwal: 'Lihat Jadwal',
+  presensi: 'Lihat Presensi',
+  angket: 'Angket AKPD/Minat Bakat',
+  pengumuman: 'Pengumuman'
+};
+document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+  item.addEventListener('click', function(e) {
+    e.preventDefault();
+    pindahMenu(this.dataset.view);
+    this.classList.add('pulse');
+    setTimeout(() => this.classList.remove('pulse'), 300);
+    tutupSidebarMobile();
+  });
+});
+
+function pindahMenu(target) {
+  document.querySelectorAll('.nav-item[data-view]').forEach(n => n.classList.remove('active'));
+  const navTarget = document.querySelector('.nav-item[data-view="' + target + '"]');
+  if (navTarget) navTarget.classList.add('active');
+
+  document.querySelectorAll('.menu-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + target).classList.add('active');
+
+  document.getElementById('viewTitle').textContent = judulView[target] || 'Dashboard';
+  if (target === 'beranda') {
+    tampilkanSapaan();
+  } else {
+    document.getElementById('viewSubtitle').textContent = '';
+  }
+
+  if (target === 'pengumuman') renderDaftarPengumumanPenuh();
+}
+
+/* ===== PENGUMUMAN ===== */
+async function muatPengumuman() {
+  try {
+    const hasil = await jsonpCall('pengumuman_list', { role: 'Siswa' });
+    if (hasil.success) {
+      pengumumanSiswa = hasil.data || [];
+      document.getElementById('statPengumuman').textContent = pengumumanSiswa.length;
+      renderPapanPengumuman();
+      renderKalender();
+    }
+  } catch (e) {
+    console.error('Gagal muat pengumuman', e);
+    document.getElementById('papanPengumuman').innerHTML = '<div class="dp-empty">Gagal memuat pengumuman.</div>';
+  }
+}
+
+function iconPengumuman() {
+  return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3Z"/><path d="M11.6 16.8a2 2 0 1 1-3.2 2.4"/></svg>';
+}
+
+function renderPapanPengumuman() {
+  const target = document.getElementById('papanPengumuman');
+  if (!pengumumanSiswa.length) {
+    target.innerHTML = '<div class="dp-empty">Belum ada pengumuman.</div>';
+    return;
+  }
+  target.innerHTML = pengumumanSiswa.slice(0, 5).map(p => `
+    <div class="notice-item">
+      <div class="notice-icon" style="background:var(--mustard)">${iconPengumuman()}</div>
+      <div>
+        <div class="notice-title">${p.Judul || ''}</div>
+        <div class="notice-date">${p.TanggalDibuat || ''}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderDaftarPengumumanPenuh() {
+  const target = document.getElementById('daftarPengumumanPenuh');
+  if (!pengumumanSiswa.length) {
+    target.innerHTML = '<div class="dp-empty">Belum ada pengumuman.</div>';
+    return;
+  }
+  target.innerHTML = pengumumanSiswa.map(p => `
+    <div class="notice-item">
+      <div class="notice-icon" style="background:var(--mustard)">${iconPengumuman()}</div>
+      <div>
+        <div class="notice-title">${p.Judul || ''}</div>
+        <div class="notice-date">${p.TanggalDibuat || ''}${p.Isi ? ' — ' + p.Isi : ''}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderNotifList() {
+  const target = document.getElementById('notifList');
+  const badge = document.getElementById('notifBadge');
+  const terakhirDibaca = localStorage.getItem('siswaPengumumanTerakhirDibaca') || '';
+  const belumDibaca = pengumumanSiswa.filter(p => (p.TanggalDibuat || '') > terakhirDibaca).length;
+
+  if (!pengumumanSiswa.length) {
+    target.innerHTML = '<div class="dp-empty">Belum ada notifikasi.</div>';
+  } else {
+    target.innerHTML = pengumumanSiswa.slice(0, 5).map(p => `
+      <div class="dp-item">
+        <div class="dp-title">${p.Judul || ''}</div>
+        <div class="dp-sub">${p.TanggalDibuat || ''}</div>
+      </div>`).join('');
+    if (pengumumanSiswa[0] && pengumumanSiswa[0].TanggalDibuat) {
+      localStorage.setItem('siswaPengumumanTerakhirDibaca', pengumumanSiswa[0].TanggalDibuat);
+    }
+  }
+  badge.style.display = 'none';
+}
+(function cekBadgeAwal() {
+  // badge dihitung ulang tiap muatPengumuman() lewat renderBadge di bawah
+})();
+function renderBadge() {
+  const badge = document.getElementById('notifBadge');
+  const terakhirDibaca = localStorage.getItem('siswaPengumumanTerakhirDibaca') || '';
+  const belum = pengumumanSiswa.filter(p => (p.TanggalDibuat || '') > terakhirDibaca).length;
+  if (belum > 0) { badge.style.display = 'flex'; badge.textContent = belum; }
+  else { badge.style.display = 'none'; }
+}
+
+/* ===== KALENDER (dinamis, Senin di kolom pertama) ===== */
+function renderKalender() {
+  const now = new Date();
+  const tahun = now.getFullYear();
+  const bulan = now.getMonth();
+  const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  document.getElementById('calLabel').innerHTML = '&lt; <strong>' + namaBulan[bulan] + ' ' + tahun + '</strong> &gt;';
+
+  const tanggalBerpengumuman = new Set(
+    pengumumanSiswa.map(p => (p.TanggalDibuat || '').slice(0, 10))
+  );
+
+  const firstDay = new Date(tahun, bulan, 1);
+  let startOffset = firstDay.getDay() - 1; // Senin = 0
+  if (startOffset < 0) startOffset = 6;
+
+  const jumlahHari = new Date(tahun, bulan + 1, 0).getDate();
+  const hariSebelumnya = new Date(tahun, bulan, 0).getDate();
+
+  let html = '<span class="dow">S</span><span class="dow">S</span><span class="dow">R</span><span class="dow">K</span><span class="dow">J</span><span class="dow">S</span><span class="dow">M</span>';
+
+  for (let i = startOffset; i > 0; i--) {
+    html += '<span class="day dim">' + (hariSebelumnya - i + 1) + '</span>';
+  }
+  const hariIni = now.getDate();
+  for (let d = 1; d <= jumlahHari; d++) {
+    const tgl = tahun + '-' + String(bulan+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    let kelas = 'day';
+    if (d === hariIni) kelas += ' today';
+    else if (tanggalBerpengumuman.has(tgl)) kelas += ' event';
+    html += '<span class="' + kelas + '">' + d + '</span>';
+  }
+  const sisa = (7 - ((startOffset + jumlahHari) % 7)) % 7;
+  for (let i = 1; i <= sisa; i++) {
+    html += '<span class="day dim">' + i + '</span>';
+  }
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+/* override muatPengumuman untuk juga render badge */
+const _muatPengumumanAsli = muatPengumuman;
+muatPengumuman = async function() {
+  await _muatPengumumanAsli();
+  renderBadge();
+};
 </script>
 </body>
 </html>
