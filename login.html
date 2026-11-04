@@ -346,11 +346,20 @@
           return;
         }
 
+        let dataTambahan = {};
+        if (hasil.role === 'Siswa') {
+          const profil = await jsonpCall('siswa_profil', { refID: hasil.refID });
+          if (profil.success) {
+            dataTambahan = { kelas: profil.kelas, jenisKelamin: profil.jenisKelamin };
+          }
+        }
+
         localStorage.setItem('portalSmaSesi', JSON.stringify({
           username,
           role: hasil.role,
           namaLengkap: hasil.namaLengkap,
-          refID: hasil.refID
+          refID: hasil.refID,
+          ...dataTambahan
         }));
 
         const tujuan = DASHBOARD_BY_ROLE[hasil.role];
