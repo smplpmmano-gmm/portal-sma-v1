@@ -542,7 +542,7 @@ async function muatPengumuman() {
   try {
     const hasil = await jsonpCall('pengumuman_list', { role: 'Siswa' });
     if (hasil.success) {
-      pengumumanSiswa = hasil.data || [];
+      pengumumanSiswa = (hasil.data || []).slice().sort((a, b) => new Date(b.Tanggal) - new Date(a.Tanggal));
       document.getElementById('statPengumuman').textContent = pengumumanSiswa.length;
       renderPapanPengumuman();
       renderKalender();
@@ -568,7 +568,7 @@ function renderPapanPengumuman() {
       <div class="notice-icon" style="background:var(--mustard)">${iconPengumuman()}</div>
       <div>
         <div class="notice-title">${p.Judul || ''}</div>
-        <div class="notice-date">${p.TanggalDibuat || ''}</div>
+        <div class="notice-date">${p.Tanggal || ''}</div>
       </div>
     </div>`).join('');
 }
@@ -584,7 +584,7 @@ function renderDaftarPengumumanPenuh() {
       <div class="notice-icon" style="background:var(--mustard)">${iconPengumuman()}</div>
       <div>
         <div class="notice-title">${p.Judul || ''}</div>
-        <div class="notice-date">${p.TanggalDibuat || ''}${p.Isi ? ' — ' + p.Isi : ''}</div>
+        <div class="notice-date">${p.Tanggal || ''}${p.Isi ? ' — ' + p.Isi : ''}</div>
       </div>
     </div>`).join('');
 }
@@ -593,7 +593,7 @@ function renderNotifList() {
   const target = document.getElementById('notifList');
   const badge = document.getElementById('notifBadge');
   const terakhirDibaca = localStorage.getItem('siswaPengumumanTerakhirDibaca') || '';
-  const belumDibaca = pengumumanSiswa.filter(p => (p.TanggalDibuat || '') > terakhirDibaca).length;
+  const belumDibaca = pengumumanSiswa.filter(p => (p.Tanggal || '') > terakhirDibaca).length;
 
   if (!pengumumanSiswa.length) {
     target.innerHTML = '<div class="dp-empty">Belum ada notifikasi.</div>';
@@ -601,10 +601,10 @@ function renderNotifList() {
     target.innerHTML = pengumumanSiswa.slice(0, 5).map(p => `
       <div class="dp-item">
         <div class="dp-title">${p.Judul || ''}</div>
-        <div class="dp-sub">${p.TanggalDibuat || ''}</div>
+        <div class="dp-sub">${p.Tanggal || ''}</div>
       </div>`).join('');
-    if (pengumumanSiswa[0] && pengumumanSiswa[0].TanggalDibuat) {
-      localStorage.setItem('siswaPengumumanTerakhirDibaca', pengumumanSiswa[0].TanggalDibuat);
+    if (pengumumanSiswa[0] && pengumumanSiswa[0].Tanggal) {
+      localStorage.setItem('siswaPengumumanTerakhirDibaca', pengumumanSiswa[0].Tanggal);
     }
   }
   badge.style.display = 'none';
@@ -615,7 +615,7 @@ function renderNotifList() {
 function renderBadge() {
   const badge = document.getElementById('notifBadge');
   const terakhirDibaca = localStorage.getItem('siswaPengumumanTerakhirDibaca') || '';
-  const belum = pengumumanSiswa.filter(p => (p.TanggalDibuat || '') > terakhirDibaca).length;
+  const belum = pengumumanSiswa.filter(p => (p.Tanggal || '') > terakhirDibaca).length;
   if (belum > 0) { badge.style.display = 'flex'; badge.textContent = belum; }
   else { badge.style.display = 'none'; }
 }
@@ -629,7 +629,7 @@ function renderKalender() {
   document.getElementById('calLabel').innerHTML = '&lt; <strong>' + namaBulan[bulan] + ' ' + tahun + '</strong> &gt;';
 
   const tanggalBerpengumuman = new Set(
-    pengumumanSiswa.map(p => (p.TanggalDibuat || '').slice(0, 10))
+    pengumumanSiswa.map(p => (p.Tanggal || '').slice(0, 10))
   );
 
   const firstDay = new Date(tahun, bulan, 1);
